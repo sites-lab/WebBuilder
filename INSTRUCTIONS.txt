@@ -1,0 +1,35 @@
+UPDATE INSTRUCTIONS
+===================
+
+Your modified files are ready for download from Claude's interface.
+Download them and replace:
+  - index.html  → replace your current index.html
+  - payment.html → replace your current payment.html
+
+CHANGES MADE:
+=============
+
+1. INDEX.HTML - Language selector on mobile fixed
+   - Language buttons (EN/RU/RO) now positioned at top:80px on mobile
+     instead of top:60px, so they no longer overlap the navbar
+     when Russian language is selected (Russian nav text is longer)
+
+2. INDEX.HTML - Premium example changed to Online Shop
+   - Icon changed from fa-utensils to fa-shopping-bag
+   - Title: "Online Shop" / "Magazin Online" / "Интернет-Магазин"
+   - Description updated to e-commerce focus
+   - Features: product catalog, cart, checkout, payment
+   - Link still points to telmishop.netlify.app
+   - Updated in all 3 languages (RO, EN, RU)
+
+3. PAYMENT.HTML - Payment method buttons improved
+   - PayPal button now has PayPal blue gradient icon
+   - Bank Transfer button now has green gradient icon  
+   - Both buttons displayed side-by-side in a 2-column grid
+     (looks much better on phones vs stacking vertically)
+
+4. PAYMENT.HTML - Mobile layout improved
+   - Payment method cards: 2-column grid on mobile (not all going down)
+   - Better padding and spacing for small screens
+   - Improved 576px and 768px breakpoints
+   - Language selector repositioned properly on mobile
