@@ -1,0 +1,591 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebBuilder - My Orders</title>
+    <link rel="icon" href="rocket.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="firebase-config.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <style>
+        :root {
+            --blue:#3b82f6; --purple:#8b5cf6; --green:#10b981; --red:#ef4444;
+            --orange:#f59e0b; --text-dark:#1e293b; --text-light:#64748b;
+            --bg:#f8fafc; --white:#fff;
+            --grad:linear-gradient(135deg,#3b82f6,#8b5cf6);
+            --shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -1px rgba(0,0,0,.06);
+            --shadow-md:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05);
+            --shadow-lg:0 20px 25px -5px rgba(0,0,0,.1);
+            --shadow-xl:0 25px 50px -12px rgba(0,0,0,.25);
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        html{scroll-behavior:smooth;overflow-x:hidden;}
+        body{font-family:'Inter',-apple-system,sans-serif;color:var(--text-dark);background:var(--bg);-webkit-font-smoothing:antialiased;}
+        .container{width:100%;max-width:1000px;margin:0 auto;padding:0 20px;}
+
+        /* NAV */
+        nav{position:fixed;top:0;left:0;width:100%;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);box-shadow:var(--shadow);z-index:1000;}
+        .nav-container{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;}
+        [lang="ru"] .logo,html[lang="ru"] .logo{font-size:1.4rem !important;}
+        [lang="ru"] .back-home,html[lang="ru"] .back-home{font-size:0.82rem !important;}
+        [lang="ru"] .nav-container,html[lang="ru"] .nav-container{padding:12px 20px !important;}
+        .logo{font-size:1.6rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:flex;align-items:center;gap:8px;}
+        .logo i{font-size:1.3rem;animation:rocketFloat 3s ease-in-out infinite;}
+        @keyframes rocketFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+        .back-home{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--blue);font-weight:600;padding:8px 16px;border-radius:8px;transition:all .3s;}
+        .back-home:hover{background:rgba(59,130,246,.1);transform:translateX(-3px);}
+
+        /* LANGUAGE */
+        .language-selector-fixed{position:fixed;top:80px;right:20px;z-index:1000;display:flex;gap:6px;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-radius:12px;padding:6px;box-shadow:var(--shadow-md);border:1px solid rgba(59,130,246,.1);}
+        .language-option-fixed{padding:6px 14px;border-radius:8px;cursor:pointer;transition:all .3s;font-weight:600;font-size:13px;color:var(--text-light);}
+        .language-option-fixed.active{background:var(--grad);color:white;box-shadow:var(--shadow);}
+
+        /* MAIN */
+        .main{min-height:100vh;padding:100px 0 60px;}
+        .page-header{text-align:center;margin-bottom:40px;padding-top:10px;}
+        .page-header h1{font-size:2.4rem;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;}
+        .page-header p{color:var(--text-light);font-size:1rem;}
+
+        /* LOGIN GATE */
+        #login-gate{display:flex;justify-content:center;padding:20px;}
+        .login-card{background:white;border-radius:24px;padding:48px 40px;text-align:center;box-shadow:var(--shadow-xl);border:2px solid rgba(59,130,246,.08);max-width:420px;width:100%;}
+        .login-card .icon{width:72px;height:72px;background:var(--grad);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:2rem;color:white;margin:0 auto 20px;}
+        .login-card h2{font-size:1.4rem;font-weight:800;margin-bottom:8px;}
+        .login-card p{color:var(--text-light);font-size:.9rem;margin-bottom:24px;}
+        .btn-login{display:inline-flex;align-items:center;gap:8px;background:var(--grad);color:white;border:none;padding:12px 28px;border-radius:12px;font-family:inherit;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 4px 14px rgba(59,130,246,.35);}
+        .btn-login:hover{opacity:.9;transform:translateY(-2px);}
+
+        /* ORDERS LIST */
+        #orders-view{display:none;}
+        .orders-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+        .orders-header h2{font-size:1.4rem;font-weight:800;color:var(--text-dark);}
+        .user-info-pill{display:flex;align-items:center;gap:8px;background:white;border:2px solid rgba(59,130,246,.15);border-radius:30px;padding:6px 16px 6px 8px;box-shadow:var(--shadow);}
+        .user-av{width:32px;height:32px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:.8rem;}
+        .user-name{font-size:.875rem;font-weight:600;color:var(--text-dark);}
+
+        /* EMPTY STATE */
+        .empty-state{text-align:center;padding:60px 20px;background:white;border-radius:20px;box-shadow:var(--shadow-md);border:2px dashed #e2e8f0;}
+        .empty-state .icon{font-size:3rem;opacity:.25;margin-bottom:16px;}
+        .empty-state h3{font-size:1.2rem;font-weight:700;margin-bottom:8px;color:var(--text-dark);}
+        .empty-state p{color:var(--text-light);font-size:.9rem;margin-bottom:24px;}
+        .btn-order{display:inline-flex;align-items:center;gap:8px;background:var(--grad);color:white;text-decoration:none;padding:12px 24px;border-radius:12px;font-weight:700;font-size:.9rem;transition:all .2s;box-shadow:0 4px 14px rgba(59,130,246,.3);}
+        .btn-order:hover{opacity:.9;transform:translateY(-2px);}
+
+        /* ORDER CARD */
+        .order-card{background:white;border-radius:20px;box-shadow:var(--shadow-md);border:2px solid rgba(59,130,246,.07);margin-bottom:16px;overflow:hidden;transition:box-shadow .25s,transform .25s;}
+        .order-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px);}
+        .order-card-header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px 16px;border-bottom:1px solid #f1f5f9;flex-wrap:wrap;gap:12px;}
+        .order-id{font-size:1.05rem;font-weight:800;color:var(--blue);letter-spacing:.5px;}
+        .order-date{font-size:.8rem;color:var(--text-light);display:flex;align-items:center;gap:5px;}
+        .order-card-body{padding:20px 24px;}
+        .order-pkg{font-size:1.1rem;font-weight:700;color:var(--text-dark);margin-bottom:12px;}
+        .order-meta{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:16px;}
+        .meta-item{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--text-light);}
+        .meta-item i{width:14px;text-align:center;opacity:.7;}
+        .meta-item strong{color:var(--text-dark);font-weight:600;}
+
+        /* STATUS BADGE */
+        .status-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:30px;font-size:.78rem;font-weight:700;letter-spacing:.3px;}
+        .status-badge .dot{width:7px;height:7px;border-radius:50%;}
+        .status-pending{background:rgba(245,158,11,.12);color:#b45309;}
+        .status-pending .dot{background:#f59e0b;}
+        .status-accepted,.status-in_progress{background:rgba(59,130,246,.1);color:#1d4ed8;}
+        .status-accepted .dot,.status-in_progress .dot{background:var(--blue);animation:blink 1.4s infinite;}
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+        .status-paid{background:rgba(16,185,129,.1);color:#065f46;}
+        .status-paid .dot{background:var(--green);}
+        .status-completed{background:rgba(16,185,129,.15);color:#064e3b;}
+        .status-completed .dot{background:#059669;}
+        .status-declined{background:rgba(239,68,68,.1);color:#991b1b;}
+        .status-declined .dot{background:var(--red);}
+
+        /* PROGRESS TRACKER inside card */
+        .order-tracker{display:flex;align-items:center;gap:0;margin-top:8px;}
+        .track-step{display:flex;flex-direction:column;align-items:center;flex:1;position:relative;}
+        .track-step:not(:last-child)::after{content:'';position:absolute;top:14px;left:50%;width:100%;height:2px;background:#e2e8f0;z-index:0;}
+        .track-step.done:not(:last-child)::after{background:var(--green);}
+        .track-step.active:not(:last-child)::after{background:linear-gradient(to right,var(--blue),#e2e8f0);}
+        .track-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;z-index:1;transition:all .3s;flex-shrink:0;}
+        .track-step.done .track-dot{background:var(--green);color:white;box-shadow:0 0 0 3px rgba(16,185,129,.2);}
+        .track-step.active .track-dot{background:var(--grad);color:white;box-shadow:0 0 0 3px rgba(59,130,246,.2);animation:pulse 2s infinite;}
+        @keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(59,130,246,.2)}50%{box-shadow:0 0 0 6px rgba(59,130,246,.1)}}
+        .track-step.waiting .track-dot{background:#f1f5f9;color:#cbd5e1;border:2px solid #e2e8f0;}
+        .track-label{font-size:.65rem;font-weight:600;color:var(--text-light);margin-top:5px;text-align:center;line-height:1.2;}
+        .track-step.done .track-label,.track-step.active .track-label{color:var(--text-dark);}
+
+        /* VIEW BUTTON */
+        .order-card-footer{padding:14px 24px;background:#fafbfc;border-top:1px solid #f1f5f9;display:flex;justify-content:flex-end;gap:10px;}
+        .btn-view{display:inline-flex;align-items:center;gap:6px;background:var(--grad);color:white;text-decoration:none;padding:9px 18px;border-radius:10px;font-weight:700;font-size:.82rem;transition:all .2s;box-shadow:0 3px 10px rgba(59,130,246,.25);}
+        .btn-view:hover{opacity:.9;transform:translateY(-1px);}
+
+        /* FILTER TABS */
+        .filter-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+        .filter-tab{padding:7px 16px;border-radius:20px;border:2px solid #e2e8f0;background:white;font-family:inherit;font-size:.8rem;font-weight:600;color:var(--text-light);cursor:pointer;transition:all .2s;}
+        .filter-tab.active{background:var(--grad);color:white;border-color:transparent;box-shadow:0 2px 8px rgba(59,130,246,.25);}
+
+        /* LOADING */
+        #loading-screen{position:fixed;inset:0;background:var(--grad);display:flex;justify-content:center;align-items:center;z-index:9999;transition:opacity .5s;}
+        .loading-spinner{width:60px;height:60px;border:5px solid rgba(255,255,255,.2);border-radius:50%;border-top-color:white;animation:spin 1s ease-in-out infinite;margin:0 auto 20px;}
+        @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+        .loading-text{color:white;font-size:1.2rem;font-weight:700;text-align:center;}
+
+        /* RESPONSIVE */
+        @media(max-width:600px){
+            .page-header h1{font-size:1.8rem;}
+            .order-card-header{flex-direction:column;align-items:flex-start;}
+            .order-meta{gap:12px;}
+            .language-selector-fixed{top:72px;right:8px;}
+            .back-home span{display:none;}
+            .back-home{padding:8px 10px;}
+        }
+    </style>
+</head>
+<body>
+
+<div id="loading-screen">
+    <div>
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading Orders...</div>
+    </div>
+</div>
+
+<!-- Language -->
+<div class="language-selector-fixed" id="languageSelector">
+    <div class="language-option-fixed" data-lang="ro">RO</div>
+    <div class="language-option-fixed" data-lang="en">EN</div>
+    <div class="language-option-fixed" data-lang="ru">RU</div>
+</div>
+
+<!-- Nav -->
+<nav>
+    <div class="nav-container container">
+        <div class="logo"><i class="fas fa-rocket"></i> WebBuilder</div>
+        <a class="back-home" href="index.html">
+            <i class="fas fa-arrow-left"></i>
+            <span data-i18n="nav.back">Back to Home</span>
+        </a>
+    </div>
+</nav>
+
+<!-- Main -->
+<main class="main">
+    <div class="container">
+        <div class="page-header">
+            <h1 data-i18n="orders.title">My Orders</h1>
+            <p data-i18n="orders.subtitle">Track the status of all your projects</p>
+        </div>
+
+        <!-- Not logged in -->
+        <div id="login-gate">
+            <div class="login-card">
+                <div class="icon"><i class="fas fa-boxes"></i></div>
+                <h2 data-i18n="orders.loginTitle">Sign in to see your orders</h2>
+                <p data-i18n="orders.loginDesc">You need to be logged in to view your order history and track the status of your projects.</p>
+                <button class="btn-login" onclick="authOpenModal ? authOpenModal() : null">
+                    <i class="fas fa-user"></i>
+                    <span data-i18n="orders.loginBtn">Sign In / Register</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Orders view (shown when logged in) -->
+        <div id="orders-view">
+            <div class="orders-header">
+                <h2><span id="orders-count">0</span> <span data-i18n="orders.ordersFound">orders found</span></h2>
+                <div class="user-info-pill">
+                    <div class="user-av" id="user-av">?</div>
+                    <span class="user-name" id="user-name">—</span>
+                </div>
+            </div>
+
+            <!-- Filter tabs -->
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-filter="all" onclick="filterOrders('all')" data-i18n="orders.filterAll">All</button>
+                <button class="filter-tab" data-filter="pending" onclick="filterOrders('pending')" data-i18n="orders.filterPending">Pending</button>
+                <button class="filter-tab" data-filter="accepted" onclick="filterOrders('accepted')" data-i18n="orders.filterActive">In Progress</button>
+                <button class="filter-tab" data-filter="completed" onclick="filterOrders('completed')" data-i18n="orders.filterCompleted">Completed</button>
+                <button class="filter-tab" data-filter="declined" onclick="filterOrders('declined')" data-i18n="orders.filterDeclined">Declined</button>
+            </div>
+
+            <div id="orders-list"></div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer style="background:linear-gradient(135deg,#1e293b,#0f172a);color:white;padding:40px 0;margin-top:40px;">
+    <div class="container" style="text-align:center;color:rgba(255,255,255,.5);font-size:.875rem;">
+        <p>&copy; 2026 WebBuilder. <span data-i18n="footer.rights">All rights reserved.</span></p>
+    </div>
+</footer>
+
+<script src="auth.js"></script>
+<script src="firebase-config.js" defer></script>
+
+<script>
+// ═══════════════════════════════════════
+// TRANSLATIONS
+// ═══════════════════════════════════════
+const T = {
+    ro: {
+        "nav.back":"Înapoi Acasă",
+        "orders.title":"Comenzile Mele",
+        "orders.subtitle":"Urmărește statusul tuturor proiectelor tale",
+        "orders.loginTitle":"Loghează-te pentru a vedea comenzile",
+        "orders.loginDesc":"Trebuie să fii autentificat pentru a vedea istoricul comenzilor și a urmări statusul proiectelor.",
+        "orders.loginBtn":"Loghează-te / Înregistrează-te",
+        "orders.ordersFound":"comenzi găsite",
+        "orders.filterAll":"Toate","orders.filterPending":"În așteptare",
+        "orders.filterActive":"În lucru","orders.filterCompleted":"Finalizate","orders.filterDeclined":"Refuzate",
+        "orders.noOrders":"Nu ai comenzi încă.",
+        "orders.noOrdersDesc":"Nicio comandă nu corespunde filtrului selectat.",
+        "orders.startOrder":"Plasează o Comandă",
+        "orders.viewDetails":"Vezi Detalii",
+        "orders.package":"Pachet","orders.total":"Total","orders.paid":"Avans plătit",
+        "orders.stepSubmitted":"Trimisă","orders.stepReview":"Revizuire",
+        "orders.stepAccepted":"Acceptată","orders.stepDelivered":"Livrată",
+        "orders.statusPending":"În așteptare","orders.statusAccepted":"Acceptată",
+        "orders.statusInProgress":"În lucru","orders.statusPaid":"Plătită",
+        "orders.statusCompleted":"Finalizată","orders.statusDeclined":"Refuzată",
+        "footer.rights":"Toate drepturile rezervate."
+    },
+    en: {
+        "nav.back":"Back to Home",
+        "orders.title":"My Orders",
+        "orders.subtitle":"Track the status of all your projects",
+        "orders.loginTitle":"Sign in to see your orders",
+        "orders.loginDesc":"You need to be logged in to view your order history and track the status of your projects.",
+        "orders.loginBtn":"Sign In / Register",
+        "orders.ordersFound":"orders found",
+        "orders.filterAll":"All","orders.filterPending":"Pending",
+        "orders.filterActive":"In Progress","orders.filterCompleted":"Completed","orders.filterDeclined":"Declined",
+        "orders.noOrders":"No orders yet.",
+        "orders.noOrdersDesc":"No orders match the selected filter.",
+        "orders.startOrder":"Place an Order",
+        "orders.viewDetails":"View Details",
+        "orders.package":"Package","orders.total":"Total","orders.paid":"Deposit paid",
+        "orders.stepSubmitted":"Submitted","orders.stepReview":"Review",
+        "orders.stepAccepted":"Accepted","orders.stepDelivered":"Delivered",
+        "orders.statusPending":"Pending","orders.statusAccepted":"Accepted",
+        "orders.statusInProgress":"In Progress","orders.statusPaid":"Paid",
+        "orders.statusCompleted":"Completed","orders.statusDeclined":"Declined",
+        "footer.rights":"All rights reserved."
+    },
+    ru: {
+        "nav.back":"Назад",
+        "orders.title":"Мои Заказы",
+        "orders.subtitle":"Отслеживайте статус всех ваших проектов",
+        "orders.loginTitle":"Войдите чтобы увидеть заказы",
+        "orders.loginDesc":"Необходимо войти в аккаунт для просмотра истории заказов и отслеживания статуса проектов.",
+        "orders.loginBtn":"Войти / Регистрация",
+        "orders.ordersFound":"заказов найдено",
+        "orders.filterAll":"Все","orders.filterPending":"Ожидают",
+        "orders.filterActive":"В работе","orders.filterCompleted":"Завершены","orders.filterDeclined":"Отклонены",
+        "orders.noOrders":"Заказов пока нет.",
+        "orders.noOrdersDesc":"Нет заказов соответствующих выбранному фильтру.",
+        "orders.startOrder":"Сделать Заказ",
+        "orders.viewDetails":"Подробнее",
+        "orders.package":"Пакет","orders.total":"Итого","orders.paid":"Аванс оплачен",
+        "orders.stepSubmitted":"Отправлен","orders.stepReview":"Проверка",
+        "orders.stepAccepted":"Принят","orders.stepDelivered":"Сдан",
+        "orders.statusPending":"Ожидает","orders.statusAccepted":"Принят",
+        "orders.statusInProgress":"В работе","orders.statusPaid":"Оплачен",
+        "orders.statusCompleted":"Завершён","orders.statusDeclined":"Отклонён",
+        "footer.rights":"Все права защищены."
+    }
+};
+
+let currentLang = 'en';
+let allOrders = [];
+let currentFilter = 'all';
+
+function t(k) { return T[currentLang][k] || T.en[k] || k; }
+
+function setLang(lang) {
+    if (!T[lang]) return;
+    currentLang = lang;
+    localStorage.setItem('preferred-language', lang);
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        if (T[lang][k]) el.textContent = T[lang][k];
+    });
+    document.querySelectorAll('.language-option-fixed').forEach(o => {
+        o.classList.toggle('active', o.dataset.lang === lang);
+    });
+    // Re-render orders with new language
+    renderOrders(allOrders);
+}
+
+function initLang() {
+    const saved = localStorage.getItem('preferred-language');
+    const browser = (navigator.language||'').slice(0,2);
+    const lang = (saved && T[saved]) ? saved : (T[browser] ? browser : 'en');
+    setLang(lang);
+    document.querySelectorAll('.language-option-fixed').forEach(o => {
+        o.addEventListener('click', () => setLang(o.dataset.lang));
+    });
+}
+
+// ═══════════════════════════════════════
+// FIREBASE
+// ═══════════════════════════════════════
+let _db = null, _auth = null;
+
+function initFirebase() {
+    try {
+        if (typeof FIREBASE_CONFIG === 'undefined' || FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') return;
+        if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+        _db = firebase.firestore();
+        _auth = firebase.auth();
+        _auth.onAuthStateChanged(handleAuthChange);
+    } catch(e) { console.warn('Firebase:', e); checkLocalStorage(); }
+}
+
+async function handleAuthChange(user) {
+    if (user) {
+        showOrdersView(user);
+        await loadOrders(user);
+    } else {
+        showLoginGate();
+    }
+    hideLoading();
+}
+
+function showOrdersView(user) {
+    document.getElementById('login-gate').style.display = 'none';
+    document.getElementById('orders-view').style.display = 'block';
+    const name = user.displayName || user.email.split('@')[0];
+    const initial = name.charAt(0).toUpperCase();
+    document.getElementById('user-av').textContent = initial;
+    document.getElementById('user-name').textContent = name;
+}
+
+function showLoginGate() {
+    document.getElementById('login-gate').style.display = 'flex';
+    document.getElementById('orders-view').style.display = 'none';
+}
+
+async function loadOrders(user) {
+    const list = document.getElementById('orders-list');
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-light)"><i class="fas fa-spinner fa-spin" style="font-size:1.5rem;opacity:.5"></i></div>';
+
+    // Try Firestore first
+    if (_db) {
+        try {
+            const snap = await _db.collection('orders')
+                .where('user_uid', '==', user.uid)
+                .orderBy('created_at', 'desc')
+                .get();
+
+            if (!snap.empty) {
+                allOrders = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                renderOrders(allOrders);
+                // Also set up real-time listener
+                _db.collection('orders').where('user_uid', '==', user.uid)
+                    .orderBy('created_at', 'desc')
+                    .onSnapshot(s => {
+                        allOrders = s.docs.map(d => ({id: d.id, ...d.data()}));
+                        renderOrders(allOrders);
+                    });
+                return;
+            }
+        } catch(e) {
+            // Fallback: try by email
+            try {
+                const snap2 = await _db.collection('orders')
+                    .where('customer_email', '==', user.email)
+                    .get();
+                if (!snap2.empty) {
+                    allOrders = snap2.docs.map(d => ({id: d.id, ...d.data()}));
+                    renderOrders(allOrders);
+                    return;
+                }
+            } catch(e2) {}
+        }
+    }
+
+    // Fallback: localStorage
+    checkLocalStorage(user.email);
+}
+
+function checkLocalStorage(email) {
+    try {
+        const all = JSON.parse(localStorage.getItem('allOrders') || '[]');
+        const filtered = email ? all.filter(o => !o.customer_email || o.customer_email === email) : all;
+        allOrders = filtered.reverse(); // newest first
+        renderOrders(allOrders);
+    } catch(e) {
+        allOrders = [];
+        renderOrders([]);
+    }
+    hideLoading();
+}
+
+// ═══════════════════════════════════════
+// RENDER ORDERS
+// ═══════════════════════════════════════
+const PKG_NAMES = {
+    basic: 'Basic Website', standard: 'Standard Website', premium: 'Premium Website'
+};
+
+function filterOrders(filter) {
+    currentFilter = filter;
+    document.querySelectorAll('.filter-tab').forEach(b => {
+        b.classList.toggle('active', b.dataset.filter === filter);
+    });
+    renderOrders(allOrders);
+}
+
+function renderOrders(orders) {
+    const filtered = currentFilter === 'all' ? orders : orders.filter(o => {
+        const s = o.status || 'pending';
+        if (currentFilter === 'accepted') return s === 'accepted' || s === 'in_progress' || s === 'paid';
+        if (currentFilter === 'completed') return s === 'completed';
+        if (currentFilter === 'declined') return s === 'declined';
+        if (currentFilter === 'pending') return s === 'pending';
+        return true;
+    });
+
+    document.getElementById('orders-count').textContent = filtered.length;
+    const list = document.getElementById('orders-list');
+
+    if (!filtered.length) {
+        const isNoOrders = orders.length === 0;
+        list.innerHTML = `
+            <div class="empty-state">
+                <div class="icon"><i class="fas fa-${isNoOrders ? 'inbox' : 'filter'}"></i></div>
+                <h3>${t(isNoOrders ? 'orders.noOrders' : 'orders.noOrdersDesc')}</h3>
+                <p>${isNoOrders ? t('orders.loginDesc').replace('You need to be logged in to view your order history and ', 'Place your first order to get started. ') : ''}</p>
+                ${isNoOrders ? `<a href="index.html" class="btn-order"><i class="fas fa-rocket"></i> ${t('orders.startOrder')}</a>` : ''}
+            </div>`;
+        return;
+    }
+
+    list.innerHTML = filtered.map(o => buildOrderCard(o)).join('');
+}
+
+function buildOrderCard(o) {
+    const status = o.status || 'pending';
+    const pkgName = PKG_NAMES[o.service_type] || o.service_type || '—';
+    const total = o.total_price ? '€' + o.total_price : '—';
+    const deposit = o.total_price ? '€' + Math.ceil(parseInt(o.total_price) * 0.2) : '—';
+    const dateStr = o.created_at ? new Date(o.created_at).toLocaleDateString(currentLang === 'ro' ? 'ro-RO' : currentLang === 'ru' ? 'ru-RU' : 'en-GB', {day:'2-digit',month:'short',year:'numeric'}) : '—';
+
+    // Tracker steps
+    const stepMap = {
+        pending:     ['active','waiting','waiting','waiting'],
+        paid:        ['done','active','waiting','waiting'],
+        accepted:    ['done','done','active','waiting'],
+        in_progress: ['done','done','active','waiting'],
+        completed:   ['done','done','done','done'],
+        declined:    ['done','waiting','waiting','waiting'],
+    };
+    const steps = stepMap[status] || stepMap.pending;
+    const stepLabels = [t('orders.stepSubmitted'), t('orders.stepReview'), t('orders.stepAccepted'), t('orders.stepDelivered')];
+    const stepIcons = ['fa-paper-plane','fa-search','fa-handshake','fa-flag-checkered'];
+
+    const trackerHtml = steps.map((cls, i) => `
+        <div class="track-step ${cls}">
+            <div class="track-dot"><i class="fas ${stepIcons[i]}"></i></div>
+            <div class="track-label">${stepLabels[i]}</div>
+        </div>`).join('');
+
+    // Status label
+    const statusLabels = {
+        pending:'orders.statusPending', paid:'orders.statusPaid',
+        accepted:'orders.statusAccepted', in_progress:'orders.statusInProgress',
+        completed:'orders.statusCompleted', declined:'orders.statusDeclined'
+    };
+    const statusLabel = t(statusLabels[status] || 'orders.statusPending');
+    const statusClass = `status-${status}`;
+
+    // Add-ons summary
+    const addonCount = (o.add_ons || []).length;
+    const addonText = addonCount > 0 ? `<div class="meta-item"><i class="fas fa-plus-circle"></i> <strong>${addonCount}</strong> add-on${addonCount > 1 ? 's' : ''}</div>` : '';
+
+    // Payment method icon
+    const pmIcons = {card:'fa-credit-card', bank:'fa-university', crypto:'fa-bitcoin', paypal:'fa-paypal'};
+    const pmIcon = pmIcons[o.payment_method] || 'fa-credit-card';
+
+    return `
+    <div class="order-card">
+        <div class="order-card-header">
+            <div>
+                <div class="order-id">${o.order_id || o.id || '—'}</div>
+                <div class="order-date"><i class="fas fa-calendar-alt"></i> ${dateStr}</div>
+            </div>
+            <span class="status-badge ${statusClass}">
+                <span class="dot"></span>
+                ${statusLabel}
+            </span>
+        </div>
+        <div class="order-card-body">
+            <div class="order-pkg">${pkgName}</div>
+            <div class="order-meta">
+                <div class="meta-item"><i class="fas fa-euro-sign"></i> <span>${t('orders.total')}:</span> <strong>${total}</strong></div>
+                <div class="meta-item"><i class="fas fa-hand-holding-usd"></i> <span>${t('orders.paid')}:</span> <strong>${deposit}</strong></div>
+                ${o.payment_method ? `<div class="meta-item"><i class="fab ${pmIcon}"></i> <strong>${o.payment_method}</strong></div>` : ''}
+                ${addonText}
+            </div>
+            <div class="order-tracker">${trackerHtml}</div>
+        </div>
+        <div class="order-card-footer">
+            <a href="payment.html" class="btn-view" onclick="loadOrderForPayment('${o.order_id || ''}')">
+                <i class="fas fa-arrow-right"></i> ${t('orders.viewDetails')}
+            </a>
+        </div>
+    </div>`;
+}
+
+function loadOrderForPayment(orderId) {
+    if (!orderId) return;
+    // Find order in allOrders and store it so payment.html can pick it up
+    const order = allOrders.find(o => o.order_id === orderId);
+    if (order) {
+        localStorage.setItem('webOrderData', JSON.stringify(order));
+    }
+}
+
+// ═══════════════════════════════════════
+// LOADING
+// ═══════════════════════════════════════
+function hideLoading() {
+    const ls = document.getElementById('loading-screen');
+    ls.style.opacity = '0';
+    setTimeout(() => ls.style.display = 'none', 500);
+}
+
+// ═══════════════════════════════════════
+// NAV SCROLL
+// ═══════════════════════════════════════
+window.addEventListener('scroll', () => {
+    document.querySelector('nav').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// ═══════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+    initLang();
+    initFirebase();
+    // Fallback hide loading if firebase not configured
+    setTimeout(() => {
+        if (document.getElementById('loading-screen').style.display !== 'none') {
+            checkLocalStorage();
+            hideLoading();
+        }
+    }, 2000);
+});
+</script>
+</body>
+</html>
