@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -122,21 +123,224 @@
         .track-label{font-size:.65rem;font-weight:600;color:var(--text-light);margin-top:5px;text-align:center;line-height:1.2;}
         .track-step.done .track-label,.track-step.active .track-label{color:var(--text-dark);}
 
-        /* VIEW BUTTON */
-        .order-card-footer{padding:14px 24px;background:#fafbfc;border-top:1px solid #f1f5f9;display:flex;justify-content:flex-end;gap:10px;}
+        /* VIEW BUTTON + DELETE */
+        .order-card-footer{padding:14px 24px;background:#fafbfc;border-top:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
         .btn-view{display:inline-flex;align-items:center;gap:6px;background:var(--grad);color:white;text-decoration:none;padding:9px 18px;border-radius:10px;font-weight:700;font-size:.82rem;transition:all .2s;box-shadow:0 3px 10px rgba(59,130,246,.25);}
         .btn-view:hover{opacity:.9;transform:translateY(-1px);}
+        .btn-delete{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:10px;border:1.5px solid rgba(239,68,68,.25);background:rgba(239,68,68,.06);color:#ef4444;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .18s;}
+        .btn-delete:hover{background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.5);transform:translateY(-1px);}
 
         /* FILTER TABS */
         .filter-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
         .filter-tab{padding:7px 16px;border-radius:20px;border:2px solid #e2e8f0;background:white;font-family:inherit;font-size:.8rem;font-weight:600;color:var(--text-light);cursor:pointer;transition:all .2s;}
         .filter-tab.active{background:var(--grad);color:white;border-color:transparent;box-shadow:0 2px 8px rgba(59,130,246,.25);}
 
-        /* LOADING */
-        #loading-screen{position:fixed;inset:0;background:var(--grad);display:flex;justify-content:center;align-items:center;z-index:9999;transition:opacity .5s;}
-        .loading-spinner{width:60px;height:60px;border:5px solid rgba(255,255,255,.2);border-radius:50%;border-top-color:white;animation:spin 1s ease-in-out infinite;margin:0 auto 20px;}
-        @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-        .loading-text{color:white;font-size:1.2rem;font-weight:700;text-align:center;}
+        /* ── Loading Screen (same as index.html) ── */
+        #loading-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(ellipse at 20% 30%, #0d1b4b 0%, #060c1f 40%, #000005 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease;
+            overflow: hidden;
+        }
+
+        /* Deep cosmos nebula layers */
+        #loading-screen::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(ellipse 60% 40% at 15% 25%, rgba(60,0,120,0.35) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 35% at 80% 70%, rgba(0,40,120,0.3) 0%, transparent 70%),
+                radial-gradient(ellipse 30% 50% at 55% 10%, rgba(80,20,160,0.2) 0%, transparent 70%),
+                radial-gradient(1.5px 1.5px at  5%  8%, rgba(255,255,255,0.95) 0%, transparent 100%),
+                radial-gradient(1px   1px   at 12% 22%, rgba(255,255,255,0.8)  0%, transparent 100%),
+                radial-gradient(2px   2px   at 18% 65%, rgba(255,255,255,0.9)  0%, transparent 100%),
+                radial-gradient(1px   1px   at 25% 40%, rgba(200,210,255,0.7)  0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 32%  5%, rgba(255,255,255,0.85) 0%, transparent 100%),
+                radial-gradient(1px   1px   at 40% 78%, rgba(255,255,255,0.7)  0%, transparent 100%),
+                radial-gradient(2px   2px   at 47% 30%, rgba(180,200,255,0.9)  0%, transparent 100%),
+                radial-gradient(1px   1px   at 55% 55%, rgba(255,255,255,0.75) 0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 62% 18%, rgba(255,255,255,0.88) 0%, transparent 100%),
+                radial-gradient(1px   1px   at 70% 88%, rgba(255,255,255,0.7)  0%, transparent 100%),
+                radial-gradient(2px   2px   at 75% 45%, rgba(200,220,255,0.85) 0%, transparent 100%),
+                radial-gradient(1px   1px   at 82% 12%, rgba(255,255,255,0.8)  0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 88% 60%, rgba(255,255,255,0.9)  0%, transparent 100%),
+                radial-gradient(1px   1px   at 93% 35%, rgba(255,255,255,0.7)  0%, transparent 100%),
+                radial-gradient(1px   1px   at 97% 80%, rgba(255,255,255,0.85) 0%, transparent 100%),
+                radial-gradient(1px   1px   at  8% 50%, rgba(255,255,255,0.6)  0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 36% 92%, rgba(255,255,255,0.75) 0%, transparent 100%),
+                radial-gradient(1px   1px   at 64% 70%, rgba(200,210,255,0.65) 0%, transparent 100%),
+                radial-gradient(2px   2px   at 52% 15%, rgba(255,255,255,0.8)  0%, transparent 100%),
+                radial-gradient(1px   1px   at 22% 85%, rgba(255,255,255,0.7)  0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 78% 28%, rgba(180,200,255,0.88) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        /* Shooting star streak */
+        #loading-screen::after {
+            content: '';
+            position: absolute;
+            top: 18%;
+            left: -10%;
+            width: 200px;
+            height: 1.5px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
+            transform: rotate(-20deg);
+            animation: shootingStar 4s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes shootingStar {
+            0%   { left: -20%; opacity: 0; }
+            10%  { opacity: 1; }
+            80%  { opacity: 1; }
+            100% { left: 110%; opacity: 0; }
+        }
+
+        .loading-content {
+            text-align: center;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .loading-rocket-wrap {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .loading-rocket {
+            font-size: 5.5rem;
+            display: block;
+            margin: 0 auto 0;
+            transform: rotate(-45deg);
+            animation: launchRocket 2.2s ease-in-out infinite;
+            filter: drop-shadow(0 0 18px rgba(120,80,255,0.9)) drop-shadow(0 0 40px rgba(80,40,200,0.5));
+        }
+
+        @keyframes launchRocket {
+            0%   { transform: translateY(8px)  rotate(-45deg) scale(0.93); filter: drop-shadow(0 0 10px rgba(100,60,220,0.6)); }
+            35%  { transform: translateY(-22px) rotate(-45deg) scale(1.08);  filter: drop-shadow(0 0 28px rgba(140,100,255,1)) drop-shadow(0 0 55px rgba(80,40,200,0.7)); }
+            55%  { transform: translateY(-28px) rotate(-45deg) scale(1.12); filter: drop-shadow(0 0 36px rgba(160,120,255,1)) drop-shadow(0 0 70px rgba(100,60,220,0.8)); }
+            100% { transform: translateY(8px)  rotate(-45deg) scale(0.93); filter: drop-shadow(0 0 10px rgba(100,60,220,0.6)); }
+        }
+
+        .loading-flame {
+            display: block;
+            margin: 0 auto;
+            width: 7px;
+            height: 32px;
+            border-radius: 0 0 8px 8px;
+            background: linear-gradient(to bottom, rgba(160,100,255,0.95), rgba(80,40,200,0.5), rgba(30,0,80,0.1), transparent);
+            filter: blur(4px);
+            animation: flamePulse 0.38s ease-in-out infinite alternate;
+            transform: rotate(45deg);
+            margin-top: -10px;
+        }
+
+        @keyframes flamePulse {
+            from { transform: rotate(45deg) scaleY(0.75) scaleX(0.85); opacity: 0.65; }
+            to   { transform: rotate(45deg) scaleY(1.25) scaleX(1.15); opacity: 1.0; }
+        }
+
+        .loading-particles {
+            position: absolute;
+            inset: -60px;
+            pointer-events: none;
+        }
+        .lp { position: absolute; border-radius: 50%; background: white; }
+        .lp1 { width:2px; height:2px; top:20%; left:5%;   animation: lpFloat 3.2s ease-in-out infinite; }
+        .lp2 { width:1.5px; height:1.5px; top:60%; left:8%;  animation: lpFloat 2.8s ease-in-out 0.5s infinite; }
+        .lp3 { width:2px; height:2px; top:10%; right:10%; animation: lpFloat 3.6s ease-in-out 1s infinite; }
+        .lp4 { width:3px; height:3px; top:75%; right:5%;  animation: lpFloat 2.4s ease-in-out 0.3s infinite; background: rgba(180,140,255,0.9); }
+        .lp5 { width:1.5px; height:1.5px; top:40%; right:3%; animation: lpFloat 3.9s ease-in-out 1.8s infinite; }
+        @keyframes lpFloat {
+            0%,100% { opacity: 0.3; transform: translateY(0) scale(1); }
+            50%     { opacity: 0.9; transform: translateY(-8px) scale(1.3); }
+        }
+
+        .loading-brand {
+            font-size: 1.9rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-top: 22px;
+            background: linear-gradient(135deg, #c4b5fd, #ffffff, #a5b4fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: none;
+            animation: brandPulse 3s ease-in-out infinite;
+        }
+        @keyframes brandPulse {
+            0%,100% { filter: drop-shadow(0 0 8px rgba(140,100,255,0.4)); }
+            50%     { filter: drop-shadow(0 0 20px rgba(160,120,255,0.8)); }
+        }
+
+        .loading-text {
+            font-size: 0.78rem;
+            font-weight: 500;
+            margin-top: 8px;
+            opacity: 0;
+            color: rgba(200,180,255,0.85);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            animation: fadeInOut 1.6s ease-in-out infinite;
+        }
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.4; }
+            50%       { opacity: 0.9; }
+        }
+
+        .loading-dots {
+            display: inline-block;
+            width: 20px;
+            text-align: left;
+        }
+        .loading-dots::after {
+            content: '.';
+            animation: dots 1.5s steps(1) infinite;
+        }
+        @keyframes dots {
+            0%   { content: '.';   }
+            33%  { content: '..';  }
+            66%  { content: '...'; }
+            100% { content: '.';   }
+        }
+
+        .loading-bar-wrap {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+        }
+        .loading-bar {
+            height: 3px;
+            background: rgba(120,80,255,0.2);
+            border-radius: 3px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(120,80,255,0.3);
+        }
+        .loading-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #7c3aed, #a78bfa, #7c3aed);
+            background-size: 200% 100%;
+            border-radius: 3px;
+            animation: loadFill 1.8s ease-in-out infinite;
+        }
+        @keyframes loadFill {
+            0%   { width: 0%;    opacity: 1; background-position: 0% 50%; }
+            70%  { width: 100%;  opacity: 1; background-position: 100% 50%; }
+            100% { width: 100%;  opacity: 0; }
+        }
 
         /* RESPONSIVE */
         @media(max-width:600px){
@@ -152,11 +356,23 @@
 <body>
 
 <div id="loading-screen">
-    <div>
-        <div class="loading-spinner"></div>
-        <div class="loading-text">Loading Orders...</div>
+        <div class="loading-content">
+            <div class="loading-rocket-wrap">
+                <div class="loading-particles">
+                <div class="lp lp1"></div><div class="lp lp2"></div>
+                <div class="lp lp3"></div><div class="lp lp4"></div>
+                <div class="lp lp5"></div>
+            </div>
+            <span class="loading-rocket">🚀</span>
+            <span class="loading-flame"></span>
+        </div>
+            <div class="loading-brand">WebBuilder</div>
+            <div class="loading-text" id="loading-text">Loading Orders<span class="loading-dots"></span></div>
+        </div>
+        <div class="loading-bar-wrap">
+            <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+        </div>
     </div>
-</div>
 
 <!-- Language -->
 <div class="language-selector-fixed" id="languageSelector">
@@ -256,6 +472,12 @@ const T = {
         "orders.statusPending":"În așteptare","orders.statusAccepted":"Acceptată",
         "orders.statusInProgress":"În lucru","orders.statusPaid":"Plătită",
         "orders.statusCompleted":"Finalizată","orders.statusDeclined":"Refuzată",
+        "orders.deleteOrder":"Șterge Comanda",
+        "orders.deleteConfirmTitle":"Șterge comanda?",
+        "orders.deleteConfirmMsg":"Ești sigur că vrei să ștergi această comandă? Acțiunea nu poate fi anulată.",
+        "orders.deleteConfirmBtn":"Da, șterge",
+        "orders.deleteCancelBtn":"Anulează",
+        "orders.deleteSuccess":"Comanda a fost ștearsă.",
         "footer.rights":"Toate drepturile rezervate."
     },
     en: {
@@ -278,6 +500,12 @@ const T = {
         "orders.statusPending":"Pending","orders.statusAccepted":"Accepted",
         "orders.statusInProgress":"In Progress","orders.statusPaid":"Paid",
         "orders.statusCompleted":"Completed","orders.statusDeclined":"Declined",
+        "orders.deleteOrder":"Delete Order",
+        "orders.deleteConfirmTitle":"Delete this order?",
+        "orders.deleteConfirmMsg":"Are you sure you want to delete this order? This action cannot be undone.",
+        "orders.deleteConfirmBtn":"Yes, delete",
+        "orders.deleteCancelBtn":"Cancel",
+        "orders.deleteSuccess":"Order deleted successfully.",
         "footer.rights":"All rights reserved."
     },
     ru: {
@@ -300,6 +528,12 @@ const T = {
         "orders.statusPending":"Ожидает","orders.statusAccepted":"Принят",
         "orders.statusInProgress":"В работе","orders.statusPaid":"Оплачен",
         "orders.statusCompleted":"Завершён","orders.statusDeclined":"Отклонён",
+        "orders.deleteOrder":"Удалить заказ",
+        "orders.deleteConfirmTitle":"Удалить этот заказ?",
+        "orders.deleteConfirmMsg":"Вы уверены, что хотите удалить этот заказ? Действие нельзя отменить.",
+        "orders.deleteConfirmBtn":"Да, удалить",
+        "orders.deleteCancelBtn":"Отмена",
+        "orders.deleteSuccess":"Заказ успешно удалён.",
         "footer.rights":"Все права защищены."
     }
 };
@@ -543,17 +777,61 @@ function buildOrderCard(o) {
             <a href="payment.html" class="btn-view" onclick="loadOrderForPayment('${o.order_id || ''}')">
                 <i class="fas fa-arrow-right"></i> ${t('orders.viewDetails')}
             </a>
+            ${status === 'pending' ? `<button class="btn-delete" onclick="confirmDeleteOrder('${o.order_id || o.id || ''}', '${o.id || ''}')"><i class="fas fa-trash-alt"></i> ${t('orders.deleteOrder')}</button>` : ''}
         </div>
     </div>`;
 }
 
 function loadOrderForPayment(orderId) {
     if (!orderId) return;
-    // Find order in allOrders and store it so payment.html can pick it up
     const order = allOrders.find(o => o.order_id === orderId);
-    if (order) {
-        localStorage.setItem('webOrderData', JSON.stringify(order));
+    if (order) { localStorage.setItem('webOrderData', JSON.stringify(order)); }
+}
+
+function confirmDeleteOrder(orderId, firestoreId) {
+    const existing = document.getElementById('delete-confirm-modal');
+    if (existing) existing.remove();
+    const modal = document.createElement('div');
+    modal.id = 'delete-confirm-modal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,.6);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+    modal.innerHTML = `
+        <div style="background:white;border-radius:20px;max-width:380px;width:100%;padding:28px 24px;box-shadow:0 30px 80px rgba(0,0,0,.25);text-align:center;">
+            <div style="width:56px;height:56px;background:rgba(239,68,68,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                <i class="fas fa-trash-alt" style="color:#ef4444;font-size:1.4rem;"></i>
+            </div>
+            <h3 style="font-size:1.1rem;font-weight:800;color:#1e293b;margin-bottom:8px;">${t('orders.deleteConfirmTitle')}</h3>
+            <p style="font-size:.85rem;color:#64748b;margin-bottom:22px;line-height:1.5;">${t('orders.deleteConfirmMsg')}</p>
+            <div style="display:flex;gap:10px;">
+                <button onclick="document.getElementById('delete-confirm-modal').remove()" style="flex:1;padding:11px;border-radius:10px;border:2px solid #e2e8f0;background:white;font-weight:700;font-size:.88rem;cursor:pointer;color:#64748b;font-family:inherit;">${t('orders.deleteCancelBtn')}</button>
+                <button onclick="executeDeleteOrder('${orderId}','${firestoreId}')" style="flex:1;padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,#ef4444,#dc2626);color:white;font-weight:700;font-size:.88rem;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(239,68,68,.35);">${t('orders.deleteConfirmBtn')}</button>
+            </div>
+        </div>`;
+    modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+    document.body.appendChild(modal);
+}
+
+async function executeDeleteOrder(orderId, firestoreId) {
+    document.getElementById('delete-confirm-modal')?.remove();
+    if (_db && firestoreId) {
+        try { await _db.collection('orders').doc(firestoreId).delete(); } catch(e) {}
     }
+    if (_db && orderId) {
+        try {
+            const snap = await _db.collection('orders').where('order_id', '==', orderId).get();
+            snap.forEach(doc => doc.ref.delete());
+        } catch(e) {}
+    }
+    try {
+        const all = JSON.parse(localStorage.getItem('allOrders') || '[]');
+        localStorage.setItem('allOrders', JSON.stringify(all.filter(o => o.order_id !== orderId && o.id !== firestoreId)));
+    } catch(e) {}
+    allOrders = allOrders.filter(o => o.order_id !== orderId && o.id !== firestoreId);
+    renderOrders(allOrders);
+    const toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:12px 22px;border-radius:12px;font-size:.85rem;font-weight:600;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.25);display:flex;align-items:center;gap:8px;';
+    toast.innerHTML = `<i class="fas fa-check-circle" style="color:#10b981"></i> ${t('orders.deleteSuccess')}`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
 }
 
 // ═══════════════════════════════════════
