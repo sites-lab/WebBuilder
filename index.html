@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html>
 <html lang="ro">
 <head>
@@ -15,71 +12,176 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Loading Screen - IMPROVED */
+        /* ── Loading Screen ── */
         #loading-screen {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            top: -10px; left: -10px;
+            width: calc(100% + 20px); height: calc(100% + 20px);
+            min-height: 100dvh;
+            background: radial-gradient(ellipse at 20% 30%, #0d1b4b 0%, #060c1f 40%, #000005 100%);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease;
+            z-index: 2147483647;
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            will-change: opacity;
+        }
+
+        /* Deep cosmos nebula layers */
+        #loading-screen::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(ellipse 60% 40% at 15% 25%, rgba(60,0,120,0.35) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 35% at 80% 70%, rgba(0,40,120,0.3) 0%, transparent 70%),
+                radial-gradient(ellipse 30% 50% at 55% 10%, rgba(80,20,160,0.2) 0%, transparent 70%),
+                radial-gradient(1.5px 1.5px at  5%  8%, rgba(255,255,255,0.95) 0%, transparent 100%),
+                radial-gradient(1px   1px   at 12% 22%, rgba(255,255,255,0.8)  0%, transparent 100%),
+                radial-gradient(2px   2px   at 18% 65%, rgba(255,255,255,0.9)  0%, transparent 100%),
+                radial-gradient(1px   1px   at 25% 40%, rgba(200,210,255,0.7)  0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 32%  5%, rgba(255,255,255,0.85) 0%, transparent 100%),
+                radial-gradient(1px   1px   at 40% 78%, rgba(255,255,255,0.7)  0%, transparent 100%),
+                radial-gradient(2px   2px   at 47% 30%, rgba(180,200,255,0.9)  0%, transparent 100%),
+                radial-gradient(1px   1px   at 55% 55%, rgba(255,255,255,0.75) 0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 62% 18%, rgba(255,255,255,0.88) 0%, transparent 100%),
+                radial-gradient(1px   1px   at 70% 88%, rgba(255,255,255,0.7)  0%, transparent 100%),
+                radial-gradient(2px   2px   at 75% 45%, rgba(200,220,255,0.85) 0%, transparent 100%),
+                radial-gradient(1px   1px   at 82% 12%, rgba(255,255,255,0.8)  0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 88% 60%, rgba(255,255,255,0.9)  0%, transparent 100%),
+                radial-gradient(1px   1px   at 93% 35%, rgba(255,255,255,0.7)  0%, transparent 100%),
+                radial-gradient(1px   1px   at 97% 80%, rgba(255,255,255,0.85) 0%, transparent 100%),
+                radial-gradient(1px   1px   at  8% 50%, rgba(255,255,255,0.6)  0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 36% 92%, rgba(255,255,255,0.75) 0%, transparent 100%),
+                radial-gradient(1px   1px   at 64% 70%, rgba(200,210,255,0.65) 0%, transparent 100%),
+                radial-gradient(2px   2px   at 52% 15%, rgba(255,255,255,0.8)  0%, transparent 100%),
+                radial-gradient(1px   1px   at 22% 85%, rgba(255,255,255,0.7)  0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 78% 28%, rgba(180,200,255,0.88) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        /* Shooting star streak */
+        #loading-screen::after {
+            content: '';
+            position: absolute;
+            top: 18%;
+            left: -10%;
+            width: 200px;
+            height: 1.5px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
+            transform: rotate(-20deg);
+            animation: shootingStar 4s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes shootingStar {
+            0%   { left: -20%; opacity: 0; }
+            10%  { opacity: 1; }
+            80%  { opacity: 1; }
+            100% { left: 110%; opacity: 0; }
         }
 
         .loading-content {
             text-align: center;
             color: white;
-        }
-
-        .loading-spinner {
-            width: 80px;
-            height: 80px;
-            border: 6px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1.2s ease-in-out infinite;
-            margin: 0 auto 30px;
             position: relative;
+            z-index: 1;
         }
 
-        .loading-spinner::after {
-            content: '';
+        /* Cosmos SVG rocket on loading screen */
+        .loading-rocket-wrap {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .loading-rocket {
+            font-size: 5.5rem;
+            display: block;
+            margin: 0 auto 0;
+            transform: rotate(-45deg);
+            animation: launchRocket 2.2s ease-in-out infinite;
+            filter: drop-shadow(0 0 18px rgba(120,80,255,0.9)) drop-shadow(0 0 40px rgba(80,40,200,0.5));
+        }
+
+        @keyframes launchRocket {
+            0%   { transform: translateY(8px)  rotate(-45deg) scale(0.93); filter: drop-shadow(0 0 10px rgba(100,60,220,0.6)); }
+            35%  { transform: translateY(-22px) rotate(-45deg) scale(1.08);  filter: drop-shadow(0 0 28px rgba(140,100,255,1)) drop-shadow(0 0 55px rgba(80,40,200,0.7)); }
+            55%  { transform: translateY(-28px) rotate(-45deg) scale(1.12); filter: drop-shadow(0 0 36px rgba(160,120,255,1)) drop-shadow(0 0 70px rgba(100,60,220,0.8)); }
+            100% { transform: translateY(8px)  rotate(-45deg) scale(0.93); filter: drop-shadow(0 0 10px rgba(100,60,220,0.6)); }
+        }
+
+        /* Cosmic flame trail — purple/blue hues */
+        .loading-flame {
+            display: block;
+            margin: 0 auto;
+            width: 7px;
+            height: 32px;
+            border-radius: 0 0 8px 8px;
+            background: linear-gradient(to bottom, rgba(160,100,255,0.95), rgba(80,40,200,0.5), rgba(30,0,80,0.1), transparent);
+            filter: blur(4px);
+            animation: flamePulse 0.38s ease-in-out infinite alternate;
+            transform: rotate(45deg);
+            margin-top: -10px;
+        }
+
+        @keyframes flamePulse {
+            from { transform: rotate(45deg) scaleY(0.75) scaleX(0.85); opacity: 0.65; }
+            to   { transform: rotate(45deg) scaleY(1.25) scaleX(1.15); opacity: 1.0; }
+        }
+
+        /* Particle stars that orbit the rocket */
+        .loading-particles {
             position: absolute;
-            top: -6px;
-            left: -6px;
-            right: -6px;
-            bottom: -6px;
-            border: 6px solid transparent;
-            border-radius: 50%;
-            border-top-color: rgba(255, 255, 255, 0.5);
-            animation: spin 1.5s linear infinite;
+            inset: -60px;
+            pointer-events: none;
+        }
+        .lp { position: absolute; border-radius: 50%; background: white; }
+        .lp1 { width:2px; height:2px; top:20%; left:5%;   animation: lpFloat 3.2s ease-in-out infinite; }
+        .lp2 { width:1.5px; height:1.5px; top:60%; left:8%;  animation: lpFloat 2.8s ease-in-out 0.5s infinite; }
+        .lp3 { width:2px; height:2px; top:10%; right:10%; animation: lpFloat 3.6s ease-in-out 1s infinite; }
+        .lp4 { width:3px; height:3px; top:75%; right:5%;  animation: lpFloat 2.4s ease-in-out 0.3s infinite; background: rgba(180,140,255,0.9); }
+        .lp5 { width:1.5px; height:1.5px; top:40%; right:3%; animation: lpFloat 3.9s ease-in-out 1.8s infinite; }
+        @keyframes lpFloat {
+            0%,100% { opacity: 0.3; transform: translateY(0) scale(1); }
+            50%     { opacity: 0.9; transform: translateY(-8px) scale(1.3); }
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .loading-text {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-top: 25px;
-            opacity: 0;
-            animation: fadeInOut 1.5s infinite;
-            background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%);
+        /* Brand name */
+        .loading-brand {
+            font-size: 1.9rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-top: 22px;
+            background: linear-gradient(135deg, #c4b5fd, #ffffff, #a5b4fc);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            letter-spacing: 1px;
+            text-shadow: none;
+            animation: brandPulse 3s ease-in-out infinite;
+        }
+        @keyframes brandPulse {
+            0%,100% { filter: drop-shadow(0 0 8px rgba(140,100,255,0.4)); }
+            50%     { filter: drop-shadow(0 0 20px rgba(160,120,255,0.8)); }
+        }
+
+        .loading-text {
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-top: 8px;
+            opacity: 0;
+            color: rgba(200,180,255,0.85);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-size: 0.78rem;
+            animation: fadeInOut 1.6s ease-in-out infinite;
         }
 
         @keyframes fadeInOut {
-            0%, 100% { opacity: 0.6; transform: translateY(0); }
-            50% { opacity: 1; transform: translateY(-5px); }
+            0%, 100% { opacity: 0.4; }
+            50%       { opacity: 0.9; }
         }
 
         .loading-dots {
@@ -87,16 +189,43 @@
             width: 20px;
             text-align: left;
         }
-
         .loading-dots::after {
-            content: '...';
-            animation: dots 1.5s infinite;
+            content: '.';
+            animation: dots 1.5s steps(1) infinite;
+        }
+        @keyframes dots {
+            0%   { content: '.';   }
+            33%  { content: '..';  }
+            66%  { content: '...'; }
+            100% { content: '.';   }
         }
 
-        @keyframes dots {
-            0%, 20% { content: '.'; }
-            40% { content: '..'; }
-            60%, 100% { content: '...'; }
+        /* Progress bar at bottom */
+        .loading-bar-wrap {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+        }
+        .loading-bar {
+            height: 3px;
+            background: rgba(120,80,255,0.2);
+            border-radius: 3px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(120,80,255,0.3);
+        }
+        .loading-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #7c3aed, #a78bfa, #7c3aed);
+            background-size: 200% 100%;
+            border-radius: 3px;
+            animation: loadFill 1.8s ease-in-out infinite;
+        }
+        @keyframes loadFill {
+            0%   { width: 0%;    opacity: 1; background-position: 0% 50%; }
+            70%  { width: 100%;  opacity: 1; background-position: 100% 50%; }
+            100% { width: 100%;  opacity: 0; }
         }
 
         /* Variabile CSS pentru culori și stiluri */
@@ -131,6 +260,7 @@
         html {
             scroll-behavior: smooth;
             overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
         }
 
         body {
@@ -144,6 +274,8 @@
             position: relative;
             opacity: 1;
             transition: opacity 0.5s ease;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: none;
         }
 
         .container {
@@ -343,9 +475,18 @@
 
         /* Header cu efect de baloane */
         header {
-            background: var(--gradient-primary);
+            background: linear-gradient(170deg,
+                #010309 0%,
+                #040818 12%,
+                #060c28 25%,
+                #080f3a 40%,
+                #0b1455 55%,
+                #0f1d7a 70%,
+                #1a2fa0 83%,
+                #2d52c4 92%,
+                #6d3ae8 100%);
             color: white;
-            padding: 140px 0 120px;
+            padding: 160px 0 130px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -354,73 +495,123 @@
             align-items: center;
         }
 
-        .balloon {
+        /* ── Animated background rockets ── */
+        /* ───────────────────────────────────────────────────────────────────────
+           GHOST ROCKETS — SVG nose points in travel direction, dark-purple tint
+        ─────────────────────────────────────────────────────────────────────── */
+
+        /* ── Twinkling stars in hero upper area ── */
+        .hero-stars {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .star {
             position: absolute;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            animation: enhancedFloat 20s ease-in-out infinite;
-            z-index: 1;
-            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+            background: rgba(255,255,255,1);
+            animation: starTwinkle ease-in-out infinite;
         }
-
-        @keyframes enhancedFloat {
-            0%, 100% { 
-                transform: translateY(0) rotate(0deg) scale(1);
-            }
-            33% { 
-                transform: translateY(-40px) rotate(3deg) scale(1.02);
-            }
-            66% { 
-                transform: translateY(-20px) rotate(-2deg) scale(0.98);
-            }
+        @keyframes starTwinkle {
+            0%,100% { opacity: var(--sop, .15); transform: scale(1);   }
+            50%     { opacity: var(--sbright, .8); transform: scale(1.4); }
         }
+        /* 48 stars: covering full hero area densely */
+        .s1  { width:2px;   height:2px;   top: 4%;  left: 8%;   --sop:.1;  --sbright:.7; animation-duration:2.8s; animation-delay:0s;    }
+        .s2  { width:1.5px; height:1.5px; top: 7%;  left: 20%;  --sop:.15; --sbright:.9; animation-duration:3.4s; animation-delay:.6s;   }
+        .s3  { width:3px;   height:3px;   top: 3%;  left: 35%;  --sop:.2;  --sbright:.95;animation-duration:2.1s; animation-delay:1.2s;  }
+        .s4  { width:1.5px; height:1.5px; top: 9%;  left: 52%;  --sop:.12; --sbright:.75;animation-duration:3.8s; animation-delay:.3s;   }
+        .s5  { width:2px;   height:2px;   top: 5%;  left: 66%;  --sop:.18; --sbright:.85;animation-duration:2.5s; animation-delay:1.8s;  }
+        .s6  { width:2.5px; height:2.5px; top: 2%;  left: 80%;  --sop:.1;  --sbright:.8; animation-duration:4.1s; animation-delay:.9s;   }
+        .s7  { width:1.5px; height:1.5px; top: 8%;  left: 91%;  --sop:.15; --sbright:.9; animation-duration:3.2s; animation-delay:2.1s;  }
+        .s8  { width:2px;   height:2px;   top:16%;  left: 5%;   --sop:.2;  --sbright:.8; animation-duration:2.9s; animation-delay:.4s;   }
+        .s9  { width:1.5px; height:1.5px; top:13%;  left:14%;   --sop:.1;  --sbright:.7; animation-duration:3.7s; animation-delay:1.5s;  }
+        .s10 { width:3px;   height:3px;   top:18%;  left:28%;   --sop:.22; --sbright:1;  animation-duration:2.3s; animation-delay:0.7s;  }
+        .s11 { width:1.5px; height:1.5px; top:11%;  left:44%;   --sop:.12; --sbright:.75;animation-duration:4.2s; animation-delay:2.4s;  }
+        .s12 { width:2px;   height:2px;   top:20%;  left:59%;   --sop:.18; --sbright:.88;animation-duration:3.1s; animation-delay:.2s;   }
+        .s13 { width:2.5px; height:2.5px; top:15%;  left:74%;   --sop:.14; --sbright:.82;animation-duration:2.7s; animation-delay:1.1s;  }
+        .s14 { width:1.5px; height:1.5px; top:22%;  left:88%;   --sop:.1;  --sbright:.72;animation-duration:3.9s; animation-delay:3.1s;  }
+        .s15 { width:2px;   height:2px;   top:26%;  left: 3%;   --sop:.2;  --sbright:.9; animation-duration:2.6s; animation-delay:1.7s;  }
+        .s16 { width:1.5px; height:1.5px; top:30%;  left:17%;   --sop:.12; --sbright:.7; animation-duration:4.4s; animation-delay:0.5s;  }
+        .s17 { width:3px;   height:3px;   top:28%;  left:38%;   --sop:.25; --sbright:1;  animation-duration:2.2s; animation-delay:2.8s;  }
+        .s18 { width:1.5px; height:1.5px; top:32%;  left:55%;   --sop:.1;  --sbright:.65;animation-duration:3.6s; animation-delay:1.3s;  }
+        .s19 { width:2px;   height:2px;   top:25%;  left:70%;   --sop:.16; --sbright:.78;animation-duration:3.0s; animation-delay:.8s;   }
+        .s20 { width:2.5px; height:2.5px; top:35%;  left:83%;   --sop:.2;  --sbright:.92;animation-duration:2.4s; animation-delay:2.2s;  }
+        .s21 { width:1.5px; height:1.5px; top:42%;  left:11%;   --sop:.08; --sbright:.55;animation-duration:4.8s; animation-delay:3.5s;  }
+        .s22 { width:2px;   height:2px;   top:38%;  left:46%;   --sop:.12; --sbright:.7; animation-duration:3.3s; animation-delay:1.9s;  }
+        .s23 { width:1.5px; height:1.5px; top:45%;  left:62%;   --sop:.08; --sbright:.6; animation-duration:4.6s; animation-delay:0.1s;  }
+        .s24 { width:2px;   height:2px;   top:40%;  left:93%;   --sop:.15; --sbright:.8; animation-duration:2.9s; animation-delay:2.6s;  }
+        /* Extra 24 stars - lower half and more density */
+        .s25 { width:1.5px; height:1.5px; top:50%;  left: 6%;   --sop:.1;  --sbright:.65;animation-duration:3.5s; animation-delay:1.0s;  }
+        .s26 { width:2px;   height:2px;   top:55%;  left:22%;   --sop:.14; --sbright:.78;animation-duration:2.7s; animation-delay:0.3s;  }
+        .s27 { width:2.5px; height:2.5px; top:48%;  left:33%;   --sop:.18; --sbright:.9; animation-duration:3.9s; animation-delay:2.0s;  }
+        .s28 { width:1.5px; height:1.5px; top:60%;  left:48%;   --sop:.1;  --sbright:.7; animation-duration:4.1s; animation-delay:1.4s;  }
+        .s29 { width:3px;   height:3px;   top:52%;  left:63%;   --sop:.22; --sbright:.95;animation-duration:2.4s; animation-delay:0.8s;  }
+        .s30 { width:1.5px; height:1.5px; top:65%;  left:77%;   --sop:.12; --sbright:.72;animation-duration:3.2s; animation-delay:2.6s;  }
+        .s31 { width:2px;   height:2px;   top:58%;  left:89%;   --sop:.16; --sbright:.82;animation-duration:2.9s; animation-delay:0.5s;  }
+        .s32 { width:1.5px; height:1.5px; top:70%;  left:15%;   --sop:.08; --sbright:.6; animation-duration:4.5s; animation-delay:3.2s;  }
+        .s33 { width:2px;   height:2px;   top:75%;  left:30%;   --sop:.15; --sbright:.8; animation-duration:3.0s; animation-delay:1.8s;  }
+        .s34 { width:2.5px; height:2.5px; top:68%;  left:52%;   --sop:.2;  --sbright:.9; animation-duration:2.6s; animation-delay:0.2s;  }
+        .s35 { width:1.5px; height:1.5px; top:80%;  left:68%;   --sop:.1;  --sbright:.65;animation-duration:3.7s; animation-delay:2.3s;  }
+        .s36 { width:2px;   height:2px;   top:72%;  left:85%;   --sop:.18; --sbright:.85;animation-duration:2.2s; animation-delay:1.1s;  }
+        .s37 { width:1.5px; height:1.5px; top:85%;  left: 2%;   --sop:.12; --sbright:.75;animation-duration:4.3s; animation-delay:0.7s;  }
+        .s38 { width:3px;   height:3px;   top:88%;  left:25%;   --sop:.22; --sbright:1;  animation-duration:2.8s; animation-delay:1.5s;  }
+        .s39 { width:1.5px; height:1.5px; top:82%;  left:42%;   --sop:.1;  --sbright:.7; animation-duration:3.4s; animation-delay:2.9s;  }
+        .s40 { width:2px;   height:2px;   top:90%;  left:58%;   --sop:.16; --sbright:.8; animation-duration:2.5s; animation-delay:0.4s;  }
+        .s41 { width:2.5px; height:2.5px; top:86%;  left:73%;   --sop:.2;  --sbright:.92;animation-duration:3.1s; animation-delay:1.9s;  }
+        .s42 { width:1.5px; height:1.5px; top:93%;  left:90%;   --sop:.12; --sbright:.72;animation-duration:4.0s; animation-delay:3.4s;  }
+        .s43 { width:2px;   height:2px;   top: 1%;  left: 1%;   --sop:.18; --sbright:.88;animation-duration:2.3s; animation-delay:0.6s;  }
+        .s44 { width:1.5px; height:1.5px; top:95%;  left:12%;   --sop:.1;  --sbright:.65;animation-duration:3.6s; animation-delay:2.1s;  }
+        .s45 { width:2px;   height:2px;   top:96%;  left:36%;   --sop:.14; --sbright:.78;animation-duration:2.7s; animation-delay:1.3s;  }
+        .s46 { width:2.5px; height:2.5px; top:97%;  left:55%;   --sop:.2;  --sbright:.95;animation-duration:3.8s; animation-delay:0.9s;  }
+        .s47 { width:1.5px; height:1.5px; top:98%;  left:78%;   --sop:.1;  --sbright:.7; animation-duration:4.2s; animation-delay:2.5s;  }
+        .s48 { width:2px;   height:2px;   top: 6%;  left:97%;   --sop:.16; --sbright:.82;animation-duration:3.0s; animation-delay:0.1s;  }
 
-        .balloon::after {
-            content: '';
+        /* ── Ghost rocket containers ── */
+        .bg-rocket {
             position: absolute;
-            bottom: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 2px;
-            height: 30px;
-            background: rgba(255, 255, 255, 0.3);
+            z-index: 2;
+            pointer-events: none;
+            user-select: none;
+            opacity: 0;
+            transform: rotate(45deg);
+            transform-origin: 50% 50%;
+            animation: ghostFly linear infinite;
         }
 
-        .balloon-1 {
-            width: 120px;
-            height: 140px;
-            top: 10%;
-            left: 5%;
-            animation-delay: 0s;
-            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+        /* Glow pulse on the SVG */
+        @keyframes glowBreath {
+            0%,100% { filter: drop-shadow(0 0 4px rgba(200,180,255,.3)) drop-shadow(0 0 10px rgba(160,140,255,.15)); }
+            50%     { filter: drop-shadow(0 0 9px rgba(220,200,255,.65)) drop-shadow(0 0 22px rgba(180,160,255,.35)); }
         }
+        .bg-rocket svg { animation: glowBreath 3.8s ease-in-out infinite; }
 
-        .balloon-2 {
-            width: 80px;
-            height: 100px;
-            top: 20%;
-            right: 10%;
-            animation-delay: 2s;
-            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+        /* Flame flicker */
+        @keyframes flameBob {
+            0%,100% { transform: scale(.88,.82) translate(0,1px); opacity:.55; }
+            50%     { transform: scale(1.05,1.12) translate(0,-1px); opacity:1; }
         }
+        .bg-rocket .r-flame { animation: flameBob .45s ease-in-out infinite; transform-origin: 50% 0; }
 
-        .balloon-3 {
-            width: 100px;
-            height: 120px;
-            bottom: 15%;
-            left: 15%;
-            animation-delay: 4s;
-            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.25), rgba(255,255,255,0.08));
+        /* Rockets face upper-right (+45deg), spawn from random positions across the whole hero */
+        @keyframes ghostFly {
+            0%   { opacity: 0;            transform: rotate(45deg) translate(0,0);                              }
+            6%   { opacity: var(--op,.45); }
+            84%  { opacity: var(--op,.4);  }
+            100% { opacity: 0;            transform: rotate(45deg) translate(var(--tx,240px),var(--ty,-540px)); }
         }
+        /* Spawning from various positions across the entire hero - not just bottom-right */
+        .bg-rocket-1 { bottom:  5%; right:  2%; width:52px; --op:.5;  --tx:260px; --ty:-580px; animation-duration:10s;  animation-delay:0s;   }
+        .bg-rocket-2 { bottom: 50%; left:  5%;  width:34px; --op:.38; --tx:190px; --ty:-490px; animation-duration:13s;  animation-delay:3.5s; }
+        .bg-rocket-3 { top:  60%;   left: 20%;  width:46px; --op:.45; --tx:235px; --ty:-545px; animation-duration:11s;  animation-delay:7s;   }
+        .bg-rocket-4 { bottom: 20%; left: 15%;  width:30px; --op:.32; --tx:152px; --ty:-430px; animation-duration:15s;  animation-delay:1.8s; }
+        .bg-rocket-5 { top:  30%;   right: 10%; width:48px; --op:.48; --tx:182px; --ty:-510px; animation-duration:9s;   animation-delay:5.5s; }
+        .bg-rocket-6 { bottom: 70%; right: 30%; width:40px; --op:.35; --tx:220px; --ty:-470px; animation-duration:12s;  animation-delay:2.2s; }
+        .bg-rocket-7 { top:  10%;   left: 45%;  width:44px; --op:.42; --tx:245px; --ty:-520px; animation-duration:14s;  animation-delay:8.5s; }
 
-        .balloon-4 {
-            width: 70px;
-            height: 90px;
-            bottom: 25%;
-            right: 5%;
-            animation-delay: 6s;
-            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
-        }
+        @media (max-width:768px) { .bg-rocket-4, .bg-rocket-6, .bg-rocket-7 { display:none; } }
 
         .header-content {
             position: relative;
@@ -538,13 +729,9 @@
             flex-wrap: nowrap;
             min-height: 0;
         }
-        /* Russian language: shrink logo + nav text so bar stays compact */
-        [lang="ru"] .logo,
-        html[lang="ru"] .logo { font-size: 1.5rem !important; }
+        /* Russian language: shrink nav links only, never touch logo or nav height */
         [lang="ru"] .nav-links a,
-        html[lang="ru"] .nav-links a { font-size: 0.82rem !important; }
-        [lang="ru"] .nav-container,
-        html[lang="ru"] .nav-container { padding: 14px 20px !important; }
+        html[lang="ru"] .nav-links a { font-size: 0.78rem !important; letter-spacing: -0.2px; }
 
         .logo {
             font-size: 1.8rem;
@@ -840,6 +1027,7 @@
             will-change: transform;
             padding: 80px 20px 30px;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             box-shadow: -5px 0 30px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
@@ -1158,170 +1346,215 @@
             gap: 30px;
         }
 
+        /* ===== REDESIGNED PACKAGE CARDS ===== */
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            align-items: stretch;
+        }
+
         .package-card {
-            background-color: var(--white);
-            border-radius: 24px;
+            background: #ffffff;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: var(--shadow-lg);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
             display: flex;
             flex-direction: column;
             height: 100%;
-            border: 1px solid transparent;
-            transform-style: preserve-3d;
+            position: relative;
+            border: 1.5px solid #e8eaf0;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.06);
         }
 
         .package-card:hover {
-            transform: translateY(-10px) scale(1.03) rotateY(5deg);
-            box-shadow: var(--shadow-float);
-            border-color: rgba(59, 130, 246, 0.2);
+            transform: translateY(-12px);
+            box-shadow: 0 28px 60px rgba(59,130,246,0.16);
+            border-color: rgba(59,130,246,0.35);
         }
 
+        /* Colored top accent bar */
         .package-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 6px;
-            background: var(--gradient-primary);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 2;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            border-radius: 20px 20px 0 0;
+            z-index: 3;
         }
+        .package-card.basic::before  { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+        .package-card.standard::before { background: linear-gradient(90deg, #6366f1, #8b5cf6); }
+        .package-card.premium::before { background: linear-gradient(90deg, #7c3aed, #a855f7); }
 
-        .package-card:hover::before {
-            transform: scaleX(1);
-        }
-
+        /* PACKAGE HEADER - clean, no gradient bg */
         .package-header {
-            padding: 35px 28px;
+            padding: 36px 28px 24px;
             text-align: center;
-            color: white;
             position: relative;
-            overflow: hidden;
+            border-bottom: 1px solid #f1f3f9;
         }
 
+        /* Icon badge per tier */
         .package-header::after {
             content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
+            display: none;
         }
 
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .package-tier-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            font-size: 1.4rem;
+            margin-bottom: 14px;
+        }
+        .basic .package-tier-icon  { background: #eff6ff; color: #3b82f6; }
+        .standard .package-tier-icon { background: #ede9fe; color: #6366f1; }
+        .premium .package-tier-icon  { background: #f3e8ff; color: #7c3aed; }
+
+        .package-header h3 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+            letter-spacing: -0.3px;
         }
 
-        .basic .package-header {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-        }
-
-        .standard .package-header {
-            background: var(--gradient-primary);
-        }
-
-        .premium .package-header {
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        .package-header > p:first-of-type {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 18px;
+            font-weight: 400;
         }
 
         .package-price-container {
-            margin: 15px 0;
-            position: relative;
-            z-index: 1;
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 8px;
+            margin: 12px 0 8px;
         }
 
         .package-price {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 800;
-            letter-spacing: -1px;
+            color: #0f172a;
+            letter-spacing: -2px;
+            line-height: 1;
         }
 
         .package-old-price {
-            font-size: 1.4rem;
+            font-size: 1.1rem;
             text-decoration: line-through;
-            opacity: 0.7;
-            margin-right: 12px;
+            color: #94a3b8;
             font-weight: 500;
         }
 
         .discount-badge {
             display: inline-block;
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white;
-            padding: 8px 16px;
+            padding: 4px 12px;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.72rem;
             font-weight: 700;
+            letter-spacing: 0.4px;
+            margin-top: 6px;
+        }
+        .basic .discount-badge    { background: #dbeafe; color: #2563eb; }
+        .standard .discount-badge { background: #ede9fe; color: #5b21b6; }
+        .premium .discount-badge  { background: #f3e8ff; color: #6d28d9; }
+
+        /* Delivery time pill */
+        .package-header > p:last-of-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+            color: #64748b;
+            background: #f8fafc;
+            padding: 5px 12px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
             margin-top: 10px;
-            box-shadow: var(--shadow-md);
-            letter-spacing: 0.5px;
-            animation: bounce 2s infinite;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
+        /* PACKAGE FEATURES */
         .package-features {
-            padding: 35px 28px;
+            padding: 24px 28px 28px;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            position: relative;
-            z-index: 1;
         }
 
         .package-features ul {
             list-style: none;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
             flex-grow: 1;
         }
 
         .package-features li {
-            padding: 12px 0;
-            border-bottom: 1px solid #e5e7eb;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
             display: flex;
             align-items: center;
-            transition: all 0.3s var(--transition-smooth);
+            gap: 10px;
+            font-size: 0.92rem;
+            color: #374151;
+            transition: color 0.2s ease;
         }
 
-        .package-features li:hover {
-            transform: translateX(10px);
-            background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), transparent);
-            padding-left: 15px;
-            color: var(--albastru);
-        }
-
-        .package-features li:last-child {
-            border-bottom: none;
-        }
+        .package-features li:last-child { border-bottom: none; }
 
         .package-features li i {
-            color: #10b981;
-            margin-right: 12px;
-            font-size: 1.1rem;
-            transition: transform 0.3s ease;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            flex-shrink: 0;
         }
+        .basic .package-features li i    { background: #dbeafe; color: #2563eb; }
+        .standard .package-features li i { background: #ede9fe; color: #5b21b6; }
+        .premium .package-features li i  { background: #f3e8ff; color: #6d28d9; }
 
-        .package-features li:hover i {
-            transform: scale(1.2) rotate(5deg);
-        }
-
+        /* CTA Button per tier */
         .package-btn {
             display: block;
             width: 100%;
             text-align: center;
             margin-top: auto;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            letter-spacing: 0.2px;
         }
+        .basic .package-btn {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            box-shadow: 0 4px 14px rgba(59,130,246,0.35);
+        }
+        .standard .package-btn {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+            box-shadow: 0 4px 14px rgba(99,102,241,0.35);
+        }
+        .premium .package-btn {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: white;
+            box-shadow: 0 4px 14px rgba(124,58,237,0.35);
+        }
+        .package-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.08);
+        }
+        /* ===== END REDESIGNED PACKAGE CARDS ===== */
 
         /* Butoane pentru schimbarea pachetelor pe mobile - SIMPLIFIED */
         .package-tabs-mobile {
@@ -2253,8 +2486,62 @@
             }
         }
 
+        /* ── MOBILE PERFORMANCE: disable heavy animations & GPU layers on phones ── */
+        @media (max-width: 768px) {
+            /* Kill particle / floating / pulsing animations that cause jank */
+            .particle, .star, .star-dot, .floating-element,
+            .hero-blob, .hero-glow, .orbit, .orbit-item,
+            .scroll-progress, .loading-screen,
+            [class*="float"], [class*="pulse"], [class*="bounce"],
+            [class*="rotate"], [class*="spin"] {
+                animation: none !important;
+                transition: none !important;
+                will-change: auto !important;
+            }
+
+            /* Simplify card hover effects */
+            .service-card, .package-card, .example-card,
+            .process-step, .faq-item, .stat-item {
+                transition: none !important;
+                transform: none !important;
+                will-change: auto !important;
+                animation: none !important;
+            }
+
+            /* Kill scroll-linked parallax / sticky transforms */
+            [data-parallax], [data-scroll], .parallax {
+                transform: none !important;
+                will-change: auto !important;
+            }
+
+            /* Smooth native scrolling – let the browser do it */
+            html, body {
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior-y: contain;
+                scroll-behavior: auto !important;
+            }
+
+            /* Remove backdrop-filter (expensive on mobile) */
+            nav, .nav-container, .mobile-menu-content {
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+            }
+
+            /* Disable slideInRight animation on mobile nav items */
+            .mobile-nav-links li {
+                opacity: 1 !important;
+                transform: none !important;
+                animation: none !important;
+            }
+        }
+
+        /* Nav logo always visible — mobile menu has its own header */
+
         /* Touch device optimizations */
         @media (hover: none) and (pointer: coarse) {
+            * {
+                -webkit-tap-highlight-color: transparent;
+            }
             .service-card:hover, 
             .package-card:hover,
             .example-card:hover {
@@ -2360,38 +2647,100 @@
                 line-height: 1.6;
             }
             
-            /* Header compact */
-           header {
-    padding: 140px 0 0 100px;
-    min-height: 85vh; /* Sau 90vh pentru mai mult */
-    background: var(--gradient-primary);
-    display: flex;
-    align-items: center;
-}
+            /* ─── Mobile hero: truly static, immune to URL bar resize ─── */
+            header {
+                padding: 0;
+                /* Use fixed pixel height captured at load — never changes */
+                height: var(--hero-h, 100vh) !important;
+                min-height: var(--hero-h, 100vh) !important;
+                max-height: var(--hero-h, 100vh) !important;
+                /* Fixed-width: never responds to scrollbar/URL-bar width changes */
+                width: 100% !important;
+                left: 0;
+                overflow: hidden !important;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                flex-shrink: 0 !important;
+                /* Tell browser: nothing inside affects outside layout */
+                contain: strict !important;
+                /* Prevent any transform/paint during scroll */
+                transform: translateZ(0);
+                -webkit-transform: translateZ(0);
+                backface-visibility: hidden;
+                -webkit-backface-visibility: hidden;
+            }
+
+            .header-content {
+                padding: 0 20px 40px;
+                margin-top: 0;
+                text-align: center;
+                width: 100%;
+                /* Glassmorphism card so cosmos shows through */
+                background: rgba(5, 10, 35, 0.45);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                border-radius: 24px;
+                border: 1px solid rgba(255,255,255,0.08);
+                padding: 32px 24px 36px;
+                margin: 0 16px;
+                max-width: 420px;
+                box-shadow: 0 8px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+            }
+
+            /* Reduce rocket count on mobile */
+            .bg-rocket-4, .bg-rocket-6, .bg-rocket-7 { display: none; }
             
             .header-content h1 {
-                font-size: 10rem;
+                font-size: 2.05rem;
+                letter-spacing: -0.3px;
+                line-height: 1.2;
+                margin-bottom: 1.1rem;
                 animation: titleRevealMobile 1s var(--transition-smooth) 0.2s both;
-                margin-bottom: 1rem;
-                background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.9) 100%);
+                background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.88) 100%);
                 -webkit-background-clip: text;
                 background-clip: text;
                 color: transparent;
             }
+
+            /* Russian title needs a bit more room */
+            [lang="ru"] .header-content h1 {
+                font-size: 1.75rem;
+                letter-spacing: -0.2px;
+                line-height: 1.25;
+            }
             
             .header-content p {
-                font-size: 1.1rem;
-                margin-bottom: 1.5rem;
+                font-size: 1rem;
+                line-height: 1.72;
+                opacity: 0.9;
+                max-width: 340px;
+                margin: 0 auto 2rem;
+                letter-spacing: 0.01em;
+            }
+
+            /* Russian subtitle — longer text, tighter to fit */
+            [lang="ru"] .header-content p {
+                font-size: 0.95rem;
+                line-height: 1.68;
+                max-width: 320px;
             }
             
             .header-buttons {
                 flex-direction: column;
-                align-items: center;
-                gap: 15px;
+                align-items: stretch;
+                gap: 12px;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+
+            .header-buttons .btn {
+                justify-content: center;
+                width: 100%;
             }
             
             .btn-large {
-                padding: 16px 30px;
+                padding: 15px 28px;
                 font-size: 1rem;
                 width: 100%;
                 max-width: 300px;
@@ -2464,43 +2813,82 @@
             .package-tabs-mobile {
                 display: flex;
                 flex-wrap: wrap;
+                gap: 8px;
+                justify-content: center;
+                margin-bottom: 20px;
+            }
+
+            .package-tab {
+                padding: 10px 22px;
+                border-radius: 10px;
+                font-size: 0.88rem;
             }
             
             .packages-mobile {
                 display: block;
             }
             
-            .package-card {
-                margin-bottom: 0;
+            /* Compact white card on mobile */
+            .packages-mobile .package-header {
+                background: #ffffff !important;
+                color: inherit;
+                padding: 20px 20px 14px;
+                border-bottom: 1px solid #f1f3f9;
+            }
+
+            .packages-mobile .package-tier-icon {
+                width: 40px; height: 40px;
+                font-size: 1.1rem;
+                margin-bottom: 10px;
+            }
+
+            .packages-mobile .package-header h3 {
+                color: #0f172a;
+                font-size: 1.15rem;
+                margin-bottom: 2px;
+            }
+
+            .packages-mobile .package-header > p:first-of-type {
+                font-size: 0.82rem;
+                margin-bottom: 10px;
+            }
+
+            .packages-mobile .package-price {
+                font-size: 2.4rem;
+            }
+
+            .packages-mobile .package-old-price {
+                font-size: 1rem;
+            }
+
+            /* Hide delivery line on mobile to save vertical space */
+            .packages-mobile .package-header > p:last-of-type {
+                display: none;
+            }
+
+            .packages-mobile .package-features {
+                padding: 14px 20px 20px;
+            }
+
+            .packages-mobile .package-features ul {
+                margin-bottom: 16px;
             }
             
-            .package-header {
-                padding: 30px 25px;
+            .packages-mobile .package-features li {
+                padding: 7px 0;
+                font-size: 0.85rem;
             }
-            
-            .packages-mobile .basic .package-header {
-                background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+
+            .packages-mobile .package-btn {
+                padding: 12px;
+                font-size: 0.88rem;
             }
-            
-            .packages-mobile .standard .package-header {
-                background: var(--gradient-primary);
-            }
-            
-            .packages-mobile .premium .package-header {
-                background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-            }
-            
-            .package-price {
-                font-size: 2.2rem;
-            }
-            
-            .package-features {
-                padding: 30px 25px;
-            }
-            
-            .package-features li {
-                padding: 10px 0;
-                font-size: 0.95rem;
+
+            /* Full-width single card on mobile, not too tall */
+            .packages-mobile .package-card {
+                max-width: 440px;
+                margin: 0 auto;
+                width: 100%;
             }
             
             /* Example sites compact - FIXED FOR MOBILE */
@@ -2664,17 +3052,20 @@
             }
             
             header {
-                padding: 100px 0 60px;
-                min-height: auto;
-                background: var(--gradient-primary);
+                padding: 0;
+                min-height: 100svh;
+                /* Keep the cosmic gradient — don’t override with the old blue */
             }
             
             .header-content h1 {
-                font-size: 2.2rem;
+                font-size: 1.95rem;
             }
-            
+            .header-content {
+                padding: 26px 18px 30px;
+                margin: 0 12px;
+            }
             .header-content p {
-                font-size: 1rem;
+                font-size: 0.97rem;
             }
             
             .service-card,
@@ -2986,11 +3377,32 @@
 
 </head>
 <body class="preload">
+    <script>
+        // Lock hero to initial viewport height — never update on resize/scroll
+        (function(){
+            var h = window.innerHeight;
+            document.documentElement.style.setProperty('--hero-h', h + 'px');
+            // Block any future resize from changing this value
+            // (URL bar show/hide fires resize events on mobile)
+        })();
+    </script>
     <!-- Loading Screen -->
     <div id="loading-screen">
         <div class="loading-content">
-            <div class="loading-spinner"></div>
-            <div class="loading-text" id="loading-text">Preparing Website<span class="loading-dots"></span></div>
+            <div class="loading-rocket-wrap">
+                <div class="loading-particles">
+                <div class="lp lp1"></div><div class="lp lp2"></div>
+                <div class="lp lp3"></div><div class="lp lp4"></div>
+                <div class="lp lp5"></div>
+            </div>
+            <span class="loading-rocket">🚀</span>
+            <span class="loading-flame"></span>
+        </div>
+            <div class="loading-brand">WebBuilder</div>
+            <div class="loading-text" id="loading-text">Launching<span class="loading-dots"></span></div>
+        </div>
+        <div class="loading-bar-wrap">
+            <div class="loading-bar"><div class="loading-bar-fill"></div></div>
         </div>
     </div>
 
@@ -3012,11 +3424,6 @@
 
     <!-- Enhanced Mobile Menu -->
     <div class="mobile-menu-content" id="mobileMenuContent">
-        <div class="mobile-menu-header">
-            <div class="logo"><i class="fas fa-rocket"></i> WebBuilder</div>
-            <p class="mobile-menu-tagline" data-i18n="mobile.tagline">Professional Web Solutions</p>
-        </div>
-        
         <ul class="mobile-nav-links">
             <li><a href="#home" data-i18n="nav.home"><i class="fas fa-home"></i> <span>Home</span></a></li>
             <li><a href="#packages" data-i18n="nav.packages"><i class="fas fa-box-open"></i> <span>Packages</span></a></li>
@@ -3042,17 +3449,17 @@
                         <i class="fas fa-cogs"></i>
                         <span data-i18n="additional.standard_maintenance">Standard Maintenance (€35/month)</span>
                     </a>
-                    <a href="javascript:void(0)" class="add-on-btn" data-service="domain_com" data-price="12">
+                    <a href="javascript:void(0)" class="add-on-btn" data-service="domain_com" data-price="15">
                         <i class="fas fa-globe"></i>
-                        <span data-i18n="additional.domain_com">.com Domain (€12/year)</span>
+                        <span data-i18n="additional.domain_com">.com Domain (€15/year)</span>
                     </a>
-                    <a href="javascript:void(0)" class="add-on-btn" data-service="domain_eu" data-price="5">
+                    <a href="javascript:void(0)" class="add-on-btn" data-service="domain_eu" data-price="10">
                         <i class="fas fa-globe"></i>
-                        <span data-i18n="additional.domain_eu">.eu Domain (€5/year)</span>
+                        <span data-i18n="additional.domain_eu">.eu Domain (€10/year)</span>
                     </a>
-                    <a href="javascript:void(0)" class="add-on-btn" data-service="domain_ro" data-price="8">
+                    <a href="javascript:void(0)" class="add-on-btn" data-service="domain_ro" data-price="10">
                         <i class="fas fa-globe"></i>
-                        <span data-i18n="additional.domain_ro">.ro Domain (€8/year)</span>
+                        <span data-i18n="additional.domain_ro">.ro Domain (€10/year)</span>
                     </a>
                 </div>
             </li>
@@ -3073,14 +3480,13 @@
             </div>
             
             <div class="mobile-social-links">
-                <a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
                 <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
                 <a href="#" target="_blank"><i class="fab fa-telegram"></i></a>
             </div>
             
             <div class="mobile-contact-info">
                 <p><i class="fas fa-phone"></i> +40 729 552 767</p>
-                <p><i class="fas fa-envelope"></i> boghack18@gmail.com</p>
+                <p><i class="fas fa-envelope"></i> <a href="mailto:web.builder01@gmail.com" style="color:inherit;">web.builder01@gmail.com</a></p>
             </div>
         </div>
     </div>
@@ -3113,17 +3519,17 @@
                             <i class="fas fa-cogs"></i>
                             <span data-i18n="additional.standard_maintenance">Standard Maintenance (€35/month)</span>
                         </a>
-                        <a href="javascript:void(0)" class="add-on-btn" data-service="domain_com" data-price="12">
+                        <a href="javascript:void(0)" class="add-on-btn" data-service="domain_com" data-price="15">
                             <i class="fas fa-globe"></i>
-                            <span data-i18n="additional.domain_com">.com Domain (€12/year)</span>
+                            <span data-i18n="additional.domain_com">.com Domain (€15/year)</span>
                         </a>
-                        <a href="javascript:void(0)" class="add-on-btn" data-service="domain_eu" data-price="5">
+                        <a href="javascript:void(0)" class="add-on-btn" data-service="domain_eu" data-price="10">
                             <i class="fas fa-globe"></i>
-                            <span data-i18n="additional.domain_eu">.eu Domain (€5/year)</span>
+                            <span data-i18n="additional.domain_eu">.eu Domain (€10/year)</span>
                         </a>
-                        <a href="javascript:void(0)" class="add-on-btn" data-service="domain_ro" data-price="8">
+                        <a href="javascript:void(0)" class="add-on-btn" data-service="domain_ro" data-price="10">
                             <i class="fas fa-globe"></i>
-                            <span data-i18n="additional.domain_ro">.ro Domain (€8/year)</span>
+                            <span data-i18n="additional.domain_ro">.ro Domain (€10/year)</span>
                         </a>
                     </div>
                 </li>
@@ -3143,14 +3549,162 @@
 
     <!-- Header cu baloane -->
     <header id="home">
-        <div class="balloon balloon-1"></div>
-        <div class="balloon balloon-2"></div>
-        <div class="balloon balloon-3"></div>
-        <div class="balloon balloon-4"></div>
+        <!-- Ghost rocket SVG template — no fill, pure white-stroke glass -->
+        <!-- Stars layer — 24 twinkling dots in the upper hero -->
+        <div class="hero-stars" aria-hidden="true">
+          <span class="star s1"></span><span class="star s2"></span><span class="star s3"></span>
+          <span class="star s4"></span><span class="star s5"></span><span class="star s6"></span>
+          <span class="star s7"></span><span class="star s8"></span><span class="star s9"></span>
+          <span class="star s10"></span><span class="star s11"></span><span class="star s12"></span>
+          <span class="star s13"></span><span class="star s14"></span><span class="star s15"></span>
+          <span class="star s16"></span><span class="star s17"></span><span class="star s18"></span>
+          <span class="star s19"></span><span class="star s20"></span><span class="star s21"></span>
+          <span class="star s22"></span><span class="star s23"></span><span class="star s24"></span>
+          <span class="star s25"></span><span class="star s26"></span><span class="star s27"></span>
+          <span class="star s28"></span><span class="star s29"></span><span class="star s30"></span>
+          <span class="star s31"></span><span class="star s32"></span><span class="star s33"></span>
+          <span class="star s34"></span><span class="star s35"></span><span class="star s36"></span>
+          <span class="star s37"></span><span class="star s38"></span><span class="star s39"></span>
+          <span class="star s40"></span><span class="star s41"></span><span class="star s42"></span>
+          <span class="star s43"></span><span class="star s44"></span><span class="star s45"></span>
+          <span class="star s46"></span><span class="star s47"></span><span class="star s48"></span>
+        </div>
+
+        <!--
+          Ghost rocket — recognizable silhouette pointing upper-right.
+          Built on a 60×60 viewBox. The rocket is drawn upright then rotated -45°
+          inside the SVG via a <g transform> so the nose always faces the travel direction.
+          Strokes: soft purple-white glass on the dark cosmos background.
+        -->
+        <!--
+          GHOST ROCKET — drawn upright, nose pointing up.
+          The .bg-rocket container is rotated -45° via CSS transform so
+          the nose always faces upper-right (the direction of travel).
+          viewBox 44×78 — proportions: slim, tall, unmistakably a rocket.
+        -->
+        <template id="tpl-rocket">
+          <svg viewBox="0 0 44 78" xmlns="http://www.w3.org/2000/svg"
+               style="overflow:visible; display:block;">
+            <defs>
+              <!-- General soft purple-white halo -->
+              <filter id="rg" x="-80%" y="-60%" width="260%" height="220%">
+                <feGaussianBlur stdDeviation="1.6" result="b"/>
+                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <!-- Porthole glow, bigger spread -->
+              <filter id="rg2" x="-150%" y="-150%" width="400%" height="400%">
+                <feGaussianBlur stdDeviation="3" result="b"/>
+                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <!-- Flame glow -->
+              <filter id="rg3" x="-120%" y="-20%" width="340%" height="200%">
+                <feGaussianBlur stdDeviation="2.2" result="b"/>
+                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+
+            <!-- ── NOSE CONE: sharp aerodynamic tip ── -->
+            <path class="rocket-body"
+              d="M22 2 C19 2 14 8 13 18 L31 18 C30 8 25 2 22 2 Z"
+              fill="rgba(200,185,255,0.09)"
+              stroke="rgba(225,210,255,0.72)" stroke-width="1.25"
+              stroke-linejoin="round" filter="url(#rg)"/>
+
+            <!-- ── FUSELAGE: main body ── -->
+            <rect class="rocket-body"
+              x="13" y="18" width="18" height="26" rx="1.5"
+              fill="rgba(175,155,255,0.07)"
+              stroke="rgba(218,205,255,0.65)" stroke-width="1.25"
+              filter="url(#rg)"/>
+
+            <!-- ── PORTHOLE: round window ── -->
+            <circle cx="22" cy="28" r="5"
+              fill="rgba(190,175,255,0.12)"
+              stroke="rgba(238,228,255,0.88)" stroke-width="1.3"
+              filter="url(#rg2)"/>
+            <!-- Inner gleam dot (top-left of window, like light reflection) -->
+            <circle cx="20.2" cy="26.2" r="1.5"
+              fill="rgba(255,255,255,0.55)" stroke="none"/>
+
+            <!-- ── CENTRE PANEL LINE ── -->
+            <line x1="22" y1="19.5" x2="22" y2="42"
+              stroke="rgba(228,218,255,0.2)" stroke-width="0.85" stroke-dasharray="3 2"/>
+
+            <!-- ── BODY GLINT: highlight along left edge ── -->
+            <path d="M14.5 21 Q14 30 14.5 42"
+              fill="none"
+              stroke="rgba(255,255,255,0.16)" stroke-width="2" stroke-linecap="round"/>
+
+            <!-- ── LEFT FIN: swept delta, attached at lower fuselage ── -->
+            <path class="rocket-body"
+              d="M13 38 L4 52 L13 48 Z"
+              fill="rgba(175,155,255,0.08)"
+              stroke="rgba(212,198,255,0.58)" stroke-width="1.2"
+              stroke-linejoin="round" filter="url(#rg)"/>
+
+            <!-- ── RIGHT FIN ── -->
+            <path class="rocket-body"
+              d="M31 38 L40 52 L31 48 Z"
+              fill="rgba(175,155,255,0.08)"
+              stroke="rgba(212,198,255,0.58)" stroke-width="1.2"
+              stroke-linejoin="round" filter="url(#rg)"/>
+
+            <!-- ── NOZZLE BELL: flares slightly outward ── -->
+            <path
+              d="M15 44 Q14 50 16 52 L28 52 Q30 50 29 44 Z"
+              fill="rgba(175,155,255,0.07)"
+              stroke="rgba(212,198,255,0.62)" stroke-width="1.2"
+              stroke-linejoin="round"/>
+
+            <!-- ── FLAME GROUP — flickers via CSS .r-flame animation ── -->
+            <g class="r-flame">
+              <!-- Outer bloom -->
+              <path d="M16 52 Q13 63 22 68 Q31 63 28 52 Z"
+                fill="rgba(255,188,50,0.48)"
+                stroke="rgba(255,215,95,0.72)" stroke-width="0.7"
+                stroke-linejoin="round" filter="url(#rg3)"/>
+              <!-- Mid flame -->
+              <path d="M18 52 Q16 61 22 65 Q28 61 26 52 Z"
+                fill="rgba(255,145,30,0.55)" stroke="none"/>
+              <!-- Hot white core -->
+              <path d="M20 52 Q19 58 22 62 Q25 58 24 52 Z"
+                fill="rgba(255,248,210,0.82)" stroke="none"/>
+            </g>
+
+          </svg>
+        </template>
+
+        <!-- 7 rocket instances — JS clones the template into each -->
+        <div class="bg-rocket bg-rocket-1"></div>
+        <div class="bg-rocket bg-rocket-2"></div>
+        <div class="bg-rocket bg-rocket-3"></div>
+        <div class="bg-rocket bg-rocket-4"></div>
+        <div class="bg-rocket bg-rocket-5"></div>
+        <div class="bg-rocket bg-rocket-6"></div>
+        <div class="bg-rocket bg-rocket-7"></div>
+
+        <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        (function(){
+          var tpl = document.getElementById('tpl-rocket');
+          if (!tpl) return;
+          document.querySelectorAll('.bg-rocket').forEach(function(el, i){
+            var clone = tpl.content.cloneNode(true);
+            /* Give each SVG's filters unique IDs so clones don’t share them */
+            var n = i + 1;
+            clone.querySelectorAll('[id]').forEach(function(node){
+              node.id = node.id + n;
+            });
+            clone.querySelectorAll('[filter]').forEach(function(node){
+              node.setAttribute('filter', node.getAttribute('filter').replace(/url\(#(\w+)\)/, 'url(#$1' + n + ')'));
+            });
+            el.appendChild(clone);
+          });
+        })();
+        </script>
         
         <div class="header-content container">
-            <h1 data-i18n="header.title">Your Professional Website In Just A Few Days</h1>
-            <p data-i18n="header.subtitle">We develop modern, fast and conversion-optimized websites. Turn visitors into customers with our customized solutions.</p>
+            <h1 data-i18n="header.title">We Build Websites That Work.</h1>
+            <p data-i18n="header.subtitle">Fast, modern sites delivered in days — not months. Built to grow your business.</p>
             <div class="header-buttons">
                 <a href="https://wa.me/40729552767" class="btn btn-primary btn-large" target="_blank" data-i18n="header.whatsapp">
                     <i class="fab fa-whatsapp"></i> Chat on WhatsApp
@@ -3179,10 +3733,11 @@
                 <!-- Pachet Basic -->
                 <div class="package-card basic fade-in">
                     <div class="package-header">
+                        <div class="package-tier-icon"><i class="fas fa-bolt"></i></div>
                         <h3 data-i18n="packages.basic.title">Basic</h3>
                         <div class="package-price-container">
-                            <span class="package-old-price">€200</span>
-                            <span class="package-price">€80</span>
+                            <span class="package-old-price">€100</span>
+                            <span class="package-price">€40</span>
                             <div class="discount-badge" data-i18n="packages.basic.discount">DISCOUNT 60%</div>
                         </div>
                         <p data-i18n="packages.basic.description">Perfect for informational websites</p>
@@ -3191,13 +3746,15 @@
                     <div class="package-features">
                         <ul>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature1">Fully responsive design</span></li>
-                            <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature2">Modern & clean layout</span></li>
-                            <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature3">Contact form with email notifications</span></li>
+                            <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature2">Modern &amp; clean layout</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature4">Basic SEO optimization</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature5">Social media integration</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature6">Mobile-friendly navigation</span></li>
+                            <li><i class="fas fa-check"></i> <span data-i18n="packages.free_changes">10 free changes, then €2/change</span></li>
+                            <li><i class="fas fa-check"></i> <span data-i18n="packages.free_hosting">Free hosting included</span></li>
+                            <li><i class="fas fa-check"></i> <span><i class="fab fa-cloudflare" style="color:#f38020"></i> <span data-i18n="packages.cloudflare">Cloudflare security &amp; DDoS protection</span></span></li>
                         </ul>
-                        <button class="btn btn-primary package-btn order-btn" data-package="basic" data-price="80" data-i18n="packages.order">
+                        <button class="btn btn-primary package-btn order-btn" data-package="basic" data-price="40" data-i18n="packages.order">
                             Order
                         </button>
                     </div>
@@ -3206,11 +3763,12 @@
                 <!-- Pachet Standard -->
                 <div class="package-card standard fade-in">
                     <div class="package-header">
+                        <div class="package-tier-icon"><i class="fas fa-layer-group"></i></div>
                         <h3 data-i18n="packages.standard.title">Standard</h3>
                         <div class="package-price-container">
-                            <span class="package-old-price">€650</span>
-                            <span class="package-price">€300</span>
-                            <div class="discount-badge" data-i18n="packages.standard.discount">DISCOUNT 54%</div>
+                            <span class="package-old-price">€500</span>
+                            <span class="package-price">€250</span>
+                            <div class="discount-badge" data-i18n="packages.standard.discount">DISCOUNT 50%</div>
                         </div>
                         <p data-i18n="packages.standard.description">Great for coffee shops & small businesses</p>
                         <p><strong data-i18n="packages.delivery">Delivery:</strong> <span data-i18n="packages.standard.deliveryTime">3-4 working days</span></p>
@@ -3224,16 +3782,20 @@
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.standard.feature5">Advanced SEO optimization</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.standard.feature6">Google Maps integration</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.standard.feature7">Enhanced loading speed</span></li>
+                            <li><i class="fas fa-check"></i> <span data-i18n="packages.free_hosting">Free hosting included</span></li>
+                            <li><i class="fas fa-check"></i> <span><i class="fab fa-cloudflare" style="color:#f38020"></i> <span data-i18n="packages.cloudflare">Cloudflare security &amp; DDoS protection</span></span></li>
                         </ul>
-                        <button class="btn btn-primary package-btn order-btn" data-package="standard" data-price="300" data-i18n="packages.order">
+                        <button class="btn btn-primary package-btn order-btn" data-package="standard" data-price="250" data-i18n="packages.order">
                             Order
                         </button>
                     </div>
                 </div>
 
                 <!-- Pachet Premium -->
-                <div class="package-card premium fade-in">
+                <div class="package-card premium fade-in" style="position:relative;">
                     <div class="package-header">
+                        <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#7c3aed,#a855f7);color:white;font-size:0.72rem;font-weight:800;padding:5px 18px;border-radius:0 0 12px 12px;letter-spacing:0.8px;text-transform:uppercase;white-space:nowrap;box-shadow:0 4px 14px rgba(124,58,237,0.45);">&#11088; Most Popular</div>
+                        <div class="package-tier-icon"><i class="fas fa-crown"></i></div>
                         <h3 data-i18n="packages.premium.title">Premium</h3>
                         <div class="package-price-container">
                             <span class="package-old-price">€1000</span>
@@ -3253,6 +3815,7 @@
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature6">Comprehensive SEO package</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature7">Advanced analytics integration</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature8">Post-launch optimization</span></li>
+                            <li><i class="fas fa-check"></i> <span><i class="fab fa-cloudflare" style="color:#f38020"></i> <span data-i18n="packages.cloudflare">Cloudflare security &amp; DDoS protection</span></span></li>
                         </ul>
                         <button class="btn btn-primary package-btn order-btn" data-package="premium" data-price="550" data-i18n="packages.order">
                             Order
@@ -3266,11 +3829,12 @@
                 <!-- Pachet Basic pentru mobile -->
                 <div class="package-card basic active">
                     <div class="package-header">
+                        <div class="package-tier-icon"><i class="fas fa-bolt"></i></div>
                         <h3 data-i18n="packages.basic.title">Basic</h3>
                         <div class="package-price-container">
-                            <span class="package-old-price">€200</span>
-                            <span class="package-price">€80</span>
-                            <div class="discount-badge" data-i18n="packages.basic.discount">DISCOUNT 60%</div>
+                            <span class="package-old-price">€80</span>
+                            <span class="package-price">€40</span>
+                            <div class="discount-badge" data-i18n="packages.basic.discount">DISCOUNT 50%</div>
                         </div>
                         <p data-i18n="packages.basic.description">Perfect for informational websites</p>
                         <p><strong data-i18n="packages.delivery">Delivery:</strong> <span data-i18n="packages.basic.deliveryTime">1-2 working days</span></p>
@@ -3283,8 +3847,10 @@
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature4">Basic SEO optimization</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature5">Social media integration</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature6">Mobile-friendly navigation</span></li>
+                            <li><i class="fas fa-check"></i> <span data-i18n="packages.free_changes">10 free changes, then €2/change</span></li>
+                            <li><i class="fas fa-check"></i> <span data-i18n="packages.free_hosting">Free hosting included</span></li>
                         </ul>
-                        <button class="btn btn-primary package-btn order-btn" data-package="basic" data-price="80" data-i18n="packages.order">
+                        <button class="btn btn-primary package-btn order-btn" data-package="basic" data-price="40" data-i18n="packages.order">
                             Order
                         </button>
                     </div>
@@ -3293,11 +3859,12 @@
                 <!-- Pachet Standard pentru mobile -->
                 <div class="package-card standard">
                     <div class="package-header">
+                        <div class="package-tier-icon"><i class="fas fa-layer-group"></i></div>
                         <h3 data-i18n="packages.standard.title">Standard</h3>
                         <div class="package-price-container">
-                            <span class="package-old-price">€650</span>
-                            <span class="package-price">€300</span>
-                            <div class="discount-badge" data-i18n="packages.standard.discount">DISCOUNT 54%</div>
+                            <span class="package-old-price">€500</span>
+                            <span class="package-price">€250</span>
+                            <div class="discount-badge" data-i18n="packages.standard.discount">DISCOUNT 50%</div>
                         </div>
                         <p data-i18n="packages.standard.description">Great for coffee shops & small businesses</p>
                         <p><strong data-i18n="packages.delivery">Delivery:</strong> <span data-i18n="packages.standard.deliveryTime">3-4 working days</span></p>
@@ -3311,8 +3878,9 @@
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.standard.feature5">Advanced SEO optimization</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.standard.feature6">Google Maps integration</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.standard.feature7">Enhanced loading speed</span></li>
+                            <li><i class="fas fa-check"></i> <span data-i18n="packages.free_hosting">Free hosting included</span></li>
                         </ul>
-                        <button class="btn btn-primary package-btn order-btn" data-package="standard" data-price="300" data-i18n="packages.order">
+                        <button class="btn btn-primary package-btn order-btn" data-package="standard" data-price="250" data-i18n="packages.order">
                             Order
                         </button>
                     </div>
@@ -3321,6 +3889,7 @@
                 <!-- Pachet Premium pentru mobile -->
                 <div class="package-card premium">
                     <div class="package-header">
+                        <div class="package-tier-icon"><i class="fas fa-crown"></i></div>
                         <h3 data-i18n="packages.premium.title">Premium</h3>
                         <div class="package-price-container">
                             <span class="package-old-price">€1000</span>
@@ -3552,7 +4121,7 @@
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <p data-i18n="faq.a2">Yes, hosting is a separate service. We offer reliable hosting starting at €4/month with 2GB storage, unlimited bandwidth, and free SSL certificate.</p>
+                        <p data-i18n="faq.a2">Hosting is included free with the Basic plan. For Standard and Premium, hosting is available as an add-on at €4/month with 2GB storage, unlimited bandwidth, and free SSL certificate.</p>
                     </div>
                 </div>
                 
@@ -3562,7 +4131,7 @@
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <p data-i18n="faq.a3">No, website content can only be updated by our team. However, we offer maintenance plans where we handle all content updates for you. This ensures your website remains secure and professional.</p>
+                        <p data-i18n="faq.a3">No, website content can only be updated by our team. Changes are priced per plan: <strong>Basic</strong> — free changes; <strong>Standard</strong> — €3 per change; <strong>Premium</strong> — €7 per change. A “change” means one content update (text, image, color, etc.). Major structural changes may count as multiple changes.</p>
                     </div>
                 </div>
                 
@@ -3646,7 +4215,6 @@
                     <h3>WebBuilder</h3>
                     <p data-i18n="footer.description">We provide complete web solutions for small and medium businesses, with emphasis on quality and results.</p>
                     <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
                         <a href="#"><i class="fab fa-instagram"></i></a>
                         <a href="#"><i class="fab fa-linkedin-in"></i></a>
                     </div>
@@ -3666,7 +4234,7 @@
                     <h3 data-i18n="footer.contact">Contact</h3>
                     <ul>
                         <li><i class="fas fa-phone"></i> +40 729 552 767</li>
-                        <li><i class="fas fa-envelope"></i> contact@webbuilderpro.ro</li>
+                        <li><i class="fas fa-envelope"></i> <a href="mailto:web.builder01@gmail.com" style="color:inherit;">web.builder01@gmail.com</a></li>
                         <li><i class="fas fa-map-marker-alt"></i> <span data-i18n="footer.location">Bucharest, Romania</span></li>
                     </ul>
                 </div>
@@ -3706,8 +4274,8 @@
                     <label for="service-type" data-i18n="order.service">Website Package *</label>
                     <select id="service-type" name="service_type" class="form-select" required>
                         <option value="" data-i18n="order.select">Select package</option>
-                        <option value="basic">Basic Website - €80</option>
-                        <option value="standard">Standard Website - €300</option>
+                        <option value="basic">Basic Website - €40</option>
+                        <option value="standard">Standard Website - €250</option>
                         <option value="premium">Premium Website - €550</option>
                     </select>
                 </div>
@@ -3717,62 +4285,77 @@
                     <h4 data-i18n="order.addons">Add Additional Services</h4>
                     
                     <!-- Hosting -->
-                    <div class="add-on-item">
+                    <div class="add-on-item" id="hosting-addon-row">
                         <div class="add-on-label">
-                            <input type="checkbox" id="add-hosting" class="add-on-checkbox" data-service="hosting" data-price="4" data-name="Basic Hosting">
+                            <input type="checkbox" id="add-hosting" class="add-on-checkbox" data-service="hosting" data-price="4" data-name="Hosting">
                             <label for="add-hosting">
-                                <strong data-i18n="additional.hosting">Basic Hosting</strong> - €4/month
+                                <strong>Hosting</strong>
                             </label>
                         </div>
-                        <div class="add-on-price">€4/month</div>
+                        <div class="add-on-price" id="hosting-price-display">€4/month</div>
+                    </div>
+                    <div id="hosting-free-notice" style="display:none; padding:10px 14px; background:#f0fdf4; border:1.5px solid #bbf7d0; border-radius:10px; color:#15803d; font-size:0.85rem; font-weight:600; margin-bottom:8px;">
+                        <i class="fas fa-server"></i> <span data-i18n="packages.free_hosting">Free hosting included</span>
                     </div>
                     
                     <!-- Domain Names -->
                     <div class="add-on-item">
                         <div class="add-on-label">
-                            <input type="checkbox" id="add-domain-com" class="add-on-checkbox" data-service="domain_com" data-price="12" data-name=".com Domain">
+                            <input type="checkbox" id="add-domain-com" class="add-on-checkbox" data-service="domain_com" data-price="15" data-name=".com Domain">
                             <label for="add-domain-com">
-                                <strong data-i18n="additional.domain_com">.com Domain</strong> - €12/year
+                                <strong>.com Domain</strong>
                             </label>
                         </div>
-                        <div class="add-on-price">€12/year</div>
+                        <div class="add-on-price">€15/year</div>
                     </div>
                     
                     <div class="add-on-item">
                         <div class="add-on-label">
-                            <input type="checkbox" id="add-domain-eu" class="add-on-checkbox" data-service="domain_eu" data-price="5" data-name=".eu Domain">
+                            <input type="checkbox" id="add-domain-eu" class="add-on-checkbox" data-service="domain_eu" data-price="10" data-name=".eu Domain">
                             <label for="add-domain-eu">
-                                <strong data-i18n="additional.domain_eu">.eu Domain</strong> - €5/year
+                                <strong>.eu Domain</strong>
                             </label>
                         </div>
-                        <div class="add-on-price">€5/year</div>
+                        <div class="add-on-price">€10/year</div>
                     </div>
                     
                     <div class="add-on-item">
                         <div class="add-on-label">
-                            <input type="checkbox" id="add-domain-ro" class="add-on-checkbox" data-service="domain_ro" data-price="8" data-name=".ro Domain">
+                            <input type="checkbox" id="add-domain-ro" class="add-on-checkbox" data-service="domain_ro" data-price="10" data-name=".ro Domain">
                             <label for="add-domain-ro">
-                                <strong data-i18n="additional.domain_ro">.ro Domain</strong> - €8/year
+                                <strong>.ro Domain</strong>
                             </label>
                         </div>
-                        <div class="add-on-price">€8/year</div>
+                        <div class="add-on-price">€10/year</div>
                     </div>
                 </div>
-                
-                <!-- Maintenance Plans -->
-                <div class="form-group">
-                    <label for="maintenance-plan" data-i18n="order.maintenance">Maintenance Plan</label>
-                    <select id="maintenance-plan" name="maintenance_plan" class="form-select">
-                        <option value="">No maintenance plan</option>
-                        <option value="simple_maintenance">Simple Plan - €20/month</option>
-                        <option value="standard_maintenance">Standard Plan - €35/month</option>
-                        <option value="premium_maintenance">Premium Plan - €100/month</option>
-                    </select>
+
+                <!-- Website Changes -->
+                <div class="form-group" id="changes-group">
+                    <label>Website Changes</label>
+                    <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:12px;padding:16px 20px;">
+                        <div id="changes-free-notice" style="display:none;color:#10b981;font-weight:600;font-size:0.9rem;margin-bottom:8px;"><i class="fas fa-gift"></i> Free changes included with Basic plan!</div>
+                        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:160px;">
+                                <p style="font-size:0.82rem;color:#64748b;margin-bottom:6px;">How many changes do you want?</p>
+                                <div style="display:flex;align-items:center;gap:10px;">
+                                    <button type="button" onclick="adjustChanges(-1)" style="width:32px;height:32px;border-radius:8px;border:1.5px solid #e2e8f0;background:white;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#64748b;">-</button>
+                                    <input type="number" id="changes-count" name="changes_count" min="0" max="50" value="0" readonly style="width:60px;text-align:center;border:1.5px solid #e2e8f0;border-radius:8px;padding:6px;font-size:1rem;font-weight:700;font-family:inherit;background:white;">
+                                    <button type="button" onclick="adjustChanges(1)" style="width:32px;height:32px;border-radius:8px;border:1.5px solid #e2e8f0;background:white;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#64748b;">+</button>
+                                </div>
+                            </div>
+                            <div id="changes-price-display" style="background:white;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 16px;text-align:center;min-width:120px;">
+                                <div style="font-size:0.75rem;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;">Changes cost</div>
+                                <div id="changes-cost-value" style="font-size:1.4rem;font-weight:800;color:#1e293b;">Free</div>
+                                <div id="changes-unit-price" style="font-size:0.75rem;color:#94a3b8;"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                
+
                 <div class="form-group">
-                    <label for="additional-notes" data-i18n="order.notes">Additional Notes (Optional)</label>
-                    <textarea id="additional-notes" name="additional_notes" class="form-control" rows="4" placeholder="Tell us about your project, specific requirements, or any questions you might have..."></textarea>
+                    <label for="additional-notes" data-i18n="order.notes">Tell us about your website:</label>
+                    <textarea id="additional-notes" name="additional_notes" class="form-control" rows="4" placeholder="Describe your website: what it's for, what pages you need, colors, style, content, any references..."></textarea>
                 </div>
                 
                 <!-- IMPROVED: Order Summary Section -->
@@ -3800,7 +4383,7 @@
 
 
 
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         // Enhanced Mobile Menu System
         class EnhancedMobileMenu {
             constructor() {
@@ -3880,6 +4463,7 @@
                 this.mobileMenu.classList.add('active');
                 this.overlay.classList.add('active');
                 this.menuBtn.classList.add('active');
+                document.querySelector('nav')?.classList.add('mobile-open');
                 this.isOpen = true;
                 document.body.style.overflow = 'hidden';
             }
@@ -3888,6 +4472,7 @@
                 this.mobileMenu.classList.remove('active');
                 this.overlay.classList.remove('active');
                 this.menuBtn.classList.remove('active');
+                document.querySelector('nav')?.classList.remove('mobile-open');
                 this.isOpen = false;
                 document.body.style.overflow = '';
                 document.querySelectorAll('.mobile-dropdown-content.active').forEach(content => {
@@ -3978,12 +4563,13 @@ this.packageTabs.forEach(tab => {
             targetPackage.style.display = 'flex';
             targetPackage.classList.add('active');
             
-            // MODIFICAȚIE AICI: Scroll mai puțin
-            // Folosește window.scrollTo cu un offset în loc de scrollIntoView
-            window.scrollTo({
-                top: targetPackage.offsetTop - 10, // Ajustează această valoare după preferințe
-                behavior: 'smooth'
-            });
+            // Scroll so the card is visible — offset below the nav bar
+            setTimeout(() => {
+                const rect = targetPackage.getBoundingClientRect();
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const targetY = scrollTop + rect.top - 80; // 80px = nav height
+                window.scrollTo({ top: targetY, behavior: 'smooth' });
+            }, 50);
         }
     });
 });
@@ -4089,7 +4675,7 @@ this.packageTabs.forEach(tab => {
                     this.loadingScreen.style.display = 'none';
                     document.body.classList.remove('preload');
                     document.body.style.opacity = '1';
-                }, 500);
+                }, 1200);
             }
         }
 
@@ -4126,13 +4712,18 @@ this.packageTabs.forEach(tab => {
                         "additional.domain_com": "Domeniu .com (€12/an)",
                         "additional.domain_eu": "Domeniu .eu (€5/an)",
                         "additional.domain_ro": "Domeniu .ro (€8/an)",
-                        "header.title": "Site-ul Tău Profesional În Doar Câteva Zile",
-                        "header.subtitle": "Dezvoltăm site-uri web moderne, rapide și optimizate pentru conversii. Transformă vizita în clienți cu soluțiile noastre personalizate.",
+                        "packages.free_hosting": "Hosting gratuit inclus",
+                        "packages.free_changes": "10 modificări gratuite, apoi €2/modificare",
+                        "packages.cloudflare": "Securitate Cloudflare & protecție DDoS",
+                        "order.free_hosting": "Hosting",
+                        "order.free_hosting_details": "inclus gratuit",
+                        "header.title": "Construim Site-uri Care Funcționează.",
+                        "header.subtitle": "Site-uri moderne livrate în zile, nu luni. Construite să îți crească afacerea.",
                         "header.whatsapp": "Discută pe WhatsApp",
                         "header.call": "Sună acum",
                         "packages.title": "Pachete și Prețuri",
                         "packages.basic.title": "Basic",
-                        "packages.basic.discount": "REDUCERE 60%",
+                        "packages.basic.discount": "REDUCERE 50%",
                         "packages.basic.description": "Perfect pentru site-uri informative",
                         "packages.basic.deliveryTime": "1-2 zile lucrătoare",
                         "packages.basic.feature1": "Design responsive complet",
@@ -4142,7 +4733,7 @@ this.packageTabs.forEach(tab => {
                         "packages.basic.feature5": "Integrare cu rețelele sociale",
                         "packages.basic.feature6": "Navigare optimizată pentru mobile",
                         "packages.standard.title": "Standard",
-                        "packages.standard.discount": "REDUCERE 54%",
+                        "packages.standard.discount": "REDUCERE 50%",
                         "packages.standard.description": "Excelent pentru cafenele și afaceri mici",
                         "packages.standard.deliveryTime": "3-4 zile lucrătoare",
                         "packages.standard.feature1": "Toate caracteristicile Basic incluse",
@@ -4243,13 +4834,18 @@ this.packageTabs.forEach(tab => {
                         "additional.domain_com": ".com Domain (€12/year)",
                         "additional.domain_eu": ".eu Domain (€5/year)",
                         "additional.domain_ro": ".ro Domain (€8/year)",
-                        "header.title": "Your Professional Website In Just A Few Days",
-                        "header.subtitle": "We develop modern, fast and conversion-optimized websites. Turn visitors into customers with our customized solutions.",
+                        "packages.free_hosting": "Free hosting included",
+                        "packages.free_changes": "10 free changes, then €2/change",
+                        "packages.cloudflare": "Cloudflare security & DDoS protection",
+                        "order.free_hosting": "Hosting",
+                        "order.free_hosting_details": "included free",
+                        "header.title": "We Build Websites That Work.",
+                        "header.subtitle": "Fast, modern sites delivered in days — not months. Built to grow your business.",
                         "header.whatsapp": "Chat on WhatsApp",
                         "header.call": "Call Now",
                         "packages.title": "Packages and Prices",
                         "packages.basic.title": "Basic",
-                        "packages.basic.discount": "DISCOUNT 60%",
+                        "packages.basic.discount": "DISCOUNT 50%",
                         "packages.basic.description": "Perfect for informational websites",
                         "packages.basic.deliveryTime": "1-2 working days",
                         "packages.basic.feature1": "Fully responsive design",
@@ -4259,7 +4855,7 @@ this.packageTabs.forEach(tab => {
                         "packages.basic.feature5": "Social media integration",
                         "packages.basic.feature6": "Mobile-friendly navigation",
                         "packages.standard.title": "Standard",
-                        "packages.standard.discount": "DISCOUNT 54%",
+                        "packages.standard.discount": "DISCOUNT 50%",
                         "packages.standard.description": "Great for coffee shops & small businesses",
                         "packages.standard.deliveryTime": "3-4 working days",
                         "packages.standard.feature1": "All Basic features included",
@@ -4305,9 +4901,9 @@ this.packageTabs.forEach(tab => {
                         "faq.q1": "How long does it take to build a website?",
                         "faq.a1": "Basic websites: 1-2 working days<br>Standard websites: 3-4 working days<br>Premium websites: 5-7 working days",
                         "faq.q2": "Do I need to purchase hosting separately?",
-                        "faq.a2": "Yes, hosting is a separate service. We offer reliable hosting starting at €4/month with 2GB storage, unlimited bandwidth, and free SSL certificate.",
+                        "faq.a2": "Hosting is included free with the Basic plan. For Standard and Premium, hosting is available as an add-on at €4/month with 2GB storage, unlimited bandwidth, and free SSL certificate.",
                         "faq.q3": "Can I update my website content myself?",
-                        "faq.a3": "No, website content can only be updated by our team. However, we offer maintenance plans where we handle all content updates for you. This ensures your website remains secure and professional.",
+                        "faq.a3": "No, website content can only be updated by our team. Changes are priced per plan: Basic — free changes; Standard — €3 per change; Premium — €7 per change. A change means one content update (text, image, color, etc.). Major structural changes may count as multiple changes.",
                         "faq.q4": "What happens after the website is launched?",
                         "faq.a4": "We provide 30 days of support for any technical issues. After that, we recommend choosing a maintenance plan to keep your website secure and updated.",
                         "faq.q5": "Do you provide SEO services?",
@@ -4360,13 +4956,18 @@ this.packageTabs.forEach(tab => {
                         "additional.domain_com": "Домен .com (€12/год)",
                         "additional.domain_eu": "Домен .eu (€5/год)",
                         "additional.domain_ro": "Домен .ro (€8/год)",
-                        "header.title": "Ваш Профессиональный Сайт Всего За Несколько Дней",
-                        "header.subtitle": "Мы разрабатываем современные, быстрые и оптимизированные для конверсии веб-сайты. Превращайте посетителей в клиентов с нашими индивидуальными решениями.",
+                        "packages.free_hosting": "Бесплатный хостинг включён",
+                        "packages.free_changes": "10 бесплатных изменений, затем €2/изменение",
+                        "packages.cloudflare": "Безопасность Cloudflare и защита от DDoS",
+                        "order.free_hosting": "Хостинг",
+                        "order.free_hosting_details": "включён бесплатно",
+                        "header.title": "Мы создаём сайты, которые работают.",
+                        "header.subtitle": "Современные сайты за дни, а не месяцы. Созданы для роста вашего бизнеса.",
                         "header.whatsapp": "Обсудить в WhatsApp",
                         "header.call": "Позвонить сейчас",
                         "packages.title": "Пакеты и Цены",
                         "packages.basic.title": "Базовый",
-                        "packages.basic.discount": "СКИДКА 60%",
+                        "packages.basic.discount": "СКИДКА 50%",
                         "packages.basic.description": "Идеально для информационных сайтов",
                         "packages.basic.deliveryTime": "1-2 рабочих дня",
                         "packages.basic.feature1": "Полностью адаптивный дизайн",
@@ -4376,7 +4977,7 @@ this.packageTabs.forEach(tab => {
                         "packages.basic.feature5": "Интеграция с соцсетями",
                         "packages.basic.feature6": "Мобильная навигация",
                         "packages.standard.title": "Стандартный",
-                        "packages.standard.discount": "СКИДКА 54%",
+                        "packages.standard.discount": "СКИДКА 50%",
                         "packages.standard.description": "Отлично для кофеен и малого бизнеса",
                         "packages.standard.deliveryTime": "3-4 рабочих дня",
                         "packages.standard.feature1": "Все функции Базового пакета включены",
@@ -4751,6 +5352,10 @@ this.packageTabs.forEach(tab => {
                 this.selectedAddOns = [];
                 this.addOnsCheckboxes.forEach(cb => cb.checked = false);
                 if (this.maintenanceSelect) this.maintenanceSelect.value = '';
+                // Reset changes counter and update UI for selected package
+                const changesInput = document.getElementById('changes-count');
+                if (changesInput) changesInput.value = 0;
+                setTimeout(() => updateChangesUI(serviceType), 50);
                 
                 serviceSelect.value = serviceType;
                 packagePriceField.value = price;
@@ -4761,7 +5366,8 @@ this.packageTabs.forEach(tab => {
                     price: parseInt(price),
                     name: this.getPackageName(serviceType)
                 };
-                
+
+                this.updateHostingUI(serviceType);
                 this.updateOrderSummary();
                 
                 this.orderForm.classList.add('active');
@@ -4827,6 +5433,17 @@ this.packageTabs.forEach(tab => {
                     total += this.selectedPackage.price;
                     this.addSummaryItem(this.selectedPackage.name, this.selectedPackage.price, 'One-time payment');
                 }
+
+                // Show free hosting line for Basic & Standard
+                const pkgType = this.selectedPackage?.type;
+                if (pkgType === 'basic' || pkgType === 'standard') {
+                    const langData = window.languageSystem?.translations?.[window.languageSystem?.currentLang] || {};
+                    this.addSummaryItem(
+                        langData['order.free_hosting'] || 'Hosting',
+                        0,
+                        langData['order.free_hosting_details'] || 'included free'
+                    );
+                }
                 
                 // Add add-ons to summary
                 this.selectedAddOns.forEach(addOn => {
@@ -4841,6 +5458,21 @@ this.packageTabs.forEach(tab => {
                     const price = parseInt(this.selectedMaintenance.price);
                     total += price;
                     this.addSummaryItem(this.selectedMaintenance.name, price, 'per month');
+                }
+
+                // Add changes to summary
+                const changesCount = parseInt(document.getElementById('changes-count')?.value || 0);
+                const isBasic = this.selectedPackage?.type === 'basic';
+                const isPremium = this.selectedPackage?.type === 'premium';
+                const changesRate = isBasic ? 0 : (isPremium ? 7 : 3);
+                if (changesCount > 0) {
+                    const changesCost = changesCount * changesRate;
+                    if (isBasic) {
+                        this.addSummaryItem(`${changesCount} website change${changesCount > 1 ? 's' : ''}`, 0, 'included free');
+                    } else {
+                        total += changesCost;
+                        this.addSummaryItem(`${changesCount} website change${changesCount > 1 ? 's' : ''}`, changesCost, `€${changesRate} each`);
+                    }
                 }
                 
                 // Update total
@@ -4857,14 +5489,38 @@ this.packageTabs.forEach(tab => {
             addSummaryItem(name, price, details) {
                 const item = document.createElement('div');
                 item.className = 'summary-item';
+                const priceDisplay = price === 0
+                    ? `<span style="color:#16a34a;font-weight:700;">FREE</span>`
+                    : `€${price}`;
+                const nameDisplay = price === 0
+                    ? `<span style="color:#16a34a;">${name}</span>`
+                    : name;
                 item.innerHTML = `
                     <div>
-                        <div class="summary-item-name">${name}</div>
+                        <div class="summary-item-name">${nameDisplay}</div>
                         <div class="summary-item-details">${details}</div>
                     </div>
-                    <div class="summary-item-price">€${price}</div>
+                    <div class="summary-item-price">${priceDisplay}</div>
                 `;
                 this.summaryItems.appendChild(item);
+            }
+
+            updateHostingUI(serviceType) {
+                const isFree = serviceType === 'basic' || serviceType === 'standard';
+                const row = document.getElementById('hosting-addon-row');
+                const notice = document.getElementById('hosting-free-notice');
+                const cb = document.getElementById('add-hosting');
+                if (isFree) {
+                    if (row) row.style.display = 'none';
+                    if (notice) notice.style.display = 'block';
+                    if (cb && cb.checked) {
+                        cb.checked = false;
+                        this.selectedAddOns = this.selectedAddOns.filter(a => a.service !== 'hosting');
+                    }
+                } else {
+                    if (row) row.style.display = '';
+                    if (notice) notice.style.display = 'none';
+                }
             }
 
             handleServiceChange(e) {
@@ -4876,11 +5532,11 @@ this.packageTabs.forEach(tab => {
                 let packageName = '';
                 switch(serviceType) {
                     case 'basic': 
-                        price = '80'; 
+                        price = '40'; 
                         packageName = 'Basic Website';
                         break;
                     case 'standard': 
-                        price = '300'; 
+                        price = '250'; 
                         packageName = 'Standard Website';
                         break;
                     case 'premium': 
@@ -4898,6 +5554,7 @@ this.packageTabs.forEach(tab => {
                         price: parseInt(price),
                         name: packageName
                     };
+                    this.updateHostingUI(serviceType);
                     this.updateOrderSummary();
                 } else {
                     this.selectedPackage = null;
@@ -5024,6 +5681,17 @@ this.packageTabs.forEach(tab => {
     }
 }
 
+// Add changes cost
+const changesCount = parseInt(document.getElementById('changes-count')?.value || 0);
+const isBasicPlan = orderData.service_type === 'basic';
+const isPremiumPlan = orderData.service_type === 'premium';
+const changesRate = isBasicPlan ? 0 : (isPremiumPlan ? 7 : 3);
+const changesCost = changesCount * changesRate;
+orderData.changes_count = changesCount;
+orderData.changes_cost = changesCost;
+orderData.changes_price_per_unit = changesRate;
+totalPrice += changesCost;
+
 orderData.total_price = totalPrice;
 
 // Save order data to localStorage (for payment page)
@@ -5092,6 +5760,44 @@ return false;
         }
 
         // Initialize everything when DOM is loaded
+        // ── Website Changes Helper Functions ──
+        function updateChangesUI(packageType) {
+            const isBasic = packageType === 'basic';
+            const isPremium = packageType === 'premium';
+            const rate = isBasic ? 0 : (isPremium ? 7 : 3);
+            const notice = document.getElementById('changes-free-notice');
+            const costValue = document.getElementById('changes-cost-value');
+            const unitPrice = document.getElementById('changes-unit-price');
+            const count = parseInt(document.getElementById('changes-count')?.value || 0);
+
+            if (notice) notice.style.display = isBasic ? 'block' : 'none';
+
+            if (isBasic) {
+                if (costValue) costValue.textContent = 'Free';
+                if (unitPrice) unitPrice.textContent = '€0 per change';
+            } else {
+                const cost = count * rate;
+                if (costValue) costValue.textContent = count > 0 ? `€${cost}` : '€0';
+                if (unitPrice) unitPrice.textContent = `€${rate} per change`;
+            }
+
+            // Refresh order summary if the form system is active
+            if (window._orderFormSystem) window._orderFormSystem.updateOrderSummary();
+        }
+
+        function adjustChanges(delta) {
+            const input = document.getElementById('changes-count');
+            if (!input) return;
+            let val = parseInt(input.value || 0) + delta;
+            if (val < 0) val = 0;
+            if (val > 50) val = 50;
+            input.value = val;
+            // Get current package from the form
+            const serviceSelect = document.getElementById('service-type');
+            const pkg = serviceSelect ? serviceSelect.value : '';
+            updateChangesUI(pkg);
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Initializing WebBuilder...');
             
@@ -5099,8 +5805,10 @@ return false;
             const mobileMenu = new EnhancedMobileMenu();
             const animations = new AnimationSystem();
             const languageSystem = new LanguageSystem();
+            window.languageSystem = languageSystem;
             const mobileTabs = new MobileTabsSystem();
             const orderFormSystem = new OrderFormSystem();
+            window._orderFormSystem = orderFormSystem;
             
             // Initialize mobile tabs on load
             mobileTabs.handleResize();
@@ -5192,8 +5900,8 @@ return false;
         #wbp-panel { bottom: 28px !important; }
 
         .contact-fab-wrap{position:fixed;bottom:28px;right:28px;z-index:2000;display:flex;flex-direction:column;align-items:center;gap:12px;}
-        .contact-fab{width:68px;height:68px;background:linear-gradient(135deg,#25d366,#128c7e);border:none;border-radius:50%;color:white;font-size:1.8rem;cursor:pointer;box-shadow:0 6px 20px rgba(37,211,102,0.45);display:flex;align-items:center;justify-content:center;transition:all .25s;position:relative;}
-        .contact-fab:hover{transform:scale(1.1);box-shadow:0 10px 28px rgba(37,211,102,0.55);}
+        .contact-fab{width:68px;height:68px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border:none;border-radius:50%;color:white;font-size:1.8rem;cursor:pointer;box-shadow:0 6px 20px rgba(59,130,246,0.5);display:flex;align-items:center;justify-content:center;transition:all .25s;position:relative;}
+        .contact-fab:hover{transform:scale(1.1);box-shadow:0 10px 28px rgba(59,130,246,0.65);}
         .contact-fab-icon{transition:transform .3s ease;}
         .contact-fab.open .contact-fab-icon{transform:rotate(45deg);}
         .contact-option{width:50px;height:50px;border-radius:50%;border:none;color:white;font-size:1.25rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,0.2);transition:all .3s cubic-bezier(.34,1.56,.64,1);transform:scale(0) translateY(10px);opacity:0;pointer-events:none;text-decoration:none;}
