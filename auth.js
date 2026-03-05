@@ -33,6 +33,12 @@ const AT = {
     mobAs:'Conectat ca', mobOrders:'Comenzile Mele', mobOut:'Deconectare',
     rules:'Regulament', rulesTitle:'Regulament & Condiții',
     rulesSubtitle:'Te rugăm să citești cu atenție înainte de a plasa o comandă',
+    editProfile:'Editează Profilul',
+    editProfileTitle:'Editează Profilul',
+    editProfileSub:'Actualizează informațiile tale de contact',
+    epName:'Numele tău', epPhone:'Număr de telefon', epSave:'Salvează',
+    epSaving:'Se salvează…', epSaved:'Profil actualizat ✓',
+    epPhoneMissing:'📞 Adaugă numărul tău de telefon pentru a fi contactat mai ușor.',
   },
   en: {
     btnGuest:'Account', logout:'Sign Out',
@@ -52,6 +58,12 @@ const AT = {
     mobAs:'Signed in as', mobOrders:'My Orders', mobOut:'Sign Out',
     rules:'Rules', rulesTitle:'Terms & Rules',
     rulesSubtitle:'Please read carefully before placing an order',
+    editProfile:'Edit Profile',
+    editProfileTitle:'Edit Profile',
+    editProfileSub:'Update your contact information',
+    epName:'Your name', epPhone:'Phone number', epSave:'Save',
+    epSaving:'Saving…', epSaved:'Profile updated ✓',
+    epPhoneMissing:'📞 Add your phone number so we can reach you easier.',
   },
   ru: {
     btnGuest:'Войти', logout:'Выйти',
@@ -71,6 +83,12 @@ const AT = {
     mobAs:'Вошли как', mobOrders:'Мои заказы', mobOut:'Выйти',
     rules:'Правила', rulesTitle:'Условия и правила',
     rulesSubtitle:'Пожалуйста, прочитайте внимательно перед оформлением заказа',
+    editProfile:'Редактировать профиль',
+    editProfileTitle:'Редактировать профиль',
+    editProfileSub:'Обновите контактную информацию',
+    epName:'Ваше имя', epPhone:'Номер телефона', epSave:'Сохранить',
+    epSaving:'Сохранение…', epSaved:'Профиль обновлён ✓',
+    epPhoneMissing:'📞 Добавьте номер телефона, чтобы с вами было проще связаться.',
   }
 };
 function t(k) {
@@ -135,15 +153,14 @@ function injectStyles() {
   /* Hidden on mobile — shown inside hamburger menu */
   @media (max-width: 900px) { #auth-nav-wrap { display: none !important; } }
 
-  /* ── Guest button ──
-     clamp(min, preferred, max) keeps Russian short words from expanding layout */
+  /* ── Guest button ── */
   .auth-btn-guest {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 7px 14px; border-radius: 22px;
-    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
     color: white; font-weight: 700; border: none; cursor: pointer;
     font-family: inherit; white-space: nowrap; transition: all .2s;
-    box-shadow: 0 2px 10px rgba(59,130,246,.3);
+    box-shadow: 0 2px 10px rgba(59,130,246,.35);
     font-size: clamp(0.68rem, 1.1vw, 0.85rem);
     max-width: 130px; overflow: hidden; text-overflow: ellipsis;
   }
@@ -153,46 +170,48 @@ function injectStyles() {
   .auth-pill {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 4px 10px 4px 4px; border-radius: 22px;
-    background: rgba(59,130,246,.08); border: 1.5px solid rgba(59,130,246,.2);
+    background: rgba(59,130,246,.08); border: 1.5px solid rgba(59,130,246,.25);
     cursor: pointer; transition: background .18s; position: relative;
     max-width: 200px; min-width: 0;
   }
-  .auth-pill:hover { background: rgba(59,130,246,.14); }
+  .auth-pill:hover { background: rgba(59,130,246,.16); }
   .auth-pill-av {
-    width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
-    background: linear-gradient(135deg,#3b82f6,#8b5cf6);
+    width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(135deg,#3b82f6,#2563eb);
     display: flex; align-items: center; justify-content: center;
     color: white; font-size: .72rem; font-weight: 800;
+    box-shadow: 0 0 0 2px rgba(59,130,246,.25);
   }
   .auth-pill-name {
-    font-size: clamp(0.65rem, 1.05vw, 0.8rem);
-    font-weight: 600; color: #1e293b;
+    font-size: clamp(0.65rem, 1.05vw, 0.82rem);
+    font-weight: 700; color: #1e293b;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    min-width: 0; flex: 1; max-width: 95px;
+    min-width: 0; flex: 1; max-width: 100px;
   }
-  .auth-pill-chev { font-size: .58rem; color: #94a3b8; flex-shrink: 0; }
+  .auth-pill-chev { font-size: .58rem; color: #3b82f6; flex-shrink: 0; }
 
   /* ── Dropdown ── */
   .auth-dropdown {
     position: absolute; top: calc(100% + 8px); right: 0;
-    background: white; border-radius: 14px; min-width: 195px;
-    box-shadow: 0 12px 40px rgba(0,0,0,.14);
-    border: 1px solid #e2e8f0; overflow: hidden;
-    display: none; z-index: 2001;
+    background: rgba(15,23,42,.97); border-radius: 14px; min-width: 200px;
+    box-shadow: 0 16px 48px rgba(0,0,0,.45), 0 0 0 1px rgba(59,130,246,.2);
+    border: 1px solid rgba(59,130,246,.2); overflow: hidden;
+    display: none; z-index: 2001; backdrop-filter: blur(12px);
   }
   .auth-dropdown.open { display: block; animation: authDrop .16s ease; }
   @keyframes authDrop { from{opacity:0;transform:translateY(-5px)} to{opacity:1;transform:translateY(0)} }
   .auth-dd-item {
     display: flex; align-items: center; gap: 10px;
-    padding: 11px 16px; font-size: .84rem; font-weight: 500; color: #1e293b;
-    cursor: pointer; transition: background .12s;
+    padding: 11px 16px; font-size: .84rem; font-weight: 600; color: #bfdbfe;
+    cursor: pointer; transition: all .15s;
     border: none; background: none; width: 100%; text-align: left;
     font-family: inherit; text-decoration: none;
   }
-  .auth-dd-item:hover { background: #f8fafc; }
-  .auth-dd-item.danger { color: #ef4444; }
-  .auth-dd-item i { width: 16px; text-align: center; opacity: .65; }
-  .auth-dd-sep { height: 1px; background: #f1f5f9; margin: 3px 0; }
+  .auth-dd-item:hover { background: rgba(59,130,246,.15); color: #e0f2fe; }
+  .auth-dd-item.danger { color: #fca5a5; }
+  .auth-dd-item.danger:hover { background: rgba(239,68,68,.12); color: #fca5a5; }
+  .auth-dd-item i { width: 16px; text-align: center; color: #93c5fd; opacity: .85; }
+  .auth-dd-sep { height: 1px; background: rgba(59,130,246,.15); margin: 3px 0; }
 
   /* ── Modal ── */
   #auth-modal-bg {
@@ -209,7 +228,7 @@ function injectStyles() {
   }
   #auth-modal-bg.open .auth-modal { transform: scale(1) translateY(0); }
   .auth-modal-head {
-    background: linear-gradient(135deg,#3b82f6,#8b5cf6);
+    background: linear-gradient(135deg,#1d4ed8,#3b82f6);
     padding: 24px 24px 18px; color: white; text-align: center; position: relative;
   }
   .auth-modal-head h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: 3px; }
@@ -235,7 +254,7 @@ function injectStyles() {
   .auth-field input:focus { border-color: #3b82f6; }
   .auth-submit-btn {
     width: 100%; padding: 12px;
-    background: linear-gradient(135deg,#3b82f6,#8b5cf6);
+    background: linear-gradient(135deg,#3b82f6,#2563eb);
     color: white; border: none; border-radius: 10px;
     font-family: inherit; font-size: .92rem; font-weight: 700;
     cursor: pointer; transition: all .18s; margin-top: 4px;
@@ -269,18 +288,19 @@ function injectStyles() {
   }
   #rules-modal-bg.open { opacity:1; pointer-events: all; }
   .rules-modal {
-    background: white; border-radius: 22px; width: 100%; max-width: 560px;
+    background: rgba(15,23,42,.98); border-radius: 22px; width: 100%; max-width: 560px;
     max-height: 90vh; display: flex; flex-direction: column;
-    box-shadow: 0 30px 80px rgba(0,0,0,.22); overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(59,130,246,.2); overflow: hidden;
     transform: scale(.95) translateY(8px); transition: transform .22s ease;
+    border: 1px solid rgba(59,130,246,.15);
   }
   #rules-modal-bg.open .rules-modal { transform: scale(1) translateY(0); }
   .rules-modal-head {
-    background: linear-gradient(135deg,#3b82f6,#8b5cf6);
+    background: linear-gradient(135deg,#1d4ed8,#3b82f6);
     padding: 22px 24px 16px; color: white; text-align: center; position: relative; flex-shrink:0;
   }
-  .rules-modal-head h3 { font-size: 1.15rem; font-weight: 800; margin-bottom: 3px; }
-  .rules-modal-head p { font-size: .75rem; opacity: .85; margin: 0; }
+  .rules-modal-head h3 { font-size: 1.15rem; font-weight: 800; margin-bottom: 3px; color: white; }
+  .rules-modal-head p { font-size: .75rem; opacity: .85; margin: 0; color: white; }
   .rules-modal-close {
     position: absolute; top: 12px; right: 12px;
     background: rgba(255,255,255,.18); border: none; color: white;
@@ -288,46 +308,50 @@ function injectStyles() {
     font-size: .76rem; display: flex; align-items: center; justify-content: center;
   }
   .rules-modal-close:hover { background: rgba(255,255,255,.32); }
-  .rules-modal-body { padding: 22px 24px; overflow-y: auto; flex:1; }
+  .rules-modal-body { padding: 22px 24px; overflow-y: auto; flex:1; scrollbar-width: thin; scrollbar-color: rgba(99,102,241,.3) transparent; }
+  .rules-modal-body::-webkit-scrollbar { width: 4px; }
+  .rules-modal-body::-webkit-scrollbar-thumb { background: rgba(59,130,246,.3); border-radius: 4px; }
   .rules-section { margin-bottom: 20px; }
   .rules-section:last-child { margin-bottom: 0; }
   .rules-section h4 {
     font-size: .78rem; font-weight: 800; text-transform: uppercase;
-    letter-spacing: .6px; color: #6366f1; margin-bottom: 8px;
+    letter-spacing: .6px; color: #93c5fd; margin-bottom: 8px;
     display: flex; align-items: center; gap: 7px;
   }
-  .rules-section h4 i { font-size: .8rem; }
+  .rules-section h4 i { font-size: .8rem; color: #93c5fd; }
   .rules-section p, .rules-section li {
-    font-size: .84rem; color: #334155; line-height: 1.6; margin-bottom: 5px;
+    font-size: .84rem; color: #94a3b8; line-height: 1.6; margin-bottom: 5px;
   }
+  .rules-section li strong { color: #e2e8f0; }
   .rules-section ul { padding-left: 18px; margin: 0; }
   .rules-highlight {
-    background: linear-gradient(135deg,rgba(99,102,241,.07),rgba(139,92,246,.07));
-    border: 1.5px solid rgba(99,102,241,.2);
+    background: rgba(59,130,246,.1);
+    border: 1.5px solid rgba(59,130,246,.3);
     border-radius: 12px; padding: 14px 16px; margin-bottom: 16px;
-    font-size: .85rem; color: #1e293b; line-height: 1.65;
+    font-size: .85rem; color: #bfdbfe; line-height: 1.65;
   }
-  .rules-highlight strong { color: #4f46e5; }
+  .rules-highlight strong { color: #93c5fd; }
   .rules-badge-green {
-    display: inline-block; background: #dcfce7; color: #15803d;
+    display: inline-block; background: rgba(16,185,129,.2); color: #6ee7b7;
     font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 20px;
-    margin-left: 6px; vertical-align: middle;
+    margin-left: 6px; vertical-align: middle; border: 1px solid rgba(16,185,129,.3);
   }
   .rules-badge-orange {
-    display: inline-block; background: #fef3c7; color: #b45309;
+    display: inline-block; background: rgba(245,158,11,.15); color: #fcd34d;
     font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 20px;
-    margin-left: 6px; vertical-align: middle;
+    margin-left: 6px; vertical-align: middle; border: 1px solid rgba(245,158,11,.25);
   }
   .rules-modal-footer {
-    padding: 14px 24px; border-top: 1px solid #f1f5f9; flex-shrink:0;
-    display: flex; justify-content: center;
+    padding: 14px 24px; border-top: 1px solid rgba(59,130,246,.15); flex-shrink:0;
+    display: flex; justify-content: center; background: rgba(15,23,42,.6);
   }
   .rules-ok-btn {
     padding: 10px 32px;
-    background: linear-gradient(135deg,#3b82f6,#8b5cf6);
+    background: linear-gradient(135deg,#3b82f6,#2563eb);
     color: white; border: none; border-radius: 10px;
     font-family: inherit; font-size: .9rem; font-weight: 700;
     cursor: pointer; transition: all .18s;
+    box-shadow: 0 4px 14px rgba(59,130,246,.35);
   }
   .rules-ok-btn:hover { opacity:.9; transform:translateY(-1px); }
 
@@ -335,56 +359,58 @@ function injectStyles() {
      MOBILE MENU AUTH SECTION
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   .mob-auth-section {
-    border-bottom: 1px solid rgba(0,0,0,.07);
+    border-bottom: 1px solid rgba(59,130,246,.2);
     padding: 14px 0 14px; margin-bottom: 4px;
   }
   .mob-auth-label {
     font-size: .63rem; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 1px; color: #1e293b; padding: 0 20px 8px; display: block;
+    letter-spacing: 1px; color: #94a3b8; padding: 0 20px 8px; display: block;
   }
   .mob-auth-cta {
     display: flex; align-items: center; gap: 13px;
     padding: 12px 20px; background: none; border: none;
-    color: #000; font-size: .95rem; font-weight: 800;
+    color: #1e293b; font-size: .95rem; font-weight: 800;
     cursor: pointer; font-family: inherit; width: 100%; text-align: left;
-    transition: background .14s;
+    transition: background .14s; border-radius: 10px;
   }
-  .mob-auth-cta:hover { background: rgba(59,130,246,.06); }
+  .mob-auth-cta:hover { background: rgba(59,130,246,.08); }
   .mob-auth-cta-icon {
     width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
-    background: linear-gradient(135deg,#3b82f6,#8b5cf6);
+    background: linear-gradient(135deg,#3b82f6,#2563eb);
     display: flex; align-items: center; justify-content: center;
     font-size: .9rem; color: white;
   }
   .mob-auth-user { padding: 0 16px 6px; }
   .mob-auth-chip {
     display: flex; align-items: center; gap: 10px;
-    background: rgba(59,130,246,.06); border: 1px solid rgba(59,130,246,.12); border-radius: 12px;
+    background: #f0f7ff; border: 1px solid rgba(59,130,246,.2); border-radius: 12px;
     padding: 10px 14px; margin-bottom: 6px;
   }
   .mob-auth-av {
     width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
-    background: linear-gradient(135deg,#3b82f6,#8b5cf6);
+    background: linear-gradient(135deg,#3b82f6,#2563eb);
     display: flex; align-items: center; justify-content: center;
     color: white; font-size: .8rem; font-weight: 800;
+    box-shadow: 0 0 0 2px rgba(59,130,246,.2);
   }
   .mob-auth-info { flex: 1; min-width: 0; }
-  .mob-auth-info span:first-child { display: block; font-size: .62rem; color: #64748b; }
+  .mob-auth-info span:first-child { display: block; font-size: .62rem; color: #94a3b8; }
   .mob-auth-info span:last-child {
-    display: block; font-size: .84rem; font-weight: 600; color: #1e293b;
+    display: block; font-size: .84rem; font-weight: 700; color: #1e293b;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .mob-auth-link {
     display: flex; align-items: center; gap: 11px;
     padding: 10px 20px; background: none; border: none;
-    color: #1e293b; font-size: .84rem; font-weight: 600;
+    color: #374151; font-size: .84rem; font-weight: 600;
     cursor: pointer; font-family: inherit; width: 100%;
     text-align: left; transition: all .14s; text-decoration: none;
+    border-radius: 10px; border-left: 3px solid transparent;
   }
-  .mob-auth-link:hover { color: #0f172a; background: rgba(59,130,246,.06); }
-  .mob-auth-link.red { color: #f87171; }
-  .mob-auth-link.red:hover { color: #ef4444; }
-  .mob-auth-link i { width: 16px; text-align: center; font-size: .84rem; }
+  .mob-auth-link:hover { color: #1e293b; background: rgba(59,130,246,.08); border-left-color: #3b82f6; }
+  .mob-auth-link.red { color: #ef4444; }
+  .mob-auth-link.red:hover { color: #dc2626; background: rgba(239,68,68,.07); border-left-color: #ef4444; }
+  .mob-auth-link i { width: 16px; text-align: center; font-size: .84rem; color: #3b82f6; }
   `;
   document.head.appendChild(s);
 }
@@ -452,22 +478,24 @@ const RULES = {
         🔒 <strong>20% avans</strong> — La plasarea comenzii, clientul plătește <strong>20%</strong> din prețul total al site-ului. Această sumă confirmă comanda și acoperă munca inițială de design și dezvoltare.
       </div>
       <ul>
-        <li>După achitarea avansului de 20%, echipa noastră începe imediat lucrul la site.</li>
+        <li>După achitarea avansului de 20%, echipa noastră începe lucrul la site-ul tău în termen de 24 de ore.</li>
         <li>Când site-ul este gata, îl prezentăm clientului pentru aprobare.</li>
         <li>Dacă site-ul <strong>ÎȚI PLACE</strong><span class="rules-badge-green">✓ Aprobat</span>: plătești restul de <strong>80%</strong>, iar site-ul este publicat online.</li>
         <li>Dacă site-ul <strong>NU ÎȚI PLACE</strong><span class="rules-badge-orange">✗ Respins</span>: avansul de 20% nu se returnează — acesta acoperă munca depusă (design, cod, timp).</li>
       </ul>`,
     delivery: 'Timp de livrare',
     deliveryText: `<ul>
-        <li><strong>Basic</strong>: 1–2 zile lucrătoare</li>
-        <li><strong>Standard</strong>: 3–5 zile lucrătoare</li>
-        <li><strong>Premium</strong>: 7–14 zile lucrătoare</li>
+        <li><strong>Basic</strong>: 1 zi lucrătoare</li>
+        <li><strong>Standard</strong>: 1–2 zile lucrătoare</li>
+        <li><strong>Premium</strong>: 3–5 zile lucrătoare</li>
         <li>Termenele pot varia în funcție de complexitatea proiectului și disponibilitatea informațiilor furnizate de client.</li>
       </ul>`,
     revisions: 'Revizii & Modificări',
     revisionsText: `<ul>
         <li>Fiecare pachet include revizii gratuite în primele 30 de zile.</li>
-        <li>Modificările ulterioare sunt disponibile prin planul de mentenanță: 1 modificare (€8), 5 modificări (€25), 12 modificări (€50).</li>
+        <li><strong>Basic</strong>: modificări gratuite.</li>
+        <li><strong>Standard</strong>: €3 per modificare.</li>
+        <li><strong>Premium</strong>: €7 per modificare.</li>
         <li>O „modificare" înseamnă o schimbare de conținut (text, imagine, culoare). Schimbările structurale majore pot conta ca modificări multiple.</li>
       </ul>`,
     content: 'Conținut & Materiale',
@@ -498,22 +526,24 @@ const RULES = {
         🔒 <strong>20% upfront deposit</strong> — When placing an order, the client pays <strong>20%</strong> of the total website price. This confirms the order and covers the initial design and development work.
       </div>
       <ul>
-        <li>After the 20% deposit is paid, our team begins work immediately.</li>
+        <li>After the 20% deposit is paid, our team begins working on your website within 24 hours.</li>
         <li>Once the website is ready, we present it to the client for review.</li>
         <li>If you <strong>LIKE the site</strong><span class="rules-badge-green">✓ Approved</span>: you pay the remaining <strong>80%</strong> and the site goes live.</li>
         <li>If you <strong>DON'T LIKE the site</strong><span class="rules-badge-orange">✗ Declined</span>: the 20% deposit is non-refundable — it covers the work done (design, code, time).</li>
       </ul>`,
     delivery: 'Delivery Time',
     deliveryText: `<ul>
-        <li><strong>Basic</strong>: 1–2 working days</li>
-        <li><strong>Standard</strong>: 3–5 working days</li>
-        <li><strong>Premium</strong>: 7–14 working days</li>
+        <li><strong>Basic</strong>: 1 working day</li>
+        <li><strong>Standard</strong>: 1–2 working days</li>
+        <li><strong>Premium</strong>: 3–5 working days</li>
         <li>Timelines may vary depending on project complexity and how quickly the client provides content.</li>
       </ul>`,
     revisions: 'Revisions & Changes',
     revisionsText: `<ul>
         <li>Each package includes free revisions within the first 30 days.</li>
-        <li>Further changes are available via the maintenance plan: 1 change (€8), 5 changes (€25), 12 changes (€50).</li>
+        <li><strong>Basic</strong>: free changes.</li>
+        <li><strong>Standard</strong>: €3 per change.</li>
+        <li><strong>Premium</strong>: €7 per change.</li>
         <li>A "change" means one content update (text, image, color). Major structural changes may count as multiple changes.</li>
       </ul>`,
     content: 'Content & Materials',
@@ -544,22 +574,24 @@ const RULES = {
         🔒 <strong>Предоплата 20%</strong> — При размещении заказа клиент оплачивает <strong>20%</strong> от общей стоимости сайта. Это подтверждает заказ и покрывает начальные работы по дизайну и разработке.
       </div>
       <ul>
-        <li>После оплаты 20% наша команда немедленно приступает к работе.</li>
+        <li>После оплаты 20% наша команда приступает к работе над вашим сайтом в течение 24 часов.</li>
         <li>Когда сайт готов, мы показываем его клиенту для утверждения.</li>
         <li>Если сайт <strong>ПОНРАВИЛСЯ</strong><span class="rules-badge-green">✓ Принято</span>: вы оплачиваете оставшиеся <strong>80%</strong>, и сайт публикуется.</li>
         <li>Если сайт <strong>НЕ ПОНРАВИЛСЯ</strong><span class="rules-badge-orange">✗ Отклонено</span>: предоплата 20% не возвращается — она покрывает выполненную работу (дизайн, код, время).</li>
       </ul>`,
     delivery: 'Сроки доставки',
     deliveryText: `<ul>
-        <li><strong>Basic</strong>: 1–2 рабочих дня</li>
-        <li><strong>Standard</strong>: 3–5 рабочих дней</li>
-        <li><strong>Premium</strong>: 7–14 рабочих дней</li>
+        <li><strong>Basic</strong>: 1 рабочий день</li>
+        <li><strong>Standard</strong>: 1–2 рабочих дня</li>
+        <li><strong>Premium</strong>: 3–5 рабочих дней</li>
         <li>Сроки могут варьироваться в зависимости от сложности проекта и скорости предоставления материалов клиентом.</li>
       </ul>`,
     revisions: 'Правки и изменения',
     revisionsText: `<ul>
         <li>Каждый пакет включает бесплатные правки в течение первых 30 дней.</li>
-        <li>Дальнейшие изменения доступны через план обслуживания: 1 изменение (€8), 5 изменений (€25), 12 изменений (€50).</li>
+        <li><strong>Basic</strong>: бесплатные изменения.</li>
+        <li><strong>Standard</strong>: €3 за изменение.</li>
+        <li><strong>Premium</strong>: €7 за изменение.</li>
         <li>«Изменение» — это одно обновление контента (текст, изображение, цвет). Крупные структурные изменения могут считаться несколькими.</li>
       </ul>`,
     content: 'Контент и материалы',
@@ -669,15 +701,19 @@ function buildNavWrap() {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function buildMobileSection() {
   if (document.getElementById('mob-auth-section')) return;
-  // Insert auth section RIGHT AFTER the mobile menu header (at the top)
-  const header = document.querySelector('.mobile-menu-header');
+  // Try inserting before mobile-nav-links (most reliable anchor)
   const navLinks = document.querySelector('.mobile-nav-links');
-  if (!header || !navLinks) return;
+  const menuContent = document.querySelector('.mobile-menu-content');
+  if (!navLinks && !menuContent) return;
   const sec = document.createElement('div');
   sec.id = 'mob-auth-section';
   sec.className = 'mob-auth-section';
-  // Insert between header and nav links so it appears at top
-  header.parentNode.insertBefore(sec, navLinks);
+  if (navLinks) {
+    navLinks.parentNode.insertBefore(sec, navLinks);
+  } else {
+    // fallback: prepend inside menu content
+    menuContent.insertBefore(sec, menuContent.firstChild);
+  }
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -697,12 +733,15 @@ function renderNav() {
     wrap.innerHTML = `
     <div class="auth-pill" id="auth-user-pill" onclick="authToggleDropdown()">
       <div class="auth-pill-av">${initial}</div>
-      <span class="auth-pill-name">${t('hello')}, ${name}</span>
+      <span class="auth-pill-name">${name}</span>
       <i class="fas fa-chevron-down auth-pill-chev"></i>
       <div class="auth-dropdown" id="auth-dropdown">
         <a class="auth-dd-item" href="orders.html">
           <i class="fas fa-boxes"></i> ${t('myOrders')}
         </a>
+        <button class="auth-dd-item" onclick="authOpenEditProfile(event)">
+          <i class="fas fa-user-edit"></i> ${t('editProfile')}${!userProfile.phone ? ' <span style="display:inline-block;width:7px;height:7px;background:#f59e0b;border-radius:50%;margin-left:4px;vertical-align:middle;"></span>' : ''}
+        </button>
         <button class="auth-dd-item" onclick="authOpenRules(event)">
           <i class="fas fa-file-alt"></i> ${t('rules')}
         </button>
@@ -734,13 +773,16 @@ function renderMobile() {
       <div class="mob-auth-chip">
         <div class="mob-auth-av">${initial}</div>
         <div class="mob-auth-info">
-          <span>${t('hello')}</span>
+          <span>${t('mobAs')}</span>
           <span>${name}</span>
         </div>
       </div>
       <a class="mob-auth-link" href="orders.html">
         <i class="fas fa-boxes"></i> ${t('mobOrders')}
       </a>
+      <button class="mob-auth-link" onclick="authOpenEditProfile()">
+        <i class="fas fa-user-edit"></i> ${t('editProfile')}${!userProfile.phone ? ' <span style="display:inline-block;width:7px;height:7px;background:#f59e0b;border-radius:50%;margin-left:4px;vertical-align:middle;"></span>' : ''}
+      </button>
       <button class="mob-auth-link" onclick="authOpenRules()">
         <i class="fas fa-file-alt"></i> ${t('rules')}
       </button>
@@ -890,6 +932,106 @@ function watchLangChange() {
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// EDIT PROFILE MODAL
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function buildEditProfileModal() {
+  if (document.getElementById('ep-modal-bg')) return;
+  const bg = document.createElement('div');
+  bg.id = 'ep-modal-bg';
+  bg.innerHTML = `
+  <div class="auth-modal" style="max-width:360px;">
+    <div class="auth-modal-head" style="background:linear-gradient(135deg,#7c3aed,#a855f7);">
+      <button class="auth-modal-close" onclick="authCloseEditProfile()"><i class="fas fa-times"></i></button>
+      <h3 id="ep-title"></h3>
+      <p id="ep-sub"></p>
+    </div>
+    <div class="auth-modal-body">
+      <div id="ep-phone-banner" style="display:none;background:rgba(245,158,11,.1);border:1.5px solid rgba(245,158,11,.3);border-radius:9px;padding:9px 12px;font-size:.8rem;color:#92400e;margin-bottom:12px;font-weight:600;"></div>
+      <div class="auth-field">
+        <label id="ep-lbl-name"></label>
+        <input type="text" id="ep-name-input" autocomplete="name">
+      </div>
+      <div class="auth-field">
+        <label id="ep-lbl-phone"></label>
+        <input type="tel" id="ep-phone-input" autocomplete="tel" placeholder="+40 7xx xxx xxx">
+      </div>
+      <button class="auth-submit-btn" id="ep-save-btn" onclick="authSaveProfile()" style="background:linear-gradient(135deg,#7c3aed,#a855f7);"></button>
+      <div class="auth-error" id="ep-error"></div>
+    </div>
+  </div>`;
+  // style the bg overlay
+  bg.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,.52);backdrop-filter:blur(6px);z-index:9996;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .22s;';
+  document.body.appendChild(bg);
+  bg.addEventListener('click', e => { if (e.target === bg) authCloseEditProfile(); });
+  document.getElementById('ep-phone-input')?.addEventListener('keydown', e => { if (e.key === 'Enter') authSaveProfile(); });
+}
+
+function authOpenEditProfile(e) {
+  e?.stopPropagation();
+  document.getElementById('auth-dropdown')?.classList.remove('open');
+  buildEditProfileModal();
+  // Populate fields
+  const name = userProfile.displayName || currentUser?.displayName || currentUser?.email?.split('@')[0] || '';
+  const phone = userProfile.phone || '';
+  document.getElementById('ep-name-input').value = name;
+  document.getElementById('ep-phone-input').value = phone;
+  document.getElementById('ep-title').textContent = t('editProfileTitle');
+  document.getElementById('ep-sub').textContent = t('editProfileSub');
+  document.getElementById('ep-lbl-name').textContent = t('epName');
+  document.getElementById('ep-lbl-phone').textContent = t('epPhone');
+  document.getElementById('ep-save-btn').textContent = t('epSave');
+  document.getElementById('ep-save-btn').disabled = false;
+  document.getElementById('ep-error').style.display = 'none';
+  // Show banner if no phone
+  const banner = document.getElementById('ep-phone-banner');
+  if (!phone) { banner.textContent = t('epPhoneMissing'); banner.style.display = 'block'; }
+  else { banner.style.display = 'none'; }
+  const bg = document.getElementById('ep-modal-bg');
+  bg.style.opacity = '0'; bg.style.pointerEvents = 'all';
+  requestAnimationFrame(() => { bg.style.opacity = '1'; });
+  setTimeout(() => document.getElementById('ep-phone-input')?.focus(), 220);
+}
+
+function authCloseEditProfile() {
+  const bg = document.getElementById('ep-modal-bg');
+  if (!bg) return;
+  bg.style.opacity = '0';
+  setTimeout(() => { bg.style.pointerEvents = 'none'; }, 220);
+}
+
+async function authSaveProfile() {
+  if (!currentUser) return;
+  const name  = document.getElementById('ep-name-input').value.trim();
+  const phone = document.getElementById('ep-phone-input').value.trim();
+  const btn   = document.getElementById('ep-save-btn');
+  const errEl = document.getElementById('ep-error');
+  btn.disabled = true; btn.textContent = t('epSaving');
+  errEl.style.display = 'none';
+  try {
+    // Update Firebase Auth display name
+    if (name && _auth?.currentUser) await _auth.currentUser.updateProfile({ displayName: name });
+    // Update Firestore user doc
+    if (_db) await _db.collection('users').doc(currentUser.uid).set({ displayName: name, phone }, { merge: true });
+    // Update local cache
+    userProfile.displayName = name; userProfile.phone = phone;
+    const cached = JSON.parse(localStorage.getItem('wbp_user') || '{}');
+    cached.displayName = name; cached.phone = phone;
+    localStorage.setItem('wbp_user', JSON.stringify(cached));
+    // Re-render nav/mobile
+    renderAll();
+    // Show success
+    btn.textContent = t('epSaved');
+    btn.style.background = 'linear-gradient(135deg,#10b981,#059669)';
+    // Hide phone banner if now filled
+    if (phone) { const b = document.getElementById('ep-phone-banner'); if (b) b.style.display = 'none'; }
+    setTimeout(() => authCloseEditProfile(), 1200);
+  } catch(e) {
+    errEl.textContent = t('errGen'); errEl.style.display = 'block';
+    btn.disabled = false; btn.textContent = t('epSave');
+  }
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // GLOBALS
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 window.authOpenModal      = authOpenModal;
@@ -898,8 +1040,11 @@ window.authToggleMode     = authToggleMode;
 window.authSubmit         = authSubmit;
 window.authLogout         = authLogout;
 window.authToggleDropdown = authToggleDropdown;
-window.authOpenRules      = authOpenRules;
-window.authCloseRules     = authCloseRules;
+window.authOpenRules         = authOpenRules;
+window.authCloseRules        = authCloseRules;
+window.authOpenEditProfile   = authOpenEditProfile;
+window.authCloseEditProfile  = authCloseEditProfile;
+window.authSaveProfile       = authSaveProfile;
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // BOOT
