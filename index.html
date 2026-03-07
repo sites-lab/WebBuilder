@@ -1350,6 +1350,27 @@
         .standard .discount-badge { background: #ede9fe; color: #5b21b6; }
         .premium .discount-badge  { background: #f3e8ff; color: #6d28d9; }
 
+        /* Delivery time badge */
+        .delivery-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            color: #065f46;
+            border: 1px solid rgba(16,185,129,0.25);
+        }
+        .delivery-badge i { font-size: 0.7rem; }
+        .delivery-badge--slow {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #92400e;
+            border-color: rgba(245,158,11,0.25);
+        }
+
         /* Delivery time pill */
         .package-header > p:last-of-type {
             display: inline-flex;
@@ -3442,7 +3463,7 @@
                             <div class="discount-badge" data-i18n="packages.basic.discount">DISCOUNT 60%</div>
                         </div>
                         <p data-i18n="packages.basic.description">Perfect for informational websites</p>
-                        <p><strong data-i18n="packages.delivery">Delivery:</strong> <span data-i18n="packages.basic.deliveryTime">1-2 working days</span></p>
+                        <div class="delivery-badge"><i class="fas fa-bolt"></i> <span data-i18n="packages.basic.deliveryTime">1-2 working days</span></div>
                     </div>
                     <div class="package-features">
                         <ul>
@@ -3472,7 +3493,7 @@
                             <div class="discount-badge" data-i18n="packages.standard.discount">DISCOUNT 50%</div>
                         </div>
                         <p data-i18n="packages.standard.description">Great for coffee shops & small businesses</p>
-                        <p><strong data-i18n="packages.delivery">Delivery:</strong> <span data-i18n="packages.standard.deliveryTime">3-4 working days</span></p>
+                        <div class="delivery-badge"><i class="fas fa-clock"></i> <span data-i18n="packages.standard.deliveryTime">3-4 working days</span></div>
                     </div>
                     <div class="package-features">
                         <ul>
@@ -3493,9 +3514,8 @@
                 </div>
 
                 <!-- Pachet Premium -->
-                <div class="package-card premium fade-in" style="position:relative;">
+                <div class="package-card premium fade-in">
                     <div class="package-header">
-                        <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#7c3aed,#a855f7);color:white;font-size:0.72rem;font-weight:800;padding:5px 18px;border-radius:0 0 12px 12px;letter-spacing:0.8px;text-transform:uppercase;white-space:nowrap;box-shadow:0 4px 14px rgba(124,58,237,0.45);">&#11088; Most Popular</div>
                         <div class="package-tier-icon"><i class="fas fa-crown"></i></div>
                         <h3 data-i18n="packages.premium.title">Premium</h3>
                         <div class="package-price-container">
@@ -3504,7 +3524,7 @@
                             <div class="discount-badge" data-i18n="packages.premium.discount">DISCOUNT 45%</div>
                         </div>
                         <p data-i18n="packages.premium.description">Complete solution for restaurants & businesses</p>
-                        <p><strong data-i18n="packages.delivery">Delivery:</strong> <span data-i18n="packages.premium.deliveryTime">5-7 working days</span></p>
+                        <div class="delivery-badge delivery-badge--slow"><i class="fas fa-calendar-alt"></i> <span data-i18n="packages.premium.deliveryTime">5-7 working days</span></div>
                     </div>
                     <div class="package-features">
                         <ul>
@@ -3538,18 +3558,18 @@
                             <div class="discount-badge" data-i18n="packages.basic.discount">DISCOUNT 60%</div>
                         </div>
                         <p data-i18n="packages.basic.description">Perfect for informational websites</p>
-                        <p><strong data-i18n="packages.delivery">Delivery:</strong> <span data-i18n="packages.basic.deliveryTime">1-2 working days</span></p>
+                        <div class="delivery-badge"><i class="fas fa-bolt"></i> <span data-i18n="packages.basic.deliveryTime">1-2 working days</span></div>
                     </div>
                     <div class="package-features">
                         <ul>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature1">Fully responsive design</span></li>
-                            <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature2">Modern & clean layout</span></li>
-                            <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature3">Contact form with email notifications</span></li>
+                            <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature2">Modern &amp; clean layout</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature4">Basic SEO optimization</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature5">Social media integration</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature6">Mobile-friendly navigation</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.free_changes">10 free changes, then €2/change</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.free_hosting">Free hosting included</span></li>
+                            <li><i class="fas fa-check"></i> <span><i class="fab fa-cloudflare" style="color:#f38020"></i> <span data-i18n="packages.cloudflare">Cloudflare security &amp; DDoS protection</span></span></li>
                         </ul>
                         <button class="btn btn-primary package-btn order-btn" data-package="basic" data-price="40" data-i18n="packages.order">
                             Order
@@ -3567,19 +3587,20 @@
                             <span class="package-price">€250</span>
                             <div class="discount-badge" data-i18n="packages.standard.discount">DISCOUNT 50%</div>
                         </div>
-                        <p data-i18n="packages.standard.description">Great for coffee shops & small businesses</p>
-                        <p><strong data-i18n="packages.delivery">Delivery:</strong> <span data-i18n="packages.standard.deliveryTime">3-4 working days</span></p>
+                        <p data-i18n="packages.standard.description">Great for coffee shops &amp; small businesses</p>
+                        <div class="delivery-badge"><i class="fas fa-clock"></i> <span data-i18n="packages.standard.deliveryTime">3-4 working days</span></div>
                     </div>
                     <div class="package-features">
                         <ul>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.standard.feature1">All Basic features included</span></li>
-                            <li><i class="fas fa-check"></i> <span data-i18n="packages.standard.feature2">Custom design & branding</span></li>
+                            <li><i class="fas fa-check"></i> <span data-i18n="packages.standard.feature2">Custom design &amp; branding</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.standard.feature3">Dynamic menu/product showcase</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.standard.feature4">Photo gallery with lightbox</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.standard.feature5">Advanced SEO optimization</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.standard.feature6">Google Maps integration</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.standard.feature7">Enhanced loading speed</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.free_hosting">Free hosting included</span></li>
+                            <li><i class="fas fa-check"></i> <span><i class="fab fa-cloudflare" style="color:#f38020"></i> <span data-i18n="packages.cloudflare">Cloudflare security &amp; DDoS protection</span></span></li>
                         </ul>
                         <button class="btn btn-primary package-btn order-btn" data-package="standard" data-price="250" data-i18n="packages.order">
                             Order
@@ -3597,19 +3618,20 @@
                             <span class="package-price">€550</span>
                             <div class="discount-badge" data-i18n="packages.premium.discount">DISCOUNT 45%</div>
                         </div>
-                        <p data-i18n="packages.premium.description">Complete solution for restaurants & businesses</p>
-                        <p><strong data-i18n="packages.delivery">Delivery:</strong> <span data-i18n="packages.premium.deliveryTime">5-7 working days</span></p>
+                        <p data-i18n="packages.premium.description">Complete solution for restaurants &amp; businesses</p>
+                        <div class="delivery-badge delivery-badge--slow"><i class="fas fa-calendar-alt"></i> <span data-i18n="packages.premium.deliveryTime">5-7 working days</span></div>
                     </div>
                     <div class="package-features">
                         <ul>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature1">All Standard features included</span></li>
-                            <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature2">Premium custom design & animations</span></li>
+                            <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature2">Premium custom design &amp; animations</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature3">Online reservation/booking system</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature4">Secure payment integration</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature5">Priority 24/7 support</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature6">Comprehensive SEO package</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature7">Advanced analytics integration</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature8">Post-launch optimization</span></li>
+                            <li><i class="fas fa-check"></i> <span><i class="fab fa-cloudflare" style="color:#f38020"></i> <span data-i18n="packages.cloudflare">Cloudflare security &amp; DDoS protection</span></span></li>
                         </ul>
                         <button class="btn btn-primary package-btn order-btn" data-package="premium" data-price="550" data-i18n="packages.order">
                             Order
