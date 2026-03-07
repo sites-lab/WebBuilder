@@ -279,6 +279,89 @@ function injectStyles() {
   }
   .auth-form-notice.show { display: flex; }
 
+  /* ── Edit Profile Modal (full card) ── */
+  #ep-modal-bg {
+    position: fixed; inset: 0; background: rgba(15,23,42,.52);
+    backdrop-filter: blur(6px); z-index: 9996;
+    display: flex; align-items: center; justify-content: center; padding: 16px;
+    opacity: 0; pointer-events: none; transition: opacity .22s;
+  }
+  #ep-modal-bg.open { opacity: 1; pointer-events: all; }
+  .ep-modal {
+    background: white; border-radius: 22px; width: 100%; max-width: 420px;
+    box-shadow: 0 30px 80px rgba(0,0,0,.22); overflow: hidden;
+    transform: scale(.95) translateY(8px); transition: transform .22s ease;
+  }
+  #ep-modal-bg.open .ep-modal { transform: scale(1) translateY(0); }
+  .ep-modal-head {
+    background: linear-gradient(135deg,#7c3aed,#a855f7);
+    padding: 0 24px 18px; color: white; position: relative;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .ep-modal-close {
+    position: absolute; top: 12px; right: 12px;
+    background: rgba(255,255,255,.18); border: none; color: white;
+    width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
+    font-size: .76rem; display: flex; align-items: center; justify-content: center;
+  }
+  .ep-modal-close:hover { background: rgba(255,255,255,.32); }
+  .ep-av-big {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: rgba(255,255,255,.25); border: 3px solid rgba(255,255,255,.4);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem; font-weight: 800; color: white;
+    margin: 22px auto 10px;
+  }
+  .ep-modal-head h3 { font-size: 1.05rem; font-weight: 800; color: white; margin-bottom: 2px; }
+  .ep-modal-head p  { font-size: .78rem; opacity: .8; color: white; margin: 0; }
+  .ep-modal-body { padding: 22px 24px 26px; }
+  .ep-section { margin-bottom: 22px; }
+  .ep-section:last-child { margin-bottom: 0; }
+  .ep-section-title {
+    font-size: .68rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .6px; color: #64748b; margin-bottom: 12px;
+    padding-bottom: 7px; border-bottom: 1px solid #f1f5f9;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .ep-field { margin-bottom: 11px; }
+  .ep-field label { display: block; font-size: .7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 5px; }
+  .ep-field input {
+    width: 100%; padding: 10px 13px; border: 2px solid #e2e8f0; border-radius: 10px;
+    font-family: inherit; font-size: .875rem; color: #1e293b;
+    outline: none; transition: border-color .18s; background: white;
+  }
+  .ep-field input:focus { border-color: #7c3aed; }
+  .ep-field input[readonly] { background: #f8fafc; color: #94a3b8; cursor: default; }
+  .ep-save-btn {
+    width: 100%; padding: 11px;
+    background: linear-gradient(135deg,#7c3aed,#a855f7);
+    color: white; border: none; border-radius: 10px;
+    font-family: inherit; font-size: .9rem; font-weight: 700;
+    cursor: pointer; transition: all .18s; margin-top: 2px;
+    box-shadow: 0 3px 12px rgba(124,58,237,.3);
+  }
+  .ep-save-btn:hover { opacity: .9; transform: translateY(-1px); }
+  .ep-save-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+  .ep-reset-btn {
+    width: 100%; padding: 10px;
+    background: transparent; color: #7c3aed;
+    border: 2px solid rgba(124,58,237,.3); border-radius: 10px;
+    font-family: inherit; font-size: .875rem; font-weight: 600;
+    cursor: pointer; transition: all .18s; display: flex; align-items: center; justify-content: center; gap: 7px;
+  }
+  .ep-reset-btn:hover { background: rgba(124,58,237,.06); border-color: #7c3aed; }
+  .ep-msg {
+    padding: 9px 12px; border-radius: 8px; font-size: .8rem;
+    font-weight: 500; margin-top: 10px; display: none;
+  }
+  .ep-msg.ok  { background: #ecfdf5; color: #065f46; }
+  .ep-msg.err { background: #fee2e2; color: #7f1d1d; }
+  .ep-phone-banner {
+    background: rgba(245,158,11,.1); border: 1.5px solid rgba(245,158,11,.3);
+    border-radius: 9px; padding: 9px 12px; font-size: .8rem;
+    color: #92400e; margin-bottom: 14px; font-weight: 600; display: none;
+  }
+
   /* ── Rules Modal ── */
   #rules-modal-bg {
     position: fixed; inset: 0; background: rgba(15,23,42,.52);
@@ -486,13 +569,12 @@ const RULES = {
     delivery: 'Timp de livrare',
     deliveryText: `<ul>
         <li><strong>Basic</strong>: 1 zi lucrătoare</li>
-        <li><strong>Standard</strong>: 1–2 zile lucrătoare</li>
-        <li><strong>Premium</strong>: 3–5 zile lucrătoare</li>
+        <li><strong>Standard</strong>: 3–4 zile lucrătoare</li>
+        <li><strong>Premium</strong>: 5–7 zile lucrătoare</li>
         <li>Termenele pot varia în funcție de complexitatea proiectului și disponibilitatea informațiilor furnizate de client.</li>
       </ul>`,
     revisions: 'Revizii & Modificări',
     revisionsText: `<ul>
-        <li>Fiecare pachet include revizii gratuite în primele 30 de zile.</li>
         <li><strong>Basic</strong>: modificări gratuite.</li>
         <li><strong>Standard</strong>: €3 per modificare.</li>
         <li><strong>Premium</strong>: €7 per modificare.</li>
@@ -534,13 +616,12 @@ const RULES = {
     delivery: 'Delivery Time',
     deliveryText: `<ul>
         <li><strong>Basic</strong>: 1 working day</li>
-        <li><strong>Standard</strong>: 1–2 working days</li>
-        <li><strong>Premium</strong>: 3–5 working days</li>
+        <li><strong>Standard</strong>: 3–4 working days</li>
+        <li><strong>Premium</strong>: 5–7 working days</li>
         <li>Timelines may vary depending on project complexity and how quickly the client provides content.</li>
       </ul>`,
     revisions: 'Revisions & Changes',
     revisionsText: `<ul>
-        <li>Each package includes free revisions within the first 30 days.</li>
         <li><strong>Basic</strong>: free changes.</li>
         <li><strong>Standard</strong>: €3 per change.</li>
         <li><strong>Premium</strong>: €7 per change.</li>
@@ -582,13 +663,12 @@ const RULES = {
     delivery: 'Сроки доставки',
     deliveryText: `<ul>
         <li><strong>Basic</strong>: 1 рабочий день</li>
-        <li><strong>Standard</strong>: 1–2 рабочих дня</li>
-        <li><strong>Premium</strong>: 3–5 рабочих дней</li>
+        <li><strong>Standard</strong>: 3–4 рабочих дня</li>
+        <li><strong>Premium</strong>: 5–7 рабочих дней</li>
         <li>Сроки могут варьироваться в зависимости от сложности проекта и скорости предоставления материалов клиентом.</li>
       </ul>`,
     revisions: 'Правки и изменения',
     revisionsText: `<ul>
-        <li>Каждый пакет включает бесплатные правки в течение первых 30 дней.</li>
         <li><strong>Basic</strong>: бесплатные изменения.</li>
         <li><strong>Standard</strong>: €3 за изменение.</li>
         <li><strong>Premium</strong>: €7 за изменение.</li>
@@ -932,71 +1012,98 @@ function watchLangChange() {
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// EDIT PROFILE MODAL
+// EDIT PROFILE MODAL  (full card: name, phone, email, password reset)
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function buildEditProfileModal() {
   if (document.getElementById('ep-modal-bg')) return;
   const bg = document.createElement('div');
   bg.id = 'ep-modal-bg';
   bg.innerHTML = `
-  <div class="auth-modal" style="max-width:360px;">
-    <div class="auth-modal-head" style="background:linear-gradient(135deg,#7c3aed,#a855f7);">
-      <button class="auth-modal-close" onclick="authCloseEditProfile()"><i class="fas fa-times"></i></button>
-      <h3 id="ep-title"></h3>
-      <p id="ep-sub"></p>
+  <div class="ep-modal">
+    <div class="ep-modal-head">
+      <button class="ep-modal-close" onclick="authCloseEditProfile()"><i class="fas fa-times"></i></button>
+      <div class="ep-av-big" id="ep-av-big">?</div>
+      <h3 id="ep-head-name"></h3>
+      <p  id="ep-head-email"></p>
     </div>
-    <div class="auth-modal-body">
-      <div id="ep-phone-banner" style="display:none;background:rgba(245,158,11,.1);border:1.5px solid rgba(245,158,11,.3);border-radius:9px;padding:9px 12px;font-size:.8rem;color:#92400e;margin-bottom:12px;font-weight:600;"></div>
-      <div class="auth-field">
-        <label id="ep-lbl-name"></label>
-        <input type="text" id="ep-name-input" autocomplete="name">
+    <div class="ep-modal-body">
+
+      <!-- Phone-missing banner -->
+      <div class="ep-phone-banner" id="ep-phone-banner"></div>
+
+      <!-- Personal info section -->
+      <div class="ep-section">
+        <div class="ep-section-title"><i class="fas fa-user"></i> Personal Information</div>
+        <div class="ep-field">
+          <label id="ep-lbl-name"></label>
+          <input type="text" id="ep-name-input" autocomplete="name">
+        </div>
+        <div class="ep-field">
+          <label id="ep-lbl-phone"></label>
+          <input type="tel" id="ep-phone-input" autocomplete="tel" placeholder="+40 7xx xxx xxx">
+        </div>
+        <div class="ep-field">
+          <label>Email</label>
+          <input type="email" id="ep-email-ro" readonly>
+        </div>
+        <button class="ep-save-btn" id="ep-save-btn" onclick="authSaveProfile()"></button>
+        <div class="ep-msg" id="ep-save-msg"></div>
       </div>
-      <div class="auth-field">
-        <label id="ep-lbl-phone"></label>
-        <input type="tel" id="ep-phone-input" autocomplete="tel" placeholder="+40 7xx xxx xxx">
+
+      <!-- Password reset section -->
+      <div class="ep-section">
+        <div class="ep-section-title"><i class="fas fa-lock"></i> Password</div>
+        <p style="font-size:.82rem;color:#64748b;margin-bottom:12px;line-height:1.55;">Send a password reset link to your email address.</p>
+        <button class="ep-reset-btn" id="ep-reset-btn" onclick="authSendPasswordReset()">
+          <i class="fas fa-envelope"></i> Send Password Reset Email
+        </button>
+        <div class="ep-msg" id="ep-reset-msg"></div>
       </div>
-      <button class="auth-submit-btn" id="ep-save-btn" onclick="authSaveProfile()" style="background:linear-gradient(135deg,#7c3aed,#a855f7);"></button>
-      <div class="auth-error" id="ep-error"></div>
+
     </div>
   </div>`;
-  // style the bg overlay
-  bg.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,.52);backdrop-filter:blur(6px);z-index:9996;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .22s;';
   document.body.appendChild(bg);
   bg.addEventListener('click', e => { if (e.target === bg) authCloseEditProfile(); });
-  document.getElementById('ep-phone-input')?.addEventListener('keydown', e => { if (e.key === 'Enter') authSaveProfile(); });
+  ['ep-name-input','ep-phone-input'].forEach(id => {
+    document.getElementById(id)?.addEventListener('keydown', e => { if (e.key === 'Enter') authSaveProfile(); });
+  });
 }
 
 function authOpenEditProfile(e) {
   e?.stopPropagation();
   document.getElementById('auth-dropdown')?.classList.remove('open');
   buildEditProfileModal();
-  // Populate fields
-  const name = userProfile.displayName || currentUser?.displayName || currentUser?.email?.split('@')[0] || '';
+
+  const name  = userProfile.displayName || currentUser?.displayName || currentUser?.email?.split('@')[0] || '';
   const phone = userProfile.phone || '';
-  document.getElementById('ep-name-input').value = name;
-  document.getElementById('ep-phone-input').value = phone;
-  document.getElementById('ep-title').textContent = t('editProfileTitle');
-  document.getElementById('ep-sub').textContent = t('editProfileSub');
-  document.getElementById('ep-lbl-name').textContent = t('epName');
-  document.getElementById('ep-lbl-phone').textContent = t('epPhone');
-  document.getElementById('ep-save-btn').textContent = t('epSave');
-  document.getElementById('ep-save-btn').disabled = false;
-  document.getElementById('ep-error').style.display = 'none';
-  // Show banner if no phone
+  const email = currentUser?.email || '';
+  const initial = (name || '?').charAt(0).toUpperCase();
+
+  document.getElementById('ep-av-big').textContent     = initial;
+  document.getElementById('ep-head-name').textContent  = name || email;
+  document.getElementById('ep-head-email').textContent = email;
+  document.getElementById('ep-name-input').value       = name;
+  document.getElementById('ep-phone-input').value      = phone;
+  document.getElementById('ep-email-ro').value         = email;
+  document.getElementById('ep-lbl-name').textContent   = t('epName');
+  document.getElementById('ep-lbl-phone').textContent  = t('epPhone');
+  document.getElementById('ep-save-btn').textContent   = t('epSave');
+  document.getElementById('ep-save-btn').disabled      = false;
+  document.getElementById('ep-save-btn').style.background = 'linear-gradient(135deg,#7c3aed,#a855f7)';
+  epShowMsg('ep-save-msg',  '', '');
+  epShowMsg('ep-reset-msg', '', '');
+
+  // Phone-missing banner
   const banner = document.getElementById('ep-phone-banner');
   if (!phone) { banner.textContent = t('epPhoneMissing'); banner.style.display = 'block'; }
-  else { banner.style.display = 'none'; }
-  const bg = document.getElementById('ep-modal-bg');
-  bg.style.opacity = '0'; bg.style.pointerEvents = 'all';
-  requestAnimationFrame(() => { bg.style.opacity = '1'; });
-  setTimeout(() => document.getElementById('ep-phone-input')?.focus(), 220);
+  else          { banner.style.display = 'none'; }
+
+  document.getElementById('ep-modal-bg').classList.add('open');
+  setTimeout(() => document.getElementById('ep-name-input')?.focus(), 230);
 }
 
 function authCloseEditProfile() {
-  const bg = document.getElementById('ep-modal-bg');
-  if (!bg) return;
-  bg.style.opacity = '0';
-  setTimeout(() => { bg.style.pointerEvents = 'none'; }, 220);
+  document.getElementById('ep-modal-bg')?.classList.remove('open');
 }
 
 async function authSaveProfile() {
@@ -1004,31 +1111,53 @@ async function authSaveProfile() {
   const name  = document.getElementById('ep-name-input').value.trim();
   const phone = document.getElementById('ep-phone-input').value.trim();
   const btn   = document.getElementById('ep-save-btn');
-  const errEl = document.getElementById('ep-error');
-  btn.disabled = true; btn.textContent = t('epSaving');
-  errEl.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = t('epSaving');
+  epShowMsg('ep-save-msg', '', '');
   try {
-    // Update Firebase Auth display name
     if (name && _auth?.currentUser) await _auth.currentUser.updateProfile({ displayName: name });
-    // Update Firestore user doc
     if (_db) await _db.collection('users').doc(currentUser.uid).set({ displayName: name, phone }, { merge: true });
-    // Update local cache
     userProfile.displayName = name; userProfile.phone = phone;
     const cached = JSON.parse(localStorage.getItem('wbp_user') || '{}');
     cached.displayName = name; cached.phone = phone;
     localStorage.setItem('wbp_user', JSON.stringify(cached));
-    // Re-render nav/mobile
     renderAll();
-    // Show success
-    btn.textContent = t('epSaved');
-    btn.style.background = 'linear-gradient(135deg,#10b981,#059669)';
-    // Hide phone banner if now filled
+    // Update modal header
+    const display = name || currentUser.email.split('@')[0];
+    document.getElementById('ep-av-big').textContent    = display.charAt(0).toUpperCase();
+    document.getElementById('ep-head-name').textContent = display;
     if (phone) { const b = document.getElementById('ep-phone-banner'); if (b) b.style.display = 'none'; }
-    setTimeout(() => authCloseEditProfile(), 1200);
-  } catch(e) {
-    errEl.textContent = t('errGen'); errEl.style.display = 'block';
-    btn.disabled = false; btn.textContent = t('epSave');
+    epShowMsg('ep-save-msg', t('epSaved'), 'ok');
+    btn.textContent = t('epSave');
+    btn.disabled = false;
+  } catch(err) {
+    epShowMsg('ep-save-msg', t('errGen'), 'err');
+    btn.disabled = false;
+    btn.textContent = t('epSave');
   }
+}
+
+async function authSendPasswordReset() {
+  if (!_auth || !currentUser) return;
+  const btn = document.getElementById('ep-reset-btn');
+  btn.disabled = true;
+  epShowMsg('ep-reset-msg', '', '');
+  try {
+    await _auth.sendPasswordResetEmail(currentUser.email);
+    epShowMsg('ep-reset-msg', '\u2705 Reset email sent to ' + currentUser.email + '! Check your inbox.', 'ok');
+  } catch(err) {
+    epShowMsg('ep-reset-msg', '\u274c ' + (err.message || t('errGen')), 'err');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function epShowMsg(id, text, type) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = text;
+  el.className = 'ep-msg' + (type ? ' ' + type : '');
+  el.style.display = text ? 'block' : 'none';
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1045,6 +1174,7 @@ window.authCloseRules        = authCloseRules;
 window.authOpenEditProfile   = authOpenEditProfile;
 window.authCloseEditProfile  = authCloseEditProfile;
 window.authSaveProfile       = authSaveProfile;
+window.authSendPasswordReset = authSendPasswordReset;
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // BOOT
