@@ -1006,7 +1006,7 @@ function watchOrderForm() {
 function watchLangChange() {
   document.querySelectorAll('.language-option, .language-option-fixed').forEach(el => {
     el.addEventListener('click', () => {
-      setTimeout(() => { renderAll(); if (modalOpen) syncModalUI(); }, 60);
+      setTimeout(() => { renderAll(); if (modalOpen) syncModalUI(); if(typeof wbpMsgUpdateLangUI==='function')wbpMsgUpdateLangUI(); }, 60);
     });
   });
 }
