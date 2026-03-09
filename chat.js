@@ -178,7 +178,7 @@ async function doLogin() {
     try {
         await _auth.signInWithEmailAndPassword(email, pass);
     } catch(e) {
-        const msgs = { 'auth/user-not-found': t('noUser'), 'auth/wrong-password': t('wrongPass'), 'auth/invalid-email': t('invalidEmail'), 'auth/invalid-credential': t('wrongPass') };
+        const msgs = { 'auth/user-not-found': t('noUser'), 'auth/wrong-password': t('wrongPass'), 'auth/invalid-email': t('invalidEmail'), 'auth/invalid-credential': t('wrongPass'), 'auth/too-many-requests': t('error') };
         showAuthError(msgs[e.code] || t('error'));
         btn.disabled = false;
         btn.textContent = t('loginBtn');
@@ -261,9 +261,9 @@ function listenForUserOrder(email) {
 }
 
 function listenForChat(email) {
-    if (!_db || !email) return;
+    if (!_db || !currentUser) return;
     if (chatUnsubscribe) chatUnsubscribe();
-    const chatId = email.replace(/[^a-zA-Z0-9]/g, '_');
+    const chatId = currentUser.uid;
     chatUnsubscribe = _db.collection('chats').doc(chatId)
         .onSnapshot(doc => {
             chatMessages = doc.exists ? (doc.data().messages || []) : [];
@@ -687,7 +687,7 @@ async function wbpSendMessage() {
 
     try {
         if (_db) {
-            const chatId = currentUser.email.replace(/[^a-zA-Z0-9]/g, '_');
+            const chatId = currentUser.uid;
             const chatRef = _db.collection('chats').doc(chatId);
             const doc = await chatRef.get();
             const msgs = doc.exists ? [...(doc.data().messages || []), message] : [message];
