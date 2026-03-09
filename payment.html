@@ -49,6 +49,8 @@
                                 _auth = firebase.auth();
                                 // Re-trigger listen if already loaded
                                 if (window._orderReadyToListen && typeof listenForUpdates === 'function') listenForUpdates();
+                                // Also kick off chat listener in case uid is now resolvable
+                                if (typeof _startChatListener === 'function') _startChatListener();
                             }
                         } catch(e) { console.warn('Firebase not initialized:', e); }
                     };
@@ -1495,6 +1497,8 @@ function renderSummary() {
 // ═══════════════════════════════════════
 // REAL-TIME STATUS & MESSAGES
 // ═══════════════════════════════════════
+let _chatUnsubscribe = null; // listener for chats/{uid} (DM channel)
+
 function listenForUpdates() {
     window._orderReadyToListen = true;
     if (!_db || !currentOrderId) {
@@ -1504,10 +1508,30 @@ function listenForUpdates() {
 
     if (firestoreUnsubscribe) firestoreUnsubscribe();
 
+    // Listen to order status
     firestoreUnsubscribe = listenToOrder(currentOrderId, (data) => {
         updateStatusUI(data.status || 'pending');
-        renderMessages(data.messages || []);
     });
+
+    // Listen to chats/{uid} for messages (both user's own messages + admin replies)
+    // Start listening as soon as we can resolve the uid
+    _startChatListener();
+}
+
+function _startChatListener() {
+    if (!_db) { setTimeout(_startChatListener, 400); return; }
+    const authInfo = _getAuthUid();
+    if (!authInfo) {
+        // Firebase auth not ready yet — retry shortly
+        setTimeout(_startChatListener, 500);
+        return;
+    }
+    if (_chatUnsubscribe) _chatUnsubscribe();
+    _chatUnsubscribe = _db.collection('chats').doc(authInfo.uid)
+        .onSnapshot(snap => {
+            const msgs = snap.exists ? (snap.data().messages || []) : [];
+            renderMessages(msgs);
+        });
 }
 
 function updateStatusUI(status) {
@@ -1607,12 +1631,11 @@ function _renderToList(listId, noMsgId, messages, notifyOnNew) {
 async function _sendToChatCollection(text, authorName, userEmail, uid) {
     if (!_db || !uid) return;
     try {
-        const ref  = _db.collection('chats').doc(uid);
-        const snap = await ref.get();
-        const existing = snap.exists ? (snap.data().messages || []) : [];
+        const ref = _db.collection('chats').doc(uid);
         const msg = { from: 'client', text, timestamp: new Date().toISOString(), author: authorName };
+        // Use arrayUnion so we never overwrite other messages (atomic, no race condition)
         await ref.set({
-            messages:       [...existing, msg],
+            messages:       firebase.firestore.FieldValue.arrayUnion(msg),
             email:          userEmail,
             uid:            uid,
             lastMessage:    text,
@@ -1620,6 +1643,25 @@ async function _sendToChatCollection(text, authorName, userEmail, uid) {
             hasUnreadAdmin: true
         }, { merge: true });
     } catch(e) { console.warn('Chat collection write:', e); }
+}
+
+// Resolve uid from all available sources (Firebase auth may load deferred)
+function _getAuthUid() {
+    // 1. Live Firebase auth
+    if (_auth && _auth.currentUser) return { uid: _auth.currentUser.uid, email: _auth.currentUser.email };
+    // 2. Try firebase global directly (in case _auth not yet assigned)
+    try {
+        if (firebase.apps.length && firebase.auth().currentUser) {
+            const u = firebase.auth().currentUser;
+            return { uid: u.uid, email: u.email };
+        }
+    } catch(e) {}
+    // 3. localStorage cache
+    try {
+        const cached = JSON.parse(localStorage.getItem('wbp_user') || '{}');
+        if (cached.uid) return { uid: cached.uid, email: cached.email || '' };
+    } catch(e) {}
+    return null;
 }
 
 async function sendMessage() {
@@ -1631,22 +1673,19 @@ async function sendMessage() {
     btn.disabled = true;
     input.value = '';
 
-    // Use logged-in user name if available
     let authorName = orderData?.customer_name || 'Customer';
     let userEmail  = orderData?.customer_email || '';
     let uid        = null;
+    const authInfo = _getAuthUid();
+    if (authInfo) {
+        uid       = authInfo.uid;
+        userEmail = authInfo.email || userEmail;
+    }
     try {
         const wbpUser = JSON.parse(localStorage.getItem('wbp_user') || '{}');
         if (wbpUser.displayName) authorName = wbpUser.displayName;
         else if (wbpUser.email) authorName = wbpUser.email.split('@')[0];
-        if (wbpUser.email) userEmail = wbpUser.email;
-        if (wbpUser.uid)   uid       = wbpUser.uid;
     } catch(e) {}
-    // Also try Firebase auth directly
-    if (!uid && _auth?.currentUser) {
-        uid       = _auth.currentUser.uid;
-        userEmail = _auth.currentUser.email || userEmail;
-    }
 
     const message = {
         from:      'client',
@@ -1699,17 +1738,13 @@ async function sendMessageDesktop() {
     let authorName = orderData?.customer_name || 'Customer';
     let userEmail  = orderData?.customer_email || '';
     let uid        = null;
+    const authInfo = _getAuthUid();
+    if (authInfo) { uid = authInfo.uid; userEmail = authInfo.email || userEmail; }
     try {
         const wbpUser = JSON.parse(localStorage.getItem('wbp_user') || '{}');
         if (wbpUser.displayName) authorName = wbpUser.displayName;
         else if (wbpUser.email) authorName = wbpUser.email.split('@')[0];
-        if (wbpUser.email) userEmail = wbpUser.email;
-        if (wbpUser.uid)   uid       = wbpUser.uid;
     } catch(e) {}
-    if (!uid && _auth?.currentUser) {
-        uid       = _auth.currentUser.uid;
-        userEmail = _auth.currentUser.email || userEmail;
-    }
     const message = { from: 'client', text, timestamp: new Date().toISOString(), author: authorName };
     if (_db && currentOrderId) {
         await addMessageToFirestore(currentOrderId, message);

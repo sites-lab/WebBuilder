@@ -107,11 +107,15 @@ let isRegMode = false, modalOpen = false;
 // FIREBASE
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function initAuth() {
+  // If Firebase SDK not loaded yet, retry in 200ms
+  if (typeof firebase === 'undefined' || !firebase.auth) {
+    setTimeout(initAuth, 200); return;
+  }
   try {
     if (typeof FIREBASE_CONFIG === 'undefined' || FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') return;
     if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
     _auth = firebase.auth();
-    _db = firebase.firestore();
+    _db   = firebase.firestore();
     _auth.onAuthStateChanged(user => {
       currentUser = user;
       if (user) loadUserProfile(user);
@@ -1015,7 +1019,17 @@ document.addEventListener('click', e => {
 // AUTH ACTIONS
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 async function authSubmit() {
-  if (!_auth) return;
+  // Firebase not ready yet — init and retry once
+  if (!_auth) {
+    initAuth();
+    const btn = document.getElementById('auth-submit-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Connecting…'; }
+    setTimeout(() => {
+      if (btn) { btn.disabled = false; btn.textContent = t(isRegMode ? 'regBtn' : 'loginBtn'); }
+      authSubmit();
+    }, 600);
+    return;
+  }
   const email = document.getElementById('auth-email-input').value.trim();
   const pass  = document.getElementById('auth-pass-input').value;
   const name  = document.getElementById('auth-name-input').value.trim();

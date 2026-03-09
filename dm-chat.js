@@ -71,14 +71,18 @@ function dmOnLogout() {
 
 /**
  * Tell auth.js to re-render nav + mobile menu.
- * Works because auth.js listens to the same Firebase auth state.
- * We just nudge it to re-render immediately without waiting.
+ * auth.js's onAuthStateChanged fires asynchronously after login.
+ * We poll until auth.js has picked up the new user (currentUser set via wbp_user).
  */
 function _syncAuthJs() {
-  // auth.js exposes renderAll via a DOMContentLoaded-safe timeout
-  setTimeout(() => {
+  // Immediately try, then retry a few times to catch the async auth state update
+  let attempts = 0;
+  const trySync = () => {
     if (window._authRenderAll) window._authRenderAll();
-  }, 80);
+    attempts++;
+    if (attempts < 6) setTimeout(trySync, 300);
+  };
+  setTimeout(trySync, 100);
 }
 
 // ── Render messages ────────────────────────────────────────────────────
@@ -111,11 +115,10 @@ async function wbpMsgSend() {
   btn.disabled = true; input.value = '';
   const msg = { from: 'client', text, timestamp: new Date().toISOString(), author: _dmUser.email.split('@')[0] };
   try {
-    const ref      = _db.collection('chats').doc(_dmChatId);
-    const snap     = await ref.get();
-    const existing = snap.exists ? (snap.data().messages || []) : [];
+    const ref = _db.collection('chats').doc(_dmChatId);
+    // arrayUnion is atomic — never overwrites concurrent messages
     await ref.set({
-      messages:       [...existing, msg],
+      messages:       firebase.firestore.FieldValue.arrayUnion(msg),
       email:          _dmUser.email,
       uid:            _dmUser.uid,
       lastMessage:    text,
