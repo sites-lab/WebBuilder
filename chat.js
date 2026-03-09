@@ -348,6 +348,11 @@ function buildUI() {
         .wbp-switch a:hover { text-decoration: underline; }
         .wbp-reset-link { text-align: center; margin-top: 8px; font-size: 0.76rem; color: #94a3b8; }
         .wbp-reset-link a { color: #3b82f6; cursor: pointer; text-decoration: underline; }
+        .wbp-link-btn { background: none; border: none; padding: 0; font-family: inherit; font-size: inherit; color: #3b82f6; cursor: pointer; text-decoration: underline; font-weight: 600; }
+        .wbp-link-btn:hover { text-decoration: none; }
+        .wbp-reset-link .wbp-link-btn { font-weight: 400; }
+        .wbp-switch .wbp-link-btn { text-decoration: none; }
+        .wbp-switch .wbp-link-btn:hover { text-decoration: underline; }
         .wbp-reset-ok { background: #ecfdf5; color: #065f46; padding: 8px 12px; border-radius: 8px; font-size: 0.78rem; margin-top: 8px; display: none; text-align: center; }
 
         /* CHAT SCREEN */
@@ -435,7 +440,7 @@ function buildUI() {
             <div class="wbp-head">
                 <div class="wbp-head-top">
                     <h3 id="wbp-head-title">WebBuilder Pro</h3>
-                    <button class="wbp-close" onclick="wbpToggle()"><i class="fas fa-times"></i></button>
+                    <button class="wbp-close" onclick="wbpToggle()" aria-label="Close chat"><i class="fas fa-times"></i></button>
                 </div>
                 <div class="wbp-head-sub">
                     <div class="wbp-online-dot"></div>
@@ -472,11 +477,11 @@ function buildUI() {
                         </div>
                         <button class="wbp-auth-btn" id="wbp-login-btn" onclick="wbpAuthAction()">Sign In</button>
                         <div class="wbp-auth-err" id="wbp-auth-err"></div>
-                        <div class="wbp-reset-link"><a onclick="wbpResetPassword()">Forgot password?</a></div>
+                        <div class="wbp-reset-link"><button onclick="wbpResetPassword()" class="wbp-link-btn" aria-label="Send password reset email">Forgot password?</button></div>
                         <div class="wbp-reset-ok" id="wbp-reset-ok">✅ Reset email sent! Check your inbox.</div>
                         <div class="wbp-switch">
                             <span id="wbp-switch-text">Don't have an account?</span>
-                            <a onclick="wbpToggleRegister()" id="wbp-switch-link">Create Account</a>
+                            <button onclick="wbpToggleRegister()" id="wbp-switch-link" class="wbp-link-btn">Create Account</button>
                         </div>
                     </div>
                 </div>

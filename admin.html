@@ -1278,7 +1278,7 @@ function dmShowThread(t){
         body.innerHTML='<div class="dm-no-msg"><i class="fas fa-comment-dots"></i><p>No messages yet</p></div>';
     } else {
         msgs.forEach(m=>{
-            const isUser=m.from==='user';
+            const isUser=m.from==='client'||m.from==='user';
             const time=m.timestamp?new Date(m.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
             const initial=isUser?name.charAt(0).toUpperCase():'A';
             const div=document.createElement('div');
