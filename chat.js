@@ -261,9 +261,9 @@ function listenForUserOrder(email) {
 }
 
 function listenForChat(email) {
-    if (!_db || !email) return;
+    if (!_db || !email || !currentUser) return;
     if (chatUnsubscribe) chatUnsubscribe();
-    const chatId = email.replace(/[^a-zA-Z0-9]/g, '_');
+    const chatId = currentUser.uid;
     chatUnsubscribe = _db.collection('chats').doc(chatId)
         .onSnapshot(doc => {
             chatMessages = doc.exists ? (doc.data().messages || []) : [];
@@ -639,7 +639,7 @@ function renderMessages() {
     noMsg.style.display = 'none';
 
     messages.forEach(m => {
-        const mine = m.from === 'client';
+        const mine = m.from === 'user' || m.from === 'client';
         const time = m.timestamp ? new Date(m.timestamp).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
         const initial = mine ? (currentUser.email.charAt(0).toUpperCase()) : 'W';
         const div = document.createElement('div');
@@ -674,7 +674,7 @@ async function wbpSendMessage() {
     input.value = '';
 
     const message = {
-        from: 'client',
+        from: 'user',
         text,
         timestamp: new Date().toISOString(),
         author: currentUser.email.split('@')[0]
@@ -682,11 +682,17 @@ async function wbpSendMessage() {
 
     try {
         if (_db) {
-            const chatId = currentUser.email.replace(/[^a-zA-Z0-9]/g, '_');
+            const chatId = currentUser.uid;
             const chatRef = _db.collection('chats').doc(chatId);
             const doc = await chatRef.get();
             const msgs = doc.exists ? [...(doc.data().messages || []), message] : [message];
-            await chatRef.set({ email: currentUser.email, messages: msgs }, { merge: true });
+            await chatRef.set({
+                email: currentUser.email,
+                messages: msgs,
+                lastMessage: text,
+                lastUpdated: new Date().toISOString(),
+                hasUnreadAdmin: true
+            }, { merge: true });
         }
     } catch(e) { console.error('Send message error:', e); }
     finally { btn.disabled = false; input.focus(); }

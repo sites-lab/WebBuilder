@@ -1309,12 +1309,12 @@ async function dmSendReply(){
     try{
         const t=dmThreads.find(x=>x._id===dmSelectedId);
         const existing=t?.messages||[];
-        await db.collection('chats').doc(dmSelectedId).update({
+        await db.collection('chats').doc(dmSelectedId).set({
             messages:[...existing,msg],
-            lastMessage:'You: '+text,
+            lastMessage:'Admin: '+text,
             lastUpdated:new Date().toISOString(),
             hasUnreadAdmin:false
-        });
+        },{merge:true});
     }catch(e){toast('Send error: '+e.message,true);}
     finally{btn.disabled=false;document.getElementById('dm-reply-input').focus();}
 }
