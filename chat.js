@@ -1,8 +1,7 @@
 /**
- * WebBuilder Pro — Floating Chat Widget
- * Uses the SAME Firestore collection as payment.html: 'orders'
- * Chat doc keyed by email under collection 'chats' is GONE.
- * Now writes to chats/{email_key} with NO auth requirement.
+ * WebBuilder Pro — Floating Chat + User Login + Order Tracker
+ * Include this script at the bottom of index.html before </body>
+ * Requires: firebase-config.js, firebase SDKs already loaded
  */
 
 (function() {
@@ -135,8 +134,6 @@ let _db = null, _auth = null;
 let currentUser = null;
 let userOrder = null;
 let orderUnsubscribe = null;
-let chatUnsubscribe = null;
-let chatMessages = [];
 let isOpen = false;
 let activeTab = 'chat';
 let isRegisterMode = false;
@@ -187,32 +184,17 @@ async function doLogin() {
 }
 
 async function doRegister() {
-    const name = document.getElementById('wbp-name')?.value.trim();
     const email = document.getElementById('wbp-email').value.trim();
     const pass = document.getElementById('wbp-pass').value;
     const btn = document.getElementById('wbp-login-btn');
     const err = document.getElementById('wbp-auth-err');
-    if (!name) { showAuthError('Please enter your name.'); return; }
     if (!email || !pass) { showAuthError(t('error')); return; }
     if (pass.length < 6) { showAuthError(t('weakPass')); return; }
     btn.disabled = true;
     btn.textContent = t('registering');
     err.style.display = 'none';
     try {
-        const cred = await _auth.createUserWithEmailAndPassword(email, pass);
-        // Save display name on the Firebase user profile
-        await cred.user.updateProfile({ displayName: name });
-        // Also save name in the chat doc immediately so admin sees it
-        if (_db) {
-            // Save using UID so it matches the Firestore rule
-            const chatId = cred.user.uid;
-            await _db.collection('chats').doc(chatId).set({
-                email: email,
-                displayName: name,
-                uid: chatId,
-                lastUpdated: new Date().toISOString()
-            }, { merge: true });
-        }
+        await _auth.createUserWithEmailAndPassword(email, pass);
     } catch(e) {
         const msgs = { 'auth/email-already-in-use': t('emailInUse'), 'auth/weak-password': t('weakPass'), 'auth/invalid-email': t('invalidEmail') };
         showAuthError(msgs[e.code] || t('error'));
@@ -252,14 +234,11 @@ function showAuthError(msg) {
 function onUserLoggedIn(user) {
     renderChatPanel();
     listenForUserOrder(user.email);
-    listenForChat();
 }
 
 function onUserLoggedOut() {
     if (orderUnsubscribe) { orderUnsubscribe(); orderUnsubscribe = null; }
-    if (chatUnsubscribe) { chatUnsubscribe(); chatUnsubscribe = null; }
     userOrder = null;
-    chatMessages = [];
     renderChatPanel();
 }
 
@@ -274,19 +253,6 @@ function listenForUserOrder(email) {
             userOrder = snap.empty ? null : { _id: snap.docs[0].id, ...snap.docs[0].data() };
             refreshPanelContent();
         });
-}
-
-function listenForChat() {
-    if (!_db || !currentUser) return;
-    if (chatUnsubscribe) chatUnsubscribe();
-    // Key by UID — matches Firestore rule: request.auth.uid == chatId
-    const chatId = currentUser.uid;
-    chatUnsubscribe = _db.collection('chats').doc(chatId)
-        .onSnapshot(doc => {
-            chatMessages = doc.exists ? (doc.data().messages || []) : [];
-            renderMessages();
-            if (isOpen && activeTab === 'chat') scrollMessages();
-        }, err => console.warn('Chat listen error:', err));
 }
 
 // ═══════════════════════════════════════════
@@ -317,7 +283,7 @@ function buildUI() {
         #wbp-notif.show { display: flex; }
         #wbp-panel {
             position: fixed; bottom: 100px; right: 28px; z-index: 9989;
-            width: 370px; height: 600px; max-height: calc(100vh - 130px);
+            width: 370px; max-height: 600px;
             background: white; border-radius: 22px;
             box-shadow: 0 24px 80px rgba(0,0,0,0.22);
             display: flex; flex-direction: column; overflow: hidden;
@@ -346,7 +312,7 @@ function buildUI() {
         .wbp-tab.active { color: #3b82f6; border-bottom-color: #3b82f6; }
         .wbp-tab:hover { color: #1e293b; background: #f8fafc; }
         .wbp-body { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
-        .wbp-screen { display: none; flex-direction: column; flex: 1; min-height: 0; }
+        .wbp-screen { display: none; flex-direction: column; height: 100%; }
         .wbp-screen.active { display: flex; }
 
         /* AUTH SCREEN */
@@ -381,11 +347,11 @@ function buildUI() {
         .wbp-msg.mine .wbp-msg-av { background: linear-gradient(135deg, #10b981, #059669); }
         .wbp-msg-bub { max-width: 78%; padding: 9px 13px; border-radius: 14px; font-size: 0.84rem; line-height: 1.5; }
         .wbp-msg.theirs .wbp-msg-bub { background: #f1f5f9; color: #1e293b; border-bottom-left-radius: 4px; }
-        .wbp-msg.mine .wbp-msg-bub { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white !important; border-bottom-right-radius: 4px; }
+        .wbp-msg.mine .wbp-msg-bub { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; border-bottom-right-radius: 4px; }
         .wbp-msg-time { font-size: 0.68rem; opacity: 0.55; margin-top: 3px; display: block; }
         .wbp-msg.mine .wbp-msg-time { text-align: right; }
         .wbp-input-row { display: flex; gap: 9px; padding: 12px 14px; border-top: 2px solid #f1f5f9; flex-shrink: 0; }
-        .wbp-input { flex: 1; min-width: 0; box-sizing: border-box; padding: 10px 14px; border: 2px solid #e2e8f0; border-radius: 10px; font-family: inherit; font-size: 0.875rem; color: #1e293b; outline: none; transition: border-color 0.2s; }
+        .wbp-input { flex: 1; padding: 10px 14px; border: 2px solid #e2e8f0; border-radius: 10px; font-family: inherit; font-size: 0.875rem; color: #1e293b; outline: none; transition: border-color 0.2s; }
         .wbp-input:focus { border-color: #3b82f6; }
         .wbp-send { width: 40px; height: 40px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border: none; border-radius: 10px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; transition: all 0.2s; }
         .wbp-send:hover { opacity: 0.9; transform: scale(1.05); }
@@ -426,12 +392,9 @@ function buildUI() {
 
         @media (max-width: 768px) {
             #wbp-bubble { width: 72px; height: 72px; font-size: 1.65rem; }
-            #wbp-panel { width: calc(100vw - 24px); right: 12px; left: 12px; bottom: 90px; height: calc(100vh - 110px); max-height: calc(100vh - 110px); }
-            .wbp-screen { flex: 1; min-height: 0; }
-            .wbp-messages { flex: 1; min-height: 0; }
-            .wbp-input-row { flex-shrink: 0; }
         }
         @media (max-width: 420px) {
+            #wbp-panel { width: calc(100vw - 24px); right: 12px; bottom: 90px; }
             #wbp-bubble { right: 16px; bottom: 20px; width: 72px; height: 72px; font-size: 1.65rem; }
         }
     `;
@@ -481,9 +444,6 @@ function buildUI() {
                     <div class="wbp-auth">
                         <h4 id="wbp-auth-title">My Account</h4>
                         <p id="wbp-auth-sub">Sign in to track your order and chat with us</p>
-                        <div class="wbp-field" id="wbp-name-field" style="display:none">
-                            <input type="text" id="wbp-name" placeholder="Your Name">
-                        </div>
                         <div class="wbp-field">
                             <input type="email" id="wbp-email" placeholder="Email">
                         </div>
@@ -537,9 +497,6 @@ function buildUI() {
     document.getElementById('wbp-msg-input').addEventListener('keydown', e => {
         if (e.key === 'Enter') wbpSendMessage();
     });
-    document.getElementById('wbp-name').addEventListener('keydown', e => {
-        if (e.key === 'Enter') document.getElementById('wbp-email').focus();
-    });
     document.getElementById('wbp-email').addEventListener('keydown', e => {
         if (e.key === 'Enter') document.getElementById('wbp-pass').focus();
     });
@@ -590,11 +547,6 @@ function updateAuthUI() {
     document.getElementById('wbp-switch-link').textContent = isRegisterMode ? l.loginBtn : l.registerBtn;
     document.getElementById('wbp-auth-err').style.display = 'none';
     document.getElementById('wbp-login-btn').disabled = false;
-    // Show name field only in register mode
-    const nameField = document.getElementById('wbp-name-field');
-    if (nameField) nameField.style.display = isRegisterMode ? 'block' : 'none';
-    const nameInput = document.getElementById('wbp-name');
-    if (nameInput) nameInput.value = '';
 }
 
 function wbpAuthAction() {
@@ -625,8 +577,7 @@ function renderChatPanel() {
         showScreen(activeTab === 'order' ? 'order' : 'chat');
         document.getElementById('wbp-tabs').style.display = 'flex';
         document.getElementById('wbp-user-bar').style.display = 'flex';
-        const displayName = currentUser.displayName || currentUser.email.split('@')[0];
-        document.getElementById('wbp-user-name-display').textContent = l.hello + ', ' + displayName;
+        document.getElementById('wbp-user-name-display').textContent = l.hello + ', ' + (currentUser.email.split('@')[0]);
         document.getElementById('wbp-logout-btn') && (document.getElementById('wbp-logout-btn').textContent = l.logout || 'Sign Out');
         document.querySelector('.wbp-logout-btn').textContent = l.logout;
         document.getElementById('wbp-tab-chat-label').textContent = l.tabs.chat;
@@ -654,11 +605,13 @@ function refreshPanelContent() {
 // MESSAGES
 // ═══════════════════════════════════════════
 function renderMessages() {
-    const messages = chatMessages;
+    if (!userOrder) return;
+    const messages = userOrder.messages || [];
     const container = document.getElementById('wbp-messages');
     const noMsg = document.getElementById('wbp-no-msg');
     const prevCount = container.querySelectorAll('.wbp-msg').length;
 
+    // Remove old
     container.querySelectorAll('.wbp-msg').forEach(m => m.remove());
 
     if (messages.length === 0) {
@@ -668,7 +621,7 @@ function renderMessages() {
     noMsg.style.display = 'none';
 
     messages.forEach(m => {
-        const mine = m.from === 'user' || m.from === 'client';
+        const mine = m.from === 'client';
         const time = m.timestamp ? new Date(m.timestamp).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
         const initial = mine ? (currentUser.email.charAt(0).toUpperCase()) : 'W';
         const div = document.createElement('div');
@@ -681,6 +634,7 @@ function renderMessages() {
         container.appendChild(div);
     });
 
+    // Auto scroll & notify if new messages while panel closed
     if (messages.length > prevCount && !isOpen) {
         updateNotif(messages.length - prevCount);
     }
@@ -693,7 +647,7 @@ function scrollMessages() {
 }
 
 async function wbpSendMessage() {
-    if (!currentUser) return;
+    if (!currentUser || !userOrder) return;
     const input = document.getElementById('wbp-msg-input');
     const text = input.value.trim();
     if (!text) return;
@@ -702,28 +656,17 @@ async function wbpSendMessage() {
     btn.disabled = true;
     input.value = '';
 
-    const authorName = currentUser.displayName || currentUser.email.split('@')[0];
     const message = {
-        from: 'user',
+        from: 'client',
         text,
         timestamp: new Date().toISOString(),
-        author: authorName
+        author: currentUser.email.split('@')[0]
     };
 
     try {
-        if (_db) {
-            // UID as doc key — matches Firestore rule, no prior .get() needed
-            const chatId = currentUser.uid;
-            const chatRef = _db.collection('chats').doc(chatId);
-            await chatRef.set({
-                email: currentUser.email,
-                displayName: currentUser.displayName || authorName,
-                uid: currentUser.uid,
-                messages: firebase.firestore.FieldValue.arrayUnion(message),
-                lastMessage: text,
-                lastUpdated: new Date().toISOString(),
-                hasUnreadAdmin: true
-            }, { merge: true });
+        if (_db && userOrder._id) {
+            const msgs = [...(userOrder.messages || []), message];
+            await _db.collection('orders').doc(userOrder._id).update({ messages: msgs });
         }
     } catch(e) { console.error('Send message error:', e); }
     finally { btn.disabled = false; input.focus(); }
@@ -801,6 +744,8 @@ function renderOrderTab() {
 // ═══════════════════════════════════════════
 let notifCount = 0;
 function updateNotif(add = 0) {
+    if (!userOrder) return;
+    const adminMsgs = (userOrder.messages || []).filter(m => m.from === 'admin').length;
     const el = document.getElementById('wbp-notif');
     if (add > 0 && !isOpen) {
         notifCount += add;
