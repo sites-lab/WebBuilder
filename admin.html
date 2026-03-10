@@ -1229,7 +1229,7 @@ function dmRenderThreadList(){
         const unread=t.hasUnreadAdmin;
         const lastMsg=t.lastMessage||'No messages';
         const email=t.email||'Unknown';
-        const name=email.split('@')[0];
+        const name=t.displayName||email.split('@')[0];
         const initial=name.charAt(0).toUpperCase();
         const time=t.lastUpdated?fmtDmTime(t.lastUpdated):'';
         const div=document.createElement('div');
@@ -1266,7 +1266,7 @@ function dmShowThread(t){
     document.getElementById('dm-select-prompt').style.display='none';
     const detail=document.getElementById('dm-detail');
     detail.classList.add('open');
-    const name=(t.email||'user').split('@')[0];
+    const name=t.displayName||(t.email||'user').split('@')[0];
     document.getElementById('dm-detail-av').textContent=name.charAt(0).toUpperCase();
     document.getElementById('dm-detail-name').textContent=name;
     document.getElementById('dm-detail-email').textContent=t.email||'';

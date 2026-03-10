@@ -186,17 +186,30 @@ async function doLogin() {
 }
 
 async function doRegister() {
+    const name = document.getElementById('wbp-name')?.value.trim();
     const email = document.getElementById('wbp-email').value.trim();
     const pass = document.getElementById('wbp-pass').value;
     const btn = document.getElementById('wbp-login-btn');
     const err = document.getElementById('wbp-auth-err');
+    if (!name) { showAuthError('Please enter your name.'); return; }
     if (!email || !pass) { showAuthError(t('error')); return; }
     if (pass.length < 6) { showAuthError(t('weakPass')); return; }
     btn.disabled = true;
     btn.textContent = t('registering');
     err.style.display = 'none';
     try {
-        await _auth.createUserWithEmailAndPassword(email, pass);
+        const cred = await _auth.createUserWithEmailAndPassword(email, pass);
+        // Save display name on the Firebase user profile
+        await cred.user.updateProfile({ displayName: name });
+        // Also save name in the chat doc immediately so admin sees it
+        if (_db) {
+            const chatId = cred.user.uid;
+            await _db.collection('chats').doc(chatId).set({
+                email: email,
+                displayName: name,
+                lastUpdated: new Date().toISOString()
+            }, { merge: true });
+        }
     } catch(e) {
         const msgs = { 'auth/email-already-in-use': t('emailInUse'), 'auth/weak-password': t('weakPass'), 'auth/invalid-email': t('invalidEmail') };
         showAuthError(msgs[e.code] || t('error'));
@@ -464,6 +477,9 @@ function buildUI() {
                     <div class="wbp-auth">
                         <h4 id="wbp-auth-title">My Account</h4>
                         <p id="wbp-auth-sub">Sign in to track your order and chat with us</p>
+                        <div class="wbp-field" id="wbp-name-field" style="display:none">
+                            <input type="text" id="wbp-name" placeholder="Your Name">
+                        </div>
                         <div class="wbp-field">
                             <input type="email" id="wbp-email" placeholder="Email">
                         </div>
@@ -517,6 +533,9 @@ function buildUI() {
     document.getElementById('wbp-msg-input').addEventListener('keydown', e => {
         if (e.key === 'Enter') wbpSendMessage();
     });
+    document.getElementById('wbp-name').addEventListener('keydown', e => {
+        if (e.key === 'Enter') document.getElementById('wbp-email').focus();
+    });
     document.getElementById('wbp-email').addEventListener('keydown', e => {
         if (e.key === 'Enter') document.getElementById('wbp-pass').focus();
     });
@@ -567,6 +586,11 @@ function updateAuthUI() {
     document.getElementById('wbp-switch-link').textContent = isRegisterMode ? l.loginBtn : l.registerBtn;
     document.getElementById('wbp-auth-err').style.display = 'none';
     document.getElementById('wbp-login-btn').disabled = false;
+    // Show name field only in register mode
+    const nameField = document.getElementById('wbp-name-field');
+    if (nameField) nameField.style.display = isRegisterMode ? 'block' : 'none';
+    const nameInput = document.getElementById('wbp-name');
+    if (nameInput) nameInput.value = '';
 }
 
 function wbpAuthAction() {
@@ -597,7 +621,8 @@ function renderChatPanel() {
         showScreen(activeTab === 'order' ? 'order' : 'chat');
         document.getElementById('wbp-tabs').style.display = 'flex';
         document.getElementById('wbp-user-bar').style.display = 'flex';
-        document.getElementById('wbp-user-name-display').textContent = l.hello + ', ' + (currentUser.email.split('@')[0]);
+        const displayName = currentUser.displayName || currentUser.email.split('@')[0];
+        document.getElementById('wbp-user-name-display').textContent = l.hello + ', ' + displayName;
         document.getElementById('wbp-logout-btn') && (document.getElementById('wbp-logout-btn').textContent = l.logout || 'Sign Out');
         document.querySelector('.wbp-logout-btn').textContent = l.logout;
         document.getElementById('wbp-tab-chat-label').textContent = l.tabs.chat;
@@ -673,22 +698,23 @@ async function wbpSendMessage() {
     btn.disabled = true;
     input.value = '';
 
+    const authorName = currentUser.displayName || currentUser.email.split('@')[0];
     const message = {
         from: 'user',
         text,
         timestamp: new Date().toISOString(),
-        author: currentUser.email.split('@')[0]
+        author: authorName
     };
 
     try {
         if (_db) {
             const chatId = currentUser.uid;
             const chatRef = _db.collection('chats').doc(chatId);
-            const doc = await chatRef.get();
-            const msgs = doc.exists ? [...(doc.data().messages || []), message] : [message];
+            // Use set with merge — creates doc if missing, never needs a prior .get()
             await chatRef.set({
                 email: currentUser.email,
-                messages: msgs,
+                displayName: currentUser.displayName || '',
+                messages: firebase.firestore.FieldValue.arrayUnion(message),
                 lastMessage: text,
                 lastUpdated: new Date().toISOString(),
                 hasUnreadAdmin: true
