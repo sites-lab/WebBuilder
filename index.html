@@ -2,9 +2,7 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <!-- Critical: block content flash before loading screen paints (fixes Telegram WebView) -->
-    <style>body{opacity:0;overflow:hidden;}</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WebBuilder - Professional Web Services</title>
  <!-- FAVICON CODE - ADD HERE -->
     <link rel="icon" type="image/png" href="rocket.png">
@@ -17,10 +15,9 @@
         /* ── Loading Screen ── */
         #loading-screen {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            /* Fallback solid color shown before gradient paints — kills any flash */
-            background-color: #000005;
+            top: -10px; left: -10px;
+            width: calc(100% + 20px); height: calc(100% + 20px);
+            min-height: 100dvh;
             background: radial-gradient(ellipse at 20% 30%, #0d1b4b 0%, #060c1f 40%, #000005 100%);
             display: flex;
             justify-content: center;
@@ -29,9 +26,6 @@
             transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
             will-change: opacity;
-            /* Force GPU layer so it paints above everything instantly */
-            transform: translateZ(0);
-            -webkit-transform: translateZ(0);
         }
 
         /* Deep cosmos nebula layers */
@@ -67,37 +61,24 @@
             pointer-events: none;
         }
 
-        /* Orbiting pulse rings around the loading content */
+        /* Shooting star streak */
         #loading-screen::after {
             content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 260px;
-            height: 260px;
-            margin: -130px 0 0 -130px;
-            border-radius: 50%;
-            border: 1px solid rgba(160,100,255,0.18);
-            animation: orbitRing 3.5s ease-in-out infinite;
+            top: 18%;
+            left: -10%;
+            width: 200px;
+            height: 1.5px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
+            transform: rotate(-20deg);
+            animation: shootingStar 4s linear infinite;
             pointer-events: none;
         }
-        @keyframes orbitRing {
-            0%   { transform: scale(0.6); opacity: 0; }
-            30%  { opacity: 0.7; }
-            100% { transform: scale(2.2); opacity: 0; }
-        }
-        /* Second staggered ring */
-        .loading-content::before {
-            content: '';
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 320px; height: 320px;
-            margin: -160px 0 0 -160px;
-            border-radius: 50%;
-            border: 1px solid rgba(100,140,255,0.12);
-            animation: orbitRing 3.5s ease-in-out 1.4s infinite;
-            pointer-events: none;
-            z-index: 0;
+        @keyframes shootingStar {
+            0%   { left: -20%; opacity: 0; }
+            10%  { opacity: 1; }
+            80%  { opacity: 1; }
+            100% { left: 110%; opacity: 0; }
         }
 
         .loading-content {
@@ -117,11 +98,9 @@
         }
 
         .loading-rocket {
-            width: 110px;
-            height: 110px;
+            font-size: 5.5rem;
             display: block;
-            margin: 0 auto;
-            object-fit: contain;
+            margin: 0 auto 0;
             transform: rotate(-45deg);
             animation: launchRocket 2.2s ease-in-out infinite;
             filter: drop-shadow(0 0 18px rgba(120,80,255,0.9)) drop-shadow(0 0 40px rgba(80,40,200,0.5));
@@ -293,7 +272,7 @@
             -moz-osx-font-smoothing: grayscale;
             overflow-x: hidden;
             position: relative;
-            /* opacity is controlled by inline style + JS — do not set here */
+            opacity: 1;
             transition: opacity 0.5s ease;
             -webkit-overflow-scrolling: touch;
             overscroll-behavior-y: none;
@@ -466,9 +445,32 @@
             color: white;
         }
 
+        .btn-whatsapp {
+            background-color: #25D366;
+            color: white;
+        }
+
+        .btn-whatsapp:hover {
+            background-color: #20ba5a;
+        }
+
+        .btn-telegram {
+            background-color: #0088cc;
+            color: white;
+        }
+
+        .btn-telegram:hover {
+            background-color: #0077b5;
+        }
+
         .btn-large {
             padding: 18px 44px;
             font-size: 1.15rem;
+        }
+
+        .btn-small {
+            padding: 10px 20px;
+            font-size: 0.9rem;
         }
 
         /* Header cu efect de baloane */
@@ -1035,6 +1037,23 @@
             transform: translateX(0);
         }
 
+        .mobile-menu-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--gradient-primary);
+        }
+
+        .mobile-menu-header .logo {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .mobile-menu-tagline {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
         .mobile-nav-links {
             list-style: none;
             margin-bottom: 30px;
@@ -1100,6 +1119,89 @@
             transform: translateX(5px);
         }
 
+        /* Mobile dropdown menu items */
+        .mobile-dropdown-item {
+            width: 100%;
+        }
+
+        .mobile-dropdown-toggle {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 15px;
+            background: transparent;
+            border: none;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            text-align: left;
+            border-left: 4px solid transparent;
+            gap: 12px;
+        }
+
+        /* FIXED: Better alignment for dropdown toggle */
+        .mobile-dropdown-toggle span {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .mobile-dropdown-toggle i:first-child {
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .mobile-dropdown-toggle:hover {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), transparent);
+            color: var(--albastru);
+            padding-left: 20px;
+            border-left-color: var(--albastru);
+        }
+
+        .mobile-dropdown-toggle i:last-child {
+            transition: transform 0.3s ease;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .mobile-dropdown-toggle.active i:last-child {
+            transform: rotate(180deg);
+        }
+
+        .mobile-dropdown-content {
+            padding-left: 15px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(59, 130, 246, 0.03);
+            border-radius: 8px;
+            margin: 5px 0 10px;
+        }
+
+        .mobile-dropdown-content.active {
+            max-height: 400px;
+        }
+
+        .mobile-dropdown-content a {
+            padding-left: 25px;
+            font-size: 14px;
+            padding: 14px 15px 14px 25px;
+            border-left: 2px solid transparent;
+            margin-bottom: 0;
+            gap: 12px;
+        }
+
+        .mobile-dropdown-content a:hover {
+            padding-left: 30px;
+            border-left-color: var(--albastru);
+        }
 
         .mobile-dropdown-content a i {
             font-size: 14px;
@@ -1362,27 +1464,6 @@
         .basic .discount-badge    { background: #dbeafe; color: #2563eb; }
         .standard .discount-badge { background: #ede9fe; color: #5b21b6; }
         .premium .discount-badge  { background: #f3e8ff; color: #6d28d9; }
-
-        /* Delivery time badge */
-        .delivery-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            margin-top: 10px;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-            color: #065f46;
-            border: 1px solid rgba(16,185,129,0.25);
-        }
-        .delivery-badge i { font-size: 0.7rem; }
-        .delivery-badge--slow {
-            background: linear-gradient(135deg, #fef3c7, #fde68a);
-            color: #92400e;
-            border-color: rgba(245,158,11,0.25);
-        }
 
         /* Delivery time pill */
         .package-header > p:last-of-type {
@@ -1649,6 +1730,11 @@
             justify-content: center;
         }
 
+        .example-title,
+        .example-package-type {
+            display: none; /* Hide text in preview */
+        }
+
         .example-info {
             padding: 25px;
             background: white;
@@ -1898,6 +1984,39 @@
             left: 100%;
         }
 
+        /* Enhanced scroll-triggered animations */
+        .scale-in {
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.6s var(--transition-smooth);
+        }
+
+        .scale-in.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.6s var(--transition-smooth);
+        }
+
+        .slide-in-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide-in-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.6s var(--transition-smooth);
+        }
+
+        .slide-in-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
 
         /* IMPROVED Order Form Styles */
         .order-form-overlay {
@@ -2223,12 +2342,10 @@
         }
 
         .social-links a:hover {
-            background: rgba(255,255,255,0.18);
+            background: var(--gradient-primary);
             transform: translateY(-4px) scale(1.1);
             box-shadow: var(--shadow-lg);
         }
-        .social-links a i { font-size: 1.15rem; color: rgba(255,255,255,0.85); transition: color 0.2s; }
-        .social-links a:hover i { color: white; }
 
         .copyright {
             text-align: center;
@@ -2236,6 +2353,58 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             color: rgba(255, 255, 255, 0.6);
             font-size: 0.9rem;
+        }
+
+        /* Improved Floating WhatsApp Button */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background-color: #25D366;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
+            z-index: 1000;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(37, 211, 102, 0.4);
+            background-color: #20ba5a;
+        }
+
+        /* Improved Floating Telegram Button */
+        .telegram-float {
+            position: fixed;
+            bottom: 110px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background-color: #0088cc;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 4px 20px rgba(0, 136, 204, 0.3);
+            z-index: 1000;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+        }
+
+        .telegram-float:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(0, 136, 204, 0.4);
+            background-color: #0077b5;
         }
 
         /* Buton limbi simplificat */
@@ -2277,6 +2446,12 @@
             box-shadow: var(--shadow);
         }
 
+        /* Ripple effect styles */
+        .btn-ripple {
+            position: relative;
+            overflow: hidden;
+        }
+
         /* Staggered animation for service cards */
         .service-card:nth-child(1) { transition-delay: 0.1s; }
         .service-card:nth-child(2) { transition-delay: 0.2s; }
@@ -2293,7 +2468,6 @@
         .process-step:nth-child(3) { transition-delay: 0.3s; }
         .process-step:nth-child(4) { transition-delay: 0.4s; }
 
-        /* overflow:hidden on body is set inline in <head> and removed by JS on hide */
         /* Prevent animation on page load for better performance */
         .preload * {
             animation-duration: 0s !important;
@@ -2315,9 +2489,11 @@
         /* ── MOBILE PERFORMANCE: disable heavy animations & GPU layers on phones ── */
         @media (max-width: 768px) {
             /* Kill particle / floating / pulsing animations that cause jank */
-            .particle, .star, .shooting-star,
+            .particle, .star, .star-dot, .floating-element,
             .hero-blob, .hero-glow, .orbit, .orbit-item,
-            .scroll-progress {
+            .scroll-progress, .loading-screen,
+            [class*="float"], [class*="pulse"], [class*="bounce"],
+            [class*="rotate"], [class*="spin"] {
                 animation: none !important;
                 transition: none !important;
                 will-change: auto !important;
@@ -2421,6 +2597,16 @@
                 margin-bottom: 35px;
             }
             
+            .whatsapp-float,
+            .telegram-float {
+                width: 55px;
+                height: 55px;
+                font-size: 26px;
+            }
+            
+            .telegram-float {
+                bottom: 90px;
+            }
         }
 
         @media (max-width: 768px) {
@@ -2800,6 +2986,23 @@
                 font-size: 0.85rem;
             }
             
+            /* Floating buttons for mobile */
+            .telegram-float {
+                bottom: 90px;
+                right: 20px;
+                width: 65px;
+                height: 65px;
+                font-size: 28px;
+            }
+            
+            .whatsapp-float {
+                bottom: 20px;
+                right: 20px;
+                width: 65px;
+                height: 65px;
+                font-size: 28px;
+            }
+            
             /* Language selector */
             .language-selector-fixed {
                 top: 80px;
@@ -2888,6 +3091,24 @@
             .process-steps {
                 grid-template-columns: 1fr;
                 gap: 15px;
+            }
+            
+            /* Larger floating buttons for small phones */
+            .telegram-float,
+            .whatsapp-float {
+                width: 70px;
+                height: 70px;
+                font-size: 32px;
+            }
+            
+            .telegram-float {
+                bottom: 90px;
+                right: 15px;
+            }
+            
+            .whatsapp-float {
+                bottom: 15px;
+                right: 15px;
             }
             
             /* Mobile menu */
@@ -3030,6 +3251,14 @@
                 padding: 12px 20px;
             }
             
+            /* Largest floating buttons for very small screens */
+            .telegram-float,
+            .whatsapp-float {
+                width: 75px;
+                height: 75px;
+                font-size: 34px;
+            }
+            
             /* Mobile menu on smallest screens */
             .mobile-menu-content {
                 width: 95%;
@@ -3166,7 +3395,7 @@
                 <div class="lp lp3"></div><div class="lp lp4"></div>
                 <div class="lp lp5"></div>
             </div>
-            <img class="loading-rocket" src="rocket_nobg.png" alt="rocket">
+            <span class="loading-rocket">🚀</span>
             <span class="loading-flame"></span>
         </div>
             <div class="loading-brand">WebBuilder</div>
@@ -3202,7 +3431,38 @@
             <li><a href="#examples" data-i18n="nav.examples"><i class="fas fa-desktop"></i> <span>Examples</span></a></li>
             
             <!-- Additional Services Dropdown for Mobile -->
-            <li><a href="#order-form" data-i18n="nav.additional" onclick="mobileAdditionalClick(event)"><i class="fas fa-plus-circle"></i> <span>Additional <span class="additional-badge" style="position:relative;top:0;right:0;margin-left:6px;">NEW</span></span></a></li>
+            <li class="mobile-dropdown-item">
+                <button class="mobile-dropdown-toggle" data-i18n="nav.additional">
+                    <span><i class="fas fa-plus-circle"></i> <span>Additional</span> <span class="additional-badge">NEW</span></span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="mobile-dropdown-content">
+                    <a href="javascript:void(0)" class="add-on-btn" data-service="hosting" data-price="4">
+                        <i class="fas fa-server"></i>
+                        <span data-i18n="additional.hosting">Hosting (€4/month)</span>
+                    </a>
+                    <a href="javascript:void(0)" class="add-on-btn" data-service="simple_maintenance" data-price="20">
+                        <i class="fas fa-cogs"></i>
+                        <span data-i18n="additional.simple_maintenance">Simple Maintenance (€20/month)</span>
+                    </a>
+                    <a href="javascript:void(0)" class="add-on-btn" data-service="standard_maintenance" data-price="35">
+                        <i class="fas fa-cogs"></i>
+                        <span data-i18n="additional.standard_maintenance">Standard Maintenance (€35/month)</span>
+                    </a>
+                    <a href="javascript:void(0)" class="add-on-btn" data-service="domain_com" data-price="15">
+                        <i class="fas fa-globe"></i>
+                        <span data-i18n="additional.domain_com">.com Domain (€15/year)</span>
+                    </a>
+                    <a href="javascript:void(0)" class="add-on-btn" data-service="domain_eu" data-price="10">
+                        <i class="fas fa-globe"></i>
+                        <span data-i18n="additional.domain_eu">.eu Domain (€10/year)</span>
+                    </a>
+                    <a href="javascript:void(0)" class="add-on-btn" data-service="domain_ro" data-price="10">
+                        <i class="fas fa-globe"></i>
+                        <span data-i18n="additional.domain_ro">.ro Domain (€10/year)</span>
+                    </a>
+                </div>
+            </li>
             
             <li><a href="#process" data-i18n="nav.process"><i class="fas fa-play-circle"></i> <span>Process</span></a></li>
             <li><a href="#faq" data-i18n="nav.faq"><i class="fas fa-question-circle"></i> <span>FAQ</span></a></li>
@@ -3220,14 +3480,13 @@
             </div>
             
             <div class="mobile-social-links">
-                <a href="https://www.instagram.com/yourwebbu1lder/" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
-                <a href="https://t.me/LoveBomboclaut" target="_blank" rel="noopener"><i class="fab fa-telegram-plane"></i></a>
-                <a href="https://wa.me/40729552767" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-telegram"></i></a>
             </div>
             
             <div class="mobile-contact-info">
                 <p><i class="fas fa-phone"></i> +40 729 552 767</p>
-                <p><i class="fas fa-envelope"></i> <a href="/cdn-cgi/l/email-protection#b5c2d0d79bd7c0dcd9d1d0c78584f5d2d8d4dcd99bd6dad8" style="color:inherit;"><span class="__cf_email__" data-cfemail="334456511d51465a5f575641030273545e525a5f1d505c5e">[email&#160;protected]</span></a></p>
+                <p><i class="fas fa-envelope"></i> <a href="mailto:web.builder01@gmail.com" style="color:inherit;">web.builder01@gmail.com</a></p>
             </div>
         </div>
     </div>
@@ -3251,6 +3510,14 @@
                         <a href="javascript:void(0)" class="add-on-btn" data-service="hosting" data-price="4">
                             <i class="fas fa-server"></i>
                             <span data-i18n="additional.hosting">Hosting (€4/month)</span>
+                        </a>
+                        <a href="javascript:void(0)" class="add-on-btn" data-service="simple_maintenance" data-price="20">
+                            <i class="fas fa-cogs"></i>
+                            <span data-i18n="additional.simple_maintenance">Simple Maintenance (€20/month)</span>
+                        </a>
+                        <a href="javascript:void(0)" class="add-on-btn" data-service="standard_maintenance" data-price="35">
+                            <i class="fas fa-cogs"></i>
+                            <span data-i18n="additional.standard_maintenance">Standard Maintenance (€35/month)</span>
                         </a>
                         <a href="javascript:void(0)" class="add-on-btn" data-service="domain_com" data-price="15">
                             <i class="fas fa-globe"></i>
@@ -3416,7 +3683,7 @@
         <div class="bg-rocket bg-rocket-6"></div>
         <div class="bg-rocket bg-rocket-7"></div>
 
-        <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         (function(){
           var tpl = document.getElementById('tpl-rocket');
           if (!tpl) return;
@@ -3446,11 +3713,6 @@
                     <i class="fas fa-phone"></i> Call Now
                 </a>
             </div>
-            <div class="header-get-started">
-                <button class="btn-getstarted" onclick="heroGetStarted()">
-                    <i class="fas fa-rocket"></i> <span data-i18n="header.getstarted">Get Started</span>
-                </button>
-            </div>
         </div>
     </header>
 
@@ -3461,8 +3723,8 @@
             
             <!-- Butoane pentru schimbarea pachetelor pe mobile -->
             <div class="package-tabs-mobile">
-                <div class="package-tab" data-package="basic"><span data-i18n="packages.basic.title">Basic</span></div>
-                <div class="package-tab active" data-package="standard"><span data-i18n="packages.standard.title">Standard</span></div>
+                <div class="package-tab active" data-package="basic"><span data-i18n="packages.basic.title">Basic</span></div>
+                <div class="package-tab" data-package="standard"><span data-i18n="packages.standard.title">Standard</span></div>
                 <div class="package-tab" data-package="premium"><span data-i18n="packages.premium.title">Premium</span></div>
             </div>
             
@@ -3479,7 +3741,7 @@
                             <div class="discount-badge" data-i18n="packages.basic.discount">DISCOUNT 60%</div>
                         </div>
                         <p data-i18n="packages.basic.description">Perfect for informational websites</p>
-                        <div class="delivery-badge"><i class="fas fa-bolt"></i> <span data-i18n="packages.basic.deliveryTime">1-2 working days</span></div>
+                        <p><strong data-i18n="packages.delivery">Delivery:</strong> <span data-i18n="packages.basic.deliveryTime">1-2 working days</span></p>
                     </div>
                     <div class="package-features">
                         <ul>
@@ -3499,7 +3761,7 @@
                 </div>
 
                 <!-- Pachet Standard -->
-                <div class="package-card standard fade-in active">
+                <div class="package-card standard fade-in">
                     <div class="package-header">
                         <div class="package-tier-icon"><i class="fas fa-layer-group"></i></div>
                         <h3 data-i18n="packages.standard.title">Standard</h3>
@@ -3509,7 +3771,7 @@
                             <div class="discount-badge" data-i18n="packages.standard.discount">DISCOUNT 50%</div>
                         </div>
                         <p data-i18n="packages.standard.description">Great for coffee shops & small businesses</p>
-                        <div class="delivery-badge"><i class="fas fa-clock"></i> <span data-i18n="packages.standard.deliveryTime">3-4 working days</span></div>
+                        <p><strong data-i18n="packages.delivery">Delivery:</strong> <span data-i18n="packages.standard.deliveryTime">3-4 working days</span></p>
                     </div>
                     <div class="package-features">
                         <ul>
@@ -3530,8 +3792,9 @@
                 </div>
 
                 <!-- Pachet Premium -->
-                <div class="package-card premium fade-in">
+                <div class="package-card premium fade-in" style="position:relative;">
                     <div class="package-header">
+                        <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#7c3aed,#a855f7);color:white;font-size:0.72rem;font-weight:800;padding:5px 18px;border-radius:0 0 12px 12px;letter-spacing:0.8px;text-transform:uppercase;white-space:nowrap;box-shadow:0 4px 14px rgba(124,58,237,0.45);">&#11088; Most Popular</div>
                         <div class="package-tier-icon"><i class="fas fa-crown"></i></div>
                         <h3 data-i18n="packages.premium.title">Premium</h3>
                         <div class="package-price-container">
@@ -3540,7 +3803,7 @@
                             <div class="discount-badge" data-i18n="packages.premium.discount">DISCOUNT 45%</div>
                         </div>
                         <p data-i18n="packages.premium.description">Complete solution for restaurants & businesses</p>
-                        <div class="delivery-badge delivery-badge--slow"><i class="fas fa-calendar-alt"></i> <span data-i18n="packages.premium.deliveryTime">5-7 working days</span></div>
+                        <p><strong data-i18n="packages.delivery">Delivery:</strong> <span data-i18n="packages.premium.deliveryTime">5-7 working days</span></p>
                     </div>
                     <div class="package-features">
                         <ul>
@@ -3564,28 +3827,28 @@
             <!-- Pachete pentru mobile (afișate unul câte unul) -->
             <div class="packages-mobile">
                 <!-- Pachet Basic pentru mobile -->
-                <div class="package-card basic">
+                <div class="package-card basic active">
                     <div class="package-header">
                         <div class="package-tier-icon"><i class="fas fa-bolt"></i></div>
                         <h3 data-i18n="packages.basic.title">Basic</h3>
                         <div class="package-price-container">
-                            <span class="package-old-price">€100</span>
+                            <span class="package-old-price">€80</span>
                             <span class="package-price">€40</span>
-                            <div class="discount-badge" data-i18n="packages.basic.discount">DISCOUNT 60%</div>
+                            <div class="discount-badge" data-i18n="packages.basic.discount">DISCOUNT 50%</div>
                         </div>
                         <p data-i18n="packages.basic.description">Perfect for informational websites</p>
-                        <div class="delivery-badge"><i class="fas fa-bolt"></i> <span data-i18n="packages.basic.deliveryTime">1-2 working days</span></div>
+                        <p><strong data-i18n="packages.delivery">Delivery:</strong> <span data-i18n="packages.basic.deliveryTime">1-2 working days</span></p>
                     </div>
                     <div class="package-features">
                         <ul>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature1">Fully responsive design</span></li>
-                            <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature2">Modern &amp; clean layout</span></li>
+                            <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature2">Modern & clean layout</span></li>
+                            <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature3">Contact form with email notifications</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature4">Basic SEO optimization</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature5">Social media integration</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.basic.feature6">Mobile-friendly navigation</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.free_changes">10 free changes, then €2/change</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.free_hosting">Free hosting included</span></li>
-                            <li><i class="fas fa-check"></i> <span><i class="fab fa-cloudflare" style="color:#f38020"></i> <span data-i18n="packages.cloudflare">Cloudflare security &amp; DDoS protection</span></span></li>
                         </ul>
                         <button class="btn btn-primary package-btn order-btn" data-package="basic" data-price="40" data-i18n="packages.order">
                             Order
@@ -3603,20 +3866,19 @@
                             <span class="package-price">€250</span>
                             <div class="discount-badge" data-i18n="packages.standard.discount">DISCOUNT 50%</div>
                         </div>
-                        <p data-i18n="packages.standard.description">Great for coffee shops &amp; small businesses</p>
-                        <div class="delivery-badge"><i class="fas fa-clock"></i> <span data-i18n="packages.standard.deliveryTime">3-4 working days</span></div>
+                        <p data-i18n="packages.standard.description">Great for coffee shops & small businesses</p>
+                        <p><strong data-i18n="packages.delivery">Delivery:</strong> <span data-i18n="packages.standard.deliveryTime">3-4 working days</span></p>
                     </div>
                     <div class="package-features">
                         <ul>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.standard.feature1">All Basic features included</span></li>
-                            <li><i class="fas fa-check"></i> <span data-i18n="packages.standard.feature2">Custom design &amp; branding</span></li>
+                            <li><i class="fas fa-check"></i> <span data-i18n="packages.standard.feature2">Custom design & branding</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.standard.feature3">Dynamic menu/product showcase</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.standard.feature4">Photo gallery with lightbox</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.standard.feature5">Advanced SEO optimization</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.standard.feature6">Google Maps integration</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.standard.feature7">Enhanced loading speed</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.free_hosting">Free hosting included</span></li>
-                            <li><i class="fas fa-check"></i> <span><i class="fab fa-cloudflare" style="color:#f38020"></i> <span data-i18n="packages.cloudflare">Cloudflare security &amp; DDoS protection</span></span></li>
                         </ul>
                         <button class="btn btn-primary package-btn order-btn" data-package="standard" data-price="250" data-i18n="packages.order">
                             Order
@@ -3634,20 +3896,19 @@
                             <span class="package-price">€550</span>
                             <div class="discount-badge" data-i18n="packages.premium.discount">DISCOUNT 45%</div>
                         </div>
-                        <p data-i18n="packages.premium.description">Complete solution for restaurants &amp; businesses</p>
-                        <div class="delivery-badge delivery-badge--slow"><i class="fas fa-calendar-alt"></i> <span data-i18n="packages.premium.deliveryTime">5-7 working days</span></div>
+                        <p data-i18n="packages.premium.description">Complete solution for restaurants & businesses</p>
+                        <p><strong data-i18n="packages.delivery">Delivery:</strong> <span data-i18n="packages.premium.deliveryTime">5-7 working days</span></p>
                     </div>
                     <div class="package-features">
                         <ul>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature1">All Standard features included</span></li>
-                            <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature2">Premium custom design &amp; animations</span></li>
+                            <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature2">Premium custom design & animations</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature3">Online reservation/booking system</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature4">Secure payment integration</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature5">Priority 24/7 support</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature6">Comprehensive SEO package</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature7">Advanced analytics integration</span></li>
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature8">Post-launch optimization</span></li>
-                            <li><i class="fas fa-check"></i> <span><i class="fab fa-cloudflare" style="color:#f38020"></i> <span data-i18n="packages.cloudflare">Cloudflare security &amp; DDoS protection</span></span></li>
                         </ul>
                         <button class="btn btn-primary package-btn order-btn" data-package="premium" data-price="550" data-i18n="packages.order">
                             Order
@@ -3683,11 +3944,11 @@
                         <h4 data-i18n="examples.basic.title">Informational Website</h4>
                         <p data-i18n="examples.basic.description">Perfect for showcasing products or services with a clean, professional design. Ideal for small businesses and personal portfolios.</p>
                         <ul class="example-features">
-                            <li><i class="fas fa-check"></i> <span data-i18n="examples.basic.f1">Responsive design</span></li>
-                            <li><i class="fas fa-check"></i> <span data-i18n="examples.basic.f2">Contact form integration</span></li>
-                            <li><i class="fas fa-check"></i> <span data-i18n="examples.basic.f3">Basic SEO optimization</span></li>
-                            <li><i class="fas fa-check"></i> <span data-i18n="examples.basic.f4">Social media links</span></li>
-                            <li><i class="fas fa-check"></i> <span data-i18n="examples.basic.f5">Fast loading speed</span></li>
+                            <li><i class="fas fa-check"></i> <span>Responsive design</span></li>
+                            <li><i class="fas fa-check"></i> <span>Contact form integration</span></li>
+                            <li><i class="fas fa-check"></i> <span>Basic SEO optimization</span></li>
+                            <li><i class="fas fa-check"></i> <span>Social media links</span></li>
+                            <li><i class="fas fa-check"></i> <span>Fast loading speed</span></li>
                         </ul>
                     </div>
                 </a>
@@ -3703,11 +3964,11 @@
                         <h4 data-i18n="examples.standard.title">Coffee Shop Website</h4>
                         <p data-i18n="examples.standard.description">Great for cafes, small restaurants, and businesses needing menu display. Features product showcase and online presence.</p>
                         <ul class="example-features">
-                            <li><i class="fas fa-check"></i> <span data-i18n="examples.standard.f1">Menu display system</span></li>
-                            <li><i class="fas fa-check"></i> <span data-i18n="examples.standard.f2">Photo gallery</span></li>
-                            <li><i class="fas fa-check"></i> <span data-i18n="examples.standard.f3">Google Maps integration</span></li>
-                            <li><i class="fas fa-check"></i> <span data-i18n="examples.standard.f4">Advanced SEO</span></li>
-                            <li><i class="fas fa-check"></i> <span data-i18n="examples.standard.f5">Custom design</span></li>
+                            <li><i class="fas fa-check"></i> <span>Menu display system</span></li>
+                            <li><i class="fas fa-check"></i> <span>Photo gallery</span></li>
+                            <li><i class="fas fa-check"></i> <span>Google Maps integration</span></li>
+                            <li><i class="fas fa-check"></i> <span>Advanced SEO</span></li>
+                            <li><i class="fas fa-check"></i> <span>Custom design</span></li>
                         </ul>
                     </div>
                 </a>
@@ -3723,11 +3984,11 @@
                         <h4 data-i18n="examples.premium.title">Online Shop</h4>
                         <p data-i18n="examples.premium.description">Complete e-commerce solution with product catalog, cart, checkout, and payment integration. Perfect for growing businesses.</p>
                         <ul class="example-features">
-                            <li><i class="fas fa-check"></i> <span data-i18n="examples.premium.f1">Product catalog & filters</span></li>
-                            <li><i class="fas fa-check"></i> <span data-i18n="examples.premium.f2">Shopping cart & checkout</span></li>
-                            <li><i class="fas fa-check"></i> <span data-i18n="examples.premium.f3">Payment integration</span></li>
-                            <li><i class="fas fa-check"></i> <span data-i18n="examples.premium.f4">Advanced animations</span></li>
-                            <li><i class="fas fa-check"></i> <span data-i18n="examples.premium.f5">Priority support</span></li>
+                            <li><i class="fas fa-check"></i> <span>Product catalog & filters</span></li>
+                            <li><i class="fas fa-check"></i> <span>Shopping cart & checkout</span></li>
+                            <li><i class="fas fa-check"></i> <span>Payment integration</span></li>
+                            <li><i class="fas fa-check"></i> <span>Advanced animations</span></li>
+                            <li><i class="fas fa-check"></i> <span>Priority support</span></li>
                         </ul>
                     </div>
                 </a>
@@ -3747,11 +4008,11 @@
                             <h4 data-i18n="examples.basic.title">Informational Website</h4>
                             <p data-i18n="examples.basic.description">Perfect for showcasing products or services with a clean, professional design. Ideal for small businesses and personal portfolios.</p>
                             <ul class="example-features">
-                                <li><i class="fas fa-check"></i> <span data-i18n="examples.basic.f1">Responsive design</span></li>
-                                <li><i class="fas fa-check"></i> <span data-i18n="examples.basic.f2">Contact form integration</span></li>
-                                <li><i class="fas fa-check"></i> <span data-i18n="examples.basic.f3">Basic SEO optimization</span></li>
-                                <li><i class="fas fa-check"></i> <span data-i18n="examples.basic.f4">Social media links</span></li>
-                                <li><i class="fas fa-check"></i> <span data-i18n="examples.basic.f5">Fast loading speed</span></li>
+                                <li><i class="fas fa-check"></i> <span>Responsive design</span></li>
+                                <li><i class="fas fa-check"></i> <span>Contact form integration</span></li>
+                                <li><i class="fas fa-check"></i> <span>Basic SEO optimization</span></li>
+                                <li><i class="fas fa-check"></i> <span>Social media links</span></li>
+                                <li><i class="fas fa-check"></i> <span>Fast loading speed</span></li>
                             </ul>
                         </div>
                     </a>
@@ -3769,11 +4030,11 @@
                             <h4 data-i18n="examples.standard.title">Coffee Shop Website</h4>
                             <p data-i18n="examples.standard.description">Great for cafes, small restaurants, and businesses needing menu display. Features product showcase and online presence.</p>
                             <ul class="example-features">
-                                <li><i class="fas fa-check"></i> <span data-i18n="examples.standard.f1">Menu display system</span></li>
-                                <li><i class="fas fa-check"></i> <span data-i18n="examples.standard.f2">Photo gallery</span></li>
-                                <li><i class="fas fa-check"></i> <span data-i18n="examples.standard.f3">Google Maps integration</span></li>
-                                <li><i class="fas fa-check"></i> <span data-i18n="examples.standard.f4">Advanced SEO</span></li>
-                                <li><i class="fas fa-check"></i> <span data-i18n="examples.standard.f5">Custom design</span></li>
+                                <li><i class="fas fa-check"></i> <span>Menu display system</span></li>
+                                <li><i class="fas fa-check"></i> <span>Photo gallery</span></li>
+                                <li><i class="fas fa-check"></i> <span>Google Maps integration</span></li>
+                                <li><i class="fas fa-check"></i> <span>Advanced SEO</span></li>
+                                <li><i class="fas fa-check"></i> <span>Custom design</span></li>
                             </ul>
                         </div>
                     </a>
@@ -3791,11 +4052,11 @@
                             <h4 data-i18n="examples.premium.title">Online Shop</h4>
                             <p data-i18n="examples.premium.description">Complete e-commerce solution with product catalog, cart, checkout, and payment integration. Perfect for growing businesses.</p>
                             <ul class="example-features">
-                                <li><i class="fas fa-check"></i> <span data-i18n="examples.premium.f1">Product catalog & filters</span></li>
-                                <li><i class="fas fa-check"></i> <span data-i18n="examples.premium.f2">Shopping cart & checkout</span></li>
-                                <li><i class="fas fa-check"></i> <span data-i18n="examples.premium.f3">Payment integration</span></li>
-                                <li><i class="fas fa-check"></i> <span data-i18n="examples.premium.f4">Advanced animations</span></li>
-                                <li><i class="fas fa-check"></i> <span data-i18n="examples.premium.f5">Priority support</span></li>
+                                <li><i class="fas fa-check"></i> <span>Product catalog & filters</span></li>
+                                <li><i class="fas fa-check"></i> <span>Shopping cart & checkout</span></li>
+                                <li><i class="fas fa-check"></i> <span>Payment integration</span></li>
+                                <li><i class="fas fa-check"></i> <span>Advanced animations</span></li>
+                                <li><i class="fas fa-check"></i> <span>Priority support</span></li>
                             </ul>
                         </div>
                     </a>
@@ -3860,7 +4121,7 @@
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <p data-i18n="faq.a2">Hosting is included free with the Basic and Standard plans. For Premium, hosting is available as an add-on at €4/month with unlimited bandwidth and a free SSL certificate.</p>
+                        <p data-i18n="faq.a2">Hosting is included free with the Basic plan. For Standard and Premium, hosting is available as an add-on at €4/month with 2GB storage, unlimited bandwidth, and free SSL certificate.</p>
                     </div>
                 </div>
                 
@@ -3870,11 +4131,19 @@
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <p data-i18n="faq.a3">No, website content can only be updated by our team. Changes are priced per plan: <strong>Basic</strong> — 10 free changes, then €2/change; <strong>Standard</strong> — €3 per change; <strong>Premium</strong> — €7 per change. A "change" means one content update (text, image, color, etc.). Major structural changes may count as multiple changes.</p>
+                        <p data-i18n="faq.a3">No, website content can only be updated by our team. Changes are priced per plan: <strong>Basic</strong> — free changes; <strong>Standard</strong> — €3 per change; <strong>Premium</strong> — €7 per change. A “change” means one content update (text, image, color, etc.). Major structural changes may count as multiple changes.</p>
                     </div>
                 </div>
                 
-
+                <div class="faq-item fade-in">
+                    <div class="faq-question" data-i18n="faq.q4">
+                        What happens after the website is launched?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p data-i18n="faq.a4">We provide 30 days of support for any technical issues. After that, we recommend choosing a maintenance plan to keep your website secure and updated.</p>
+                    </div>
+                </div>
                 
                 <div class="faq-item fade-in">
                     <div class="faq-question" data-i18n="faq.q5">
@@ -3892,7 +4161,7 @@
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <p data-i18n="faq.a6">We accept payments by card, bank transfer, and cryptocurrency. A 20% deposit is required to start the project, with the balance due upon completion.</p>
+                        <p data-i18n="faq.a6">We accept bank transfers and PayPal. A 20% deposit is required to start the project, with the balance due upon completion.</p>
                     </div>
                 </div>
                 
@@ -3946,9 +4215,8 @@
                     <h3>WebBuilder</h3>
                     <p data-i18n="footer.description">We provide complete web solutions for small and medium businesses, with emphasis on quality and results.</p>
                     <div class="social-links">
-                        <a href="https://www.instagram.com/yourwebbu1lder/" target="_blank" rel="noopener" title="Instagram" style="color:#e1306c"><i class="fab fa-instagram"></i></a>
-                        <a href="https://wa.me/40729552767" target="_blank" rel="noopener" title="WhatsApp" style="color:#25d366"><i class="fab fa-whatsapp"></i></a>
-                        <a href="https://t.me/LoveBomboclaut" target="_blank" rel="noopener" title="Telegram" style="color:#2aabee"><i class="fab fa-telegram-plane"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
                 <div class="footer-column">
@@ -3966,7 +4234,7 @@
                     <h3 data-i18n="footer.contact">Contact</h3>
                     <ul>
                         <li><i class="fas fa-phone"></i> +40 729 552 767</li>
-                        <li><i class="fas fa-envelope"></i> <a href="/cdn-cgi/l/email-protection#077062652965726e6b636275373647606a666e6b2964686a" style="color:inherit;"><span class="__cf_email__" data-cfemail="d9aebcbbf7bbacb0b5bdbcabe9e899beb4b8b0b5f7bab6b4">[email&#160;protected]</span></a></li>
+                        <li><i class="fas fa-envelope"></i> <a href="mailto:web.builder01@gmail.com" style="color:inherit;">web.builder01@gmail.com</a></li>
                         <li><i class="fas fa-map-marker-alt"></i> <span data-i18n="footer.location">Bucharest, Romania</span></li>
                     </ul>
                 </div>
@@ -4066,7 +4334,7 @@
                 <div class="form-group" id="changes-group">
                     <label>Website Changes</label>
                     <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:12px;padding:16px 20px;">
-                        <div id="changes-free-notice" style="display:none;color:#10b981;font-weight:600;font-size:0.9rem;margin-bottom:8px;"><i class="fas fa-gift"></i> 10 free changes included with Basic plan!</div>
+                        <div id="changes-free-notice" style="display:none;color:#10b981;font-weight:600;font-size:0.9rem;margin-bottom:8px;"><i class="fas fa-gift"></i> Free changes included with Basic plan!</div>
                         <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
                             <div style="flex:1;min-width:160px;">
                                 <p style="font-size:0.82rem;color:#64748b;margin-bottom:6px;">How many changes do you want?</p>
@@ -4115,7 +4383,7 @@
 
 
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         // Enhanced Mobile Menu System
         class EnhancedMobileMenu {
             constructor() {
@@ -4198,8 +4466,6 @@
                 document.querySelector('nav')?.classList.add('mobile-open');
                 this.isOpen = true;
                 document.body.style.overflow = 'hidden';
-                const fab = document.getElementById('contactFabWrap');
-                if (fab) fab.style.display = 'none';
             }
 
             close() {
@@ -4209,8 +4475,6 @@
                 document.querySelector('nav')?.classList.remove('mobile-open');
                 this.isOpen = false;
                 document.body.style.overflow = '';
-                const fab = document.getElementById('contactFabWrap');
-                if (fab) fab.style.display = '';
                 document.querySelectorAll('.mobile-dropdown-content.active').forEach(content => {
                     content.classList.remove('active');
                     content.previousElementSibling?.classList.remove('active');
@@ -4275,17 +4539,6 @@
 
             initPackageTabs() {
                 if (this.packageTabs.length === 0 || this.mobilePackages.length === 0) return;
-
-                // Set default active package on mobile (show Standard by default)
-                const defaultTab = document.querySelector('.package-tab[data-package="standard"]') || this.packageTabs[0];
-                const defaultPackageType = defaultTab ? defaultTab.getAttribute('data-package') : null;
-                this.packageTabs.forEach(t => t.classList.remove('active'));
-                this.mobilePackages.forEach(pkg => { pkg.style.display = 'none'; pkg.classList.remove('active'); });
-                if (defaultTab) defaultTab.classList.add('active');
-                if (defaultPackageType) {
-                    const defaultCard = document.querySelector(`.packages-mobile .package-card.${defaultPackageType}`);
-                    if (defaultCard) { defaultCard.style.display = 'flex'; defaultCard.classList.add('active'); }
-                }
 
                // Add click event to each tab
 this.packageTabs.forEach(tab => {
@@ -4418,12 +4671,10 @@ this.packageTabs.forEach(tab => {
 
             hide() {
                 this.loadingScreen.style.opacity = '0';
-                // Reveal body and restore scroll immediately
-                document.body.style.opacity = '1';
-                document.body.style.overflow = '';
                 setTimeout(() => {
                     this.loadingScreen.style.display = 'none';
                     document.body.classList.remove('preload');
+                    document.body.style.opacity = '1';
                 }, 1200);
             }
         }
@@ -4438,7 +4689,6 @@ this.packageTabs.forEach(tab => {
                 }
                 document.body.classList.remove('preload');
                 document.body.style.opacity = '1';
-                document.body.style.overflow = '';
             }
         });
 
@@ -4471,10 +4721,9 @@ this.packageTabs.forEach(tab => {
                         "header.subtitle": "Site-uri moderne livrate în zile, nu luni. Construite să îți crească afacerea.",
                         "header.whatsapp": "Discută pe WhatsApp",
                         "header.call": "Sună acum",
-                        "header.getstarted": "Începe acum",
                         "packages.title": "Pachete și Prețuri",
                         "packages.basic.title": "Basic",
-                        "packages.basic.discount": "REDUCERE 60%",
+                        "packages.basic.discount": "REDUCERE 50%",
                         "packages.basic.description": "Perfect pentru site-uri informative",
                         "packages.basic.deliveryTime": "1-2 zile lucrătoare",
                         "packages.basic.feature1": "Design responsive complet",
@@ -4522,36 +4771,23 @@ this.packageTabs.forEach(tab => {
                         "examples.title": "Exemple de Site-uri",
                         "examples.basic.title": "Site Informațional",
                         "examples.basic.description": "Perfect pentru prezentarea produselor sau serviciilor cu un design curat și profesional. Ideal pentru afaceri mici și portofolii personale.",
-                        "examples.basic.f1": "Design responsive",
-                        "examples.basic.f2": "Formular de contact integrat",
-                        "examples.basic.f3": "Optimizare SEO de bază",
-                        "examples.basic.f4": "Link-uri rețele sociale",
-                        "examples.basic.f5": "Viteză de încărcare rapidă",
                         "examples.standard.title": "Site pentru Cafenea",
                         "examples.standard.description": "Excelent pentru cafenele, restaurante mici și afaceri care necesită prezentare de meniu. Include prezentare produse și prezență online.",
-                        "examples.standard.f1": "Sistem de afișare meniu",
-                        "examples.standard.f2": "Galerie foto",
-                        "examples.standard.f3": "Integrare Google Maps",
-                        "examples.standard.f4": "SEO avansat",
-                        "examples.standard.f5": "Design personalizat",
                         "examples.premium.title": "Magazin Online",
                         "examples.premium.description": "Soluție completă de e-commerce cu catalog produse, coș de cumpărături, checkout și integrare plată. Perfect pentru afaceri în creștere.",
-                        "examples.premium.f1": "Catalog produse & filtre",
-                        "examples.premium.f2": "Coș de cumpărături & checkout",
-                        "examples.premium.f3": "Integrare plată",
-                        "examples.premium.f4": "Animații avansate",
-                        "examples.premium.f5": "Suport prioritar",
                         "faq.title": "Întrebări Frecvente",
                         "faq.q1": "Cât durează să construiești un site web?",
                         "faq.a1": "Site-uri Basic: 1-2 zile lucrătoare<br>Site-uri Standard: 3-4 zile lucrătoare<br>Site-uri Premium: 5-7 zile lucrătoare",
                         "faq.q2": "Trebuie să cumpăr hosting separat?",
-                        "faq.a2": "Hostingul este inclus gratuit la pachetele Basic și Standard. Pentru Premium, hostingul este disponibil ca serviciu adițional la €4/lună cu lățime de bandă nelimitată și certificat SSL gratuit.",
+                        "faq.a2": "Da, hostingul este un serviciu separat. Oferim hosting de încredere începând de la €4/lună cu 2GB spațiu de stocare, lățime de bandă nelimitată și certificat SSL gratuit.",
                         "faq.q3": "Pot să actualizez conținutul site-ului singur?",
-                        "faq.a3": "Nu, conținutul site-ului poate fi actualizat doar de echipa noastră. Modificările sunt prețuite per pachet: Basic — 10 modificări gratuite, apoi €2/modificare; Standard — €3 per modificare; Premium — €7 per modificare.",
+                        "faq.a3": "Nu, conținutul site-ului poate fi actualizat doar de echipa noastră. Cu toate acestea, oferim pachete de mentenanță în care ne ocupăm noi de toate actualizările de conținut pentru tine. Acest lucru asigură că site-ul tău rămâne securizat și profesional.",
+                        "faq.q4": "Ce se întâmplă după lansarea site-ului?",
+                        "faq.a4": "Oferim 30 de zile de suport gratuit pentru orice probleme tehnice. După aceea, recomandăm alegerea unui plan de mentenanță pentru a menține site-ul securizat și actualizat.",
                         "faq.q5": "Oferiți servicii SEO?",
                         "faq.a5": "Da, toate pachetele noastre includ optimizare SEO de bază.",
                         "faq.q6": "Ce metode de plată acceptați?",
-                        "faq.a6": "Acceptăm plăți prin card, transfer bancar și criptomonede. Este necesară o avansă de 20% pentru a începe proiectul, cu restul datorat la finalizare.",
+                        "faq.a6": "Acceptăm transfer bancar și PayPal. Este necesară o avansă de 20% pentru a începe proiectul, cu restul datorat la finalizare.",
                         "faq.q7": "Pot să văd exemple de lucrări ale voastre?",
                         "faq.a7": "Da! Avem exemple de site-uri pentru fiecare tip de pachet. Verificați secțiunea de exemple deasupra fiecărui pachet pentru a vedea ce fel de site veți primi.",
                         "process.title": "Cum Funcționează",
@@ -4580,22 +4816,7 @@ this.packageTabs.forEach(tab => {
                         "order.summary": "Sumar Comandă",
                         "order.total": "Total:",
                         "order.submit": "Trimite Comanda",
-                        "order.note": "Veți fi redirecționat către plată securizată după trimitere",
-                        "chat.hello": "Spune salut 👋",
-                        "chat.signin_sub": "Autentifică-te pentru a discuta cu noi",
-                        "chat.signup_title": "Creează cont",
-                        "chat.signup_sub": "Creează un cont gratuit pentru a discuta cu noi",
-                        "chat.signin_btn": "Autentificare",
-                        "chat.signup_btn": "Creează cont",
-                        "chat.forgot": "Ai uitat parola?",
-                        "chat.reset_ok": "✅ Email de resetare trimis! Verifică inbox-ul.",
-                        "chat.no_account": "Nu ai cont?",
-                        "chat.create_one": "Creează unul",
-                        "chat.has_account": "Ai deja un cont?",
-                        "chat.online": "De obicei răspunde în câteva ore",
-                        "chat.no_messages": "Niciun mesaj",
-                        "chat.no_messages_sub": "Trimite-ne un mesaj și răspundem curând!",
-                        "chat.placeholder": "Scrie un mesaj..."
+                        "order.note": "Veți fi redirecționat către plată securizată după trimitere"
                     },
                     en: {
                         "nav.home": "Home",
@@ -4622,10 +4843,9 @@ this.packageTabs.forEach(tab => {
                         "header.subtitle": "Fast, modern sites delivered in days — not months. Built to grow your business.",
                         "header.whatsapp": "Chat on WhatsApp",
                         "header.call": "Call Now",
-                        "header.getstarted": "Get Started",
                         "packages.title": "Packages and Prices",
                         "packages.basic.title": "Basic",
-                        "packages.basic.discount": "DISCOUNT 60%",
+                        "packages.basic.discount": "DISCOUNT 50%",
                         "packages.basic.description": "Perfect for informational websites",
                         "packages.basic.deliveryTime": "1-2 working days",
                         "packages.basic.feature1": "Fully responsive design",
@@ -4673,36 +4893,23 @@ this.packageTabs.forEach(tab => {
                         "examples.title": "Example Websites",
                         "examples.basic.title": "Informational Website",
                         "examples.basic.description": "Perfect for showcasing products or services with a clean, professional design. Ideal for small businesses and personal portfolios.",
-                        "examples.basic.f1": "Responsive design",
-                        "examples.basic.f2": "Contact form integration",
-                        "examples.basic.f3": "Basic SEO optimization",
-                        "examples.basic.f4": "Social media links",
-                        "examples.basic.f5": "Fast loading speed",
                         "examples.standard.title": "Coffee Shop Website",
                         "examples.standard.description": "Great for cafes, small restaurants, and businesses needing menu display. Features product showcase and online presence.",
-                        "examples.standard.f1": "Menu display system",
-                        "examples.standard.f2": "Photo gallery",
-                        "examples.standard.f3": "Google Maps integration",
-                        "examples.standard.f4": "Advanced SEO",
-                        "examples.standard.f5": "Custom design",
                         "examples.premium.title": "Online Shop",
                         "examples.premium.description": "Complete e-commerce solution with product catalog, cart, checkout, and payment integration. Perfect for growing businesses.",
-                        "examples.premium.f1": "Product catalog & filters",
-                        "examples.premium.f2": "Shopping cart & checkout",
-                        "examples.premium.f3": "Payment integration",
-                        "examples.premium.f4": "Advanced animations",
-                        "examples.premium.f5": "Priority support",
                         "faq.title": "Frequently Asked Questions",
                         "faq.q1": "How long does it take to build a website?",
                         "faq.a1": "Basic websites: 1-2 working days<br>Standard websites: 3-4 working days<br>Premium websites: 5-7 working days",
                         "faq.q2": "Do I need to purchase hosting separately?",
-                        "faq.a2": "Hosting is included free with the Basic and Standard plans. For Premium, hosting is available as an add-on at €4/month with unlimited bandwidth and a free SSL certificate.",
+                        "faq.a2": "Hosting is included free with the Basic plan. For Standard and Premium, hosting is available as an add-on at €4/month with 2GB storage, unlimited bandwidth, and free SSL certificate.",
                         "faq.q3": "Can I update my website content myself?",
                         "faq.a3": "No, website content can only be updated by our team. Changes are priced per plan: Basic — free changes; Standard — €3 per change; Premium — €7 per change. A change means one content update (text, image, color, etc.). Major structural changes may count as multiple changes.",
+                        "faq.q4": "What happens after the website is launched?",
+                        "faq.a4": "We provide 30 days of support for any technical issues. After that, we recommend choosing a maintenance plan to keep your website secure and updated.",
                         "faq.q5": "Do you provide SEO services?",
                         "faq.a5": "Yes, all our packages include basic SEO optimization.",
                         "faq.q6": "What payment methods do you accept?",
-                        "faq.a6": "We accept payments by card, bank transfer, and cryptocurrency. A 20% deposit is required to start the project, with the balance due upon completion.",
+                        "faq.a6": "We accept bank transfers and PayPal. A 20% deposit is required to start the project, with the balance due upon completion.",
                         "faq.q7": "Can I see examples of your work?",
                         "faq.a7": "Yes! We have example websites for each package type. Check out the example section above each package to see what kind of website you'll get.",
                         "process.title": "How It Works",
@@ -4731,22 +4938,7 @@ this.packageTabs.forEach(tab => {
                         "order.summary": "Order Summary",
                         "order.total": "Total:",
                         "order.submit": "Submit Order",
-                        "order.note": "You'll be redirected to secure payment after submitting",
-                        "chat.hello": "Say hello 👋",
-                        "chat.signin_sub": "Sign in to chat with us",
-                        "chat.signup_title": "Create account",
-                        "chat.signup_sub": "Create a free account to chat with us",
-                        "chat.signin_btn": "Sign In",
-                        "chat.signup_btn": "Create Account",
-                        "chat.forgot": "Forgot password?",
-                        "chat.reset_ok": "✅ Reset email sent! Check your inbox.",
-                        "chat.no_account": "Don't have an account?",
-                        "chat.create_one": "Create one",
-                        "chat.has_account": "Already have an account?",
-                        "chat.online": "Usually replies in a few hours",
-                        "chat.no_messages": "No messages yet",
-                        "chat.no_messages_sub": "Send us a message and we'll reply soon!",
-                        "chat.placeholder": "Type a message..."
+                        "order.note": "You'll be redirected to secure payment after submitting"
                     },
                     ru: {
                         "nav.home": "Главная",
@@ -4773,10 +4965,9 @@ this.packageTabs.forEach(tab => {
                         "header.subtitle": "Современные сайты за дни, а не месяцы. Созданы для роста вашего бизнеса.",
                         "header.whatsapp": "Обсудить в WhatsApp",
                         "header.call": "Позвонить сейчас",
-                        "header.getstarted": "Начать",
                         "packages.title": "Пакеты и Цены",
                         "packages.basic.title": "Базовый",
-                        "packages.basic.discount": "СКИДКА 60%",
+                        "packages.basic.discount": "СКИДКА 50%",
                         "packages.basic.description": "Идеально для информационных сайтов",
                         "packages.basic.deliveryTime": "1-2 рабочих дня",
                         "packages.basic.feature1": "Полностью адаптивный дизайн",
@@ -4824,36 +5015,23 @@ this.packageTabs.forEach(tab => {
                         "examples.title": "Примеры Сайтов",
                         "examples.basic.title": "Информационный Сайт",
                         "examples.basic.description": "Идеально для демонстрации продуктов или услуг с чистым, профессиональным дизайном. Идеально для малого бизнеса и личных портфолио.",
-                        "examples.basic.f1": "Адаптивный дизайн",
-                        "examples.basic.f2": "Интеграция контактной формы",
-                        "examples.basic.f3": "Базовая SEO-оптимизация",
-                        "examples.basic.f4": "Ссылки на соцсети",
-                        "examples.basic.f5": "Быстрая скорость загрузки",
                         "examples.standard.title": "Сайт для Кофейни",
                         "examples.standard.description": "Отлично подходит для кафе, небольших ресторанов и бизнеса, нуждающегося в отображении меню. Включает презентацию продуктов и онлайн-присутствие.",
-                        "examples.standard.f1": "Система отображения меню",
-                        "examples.standard.f2": "Фотогалерея",
-                        "examples.standard.f3": "Интеграция Google Maps",
-                        "examples.standard.f4": "Продвинутый SEO",
-                        "examples.standard.f5": "Индивидуальный дизайн",
                         "examples.premium.title": "Интернет-Магазин",
                         "examples.premium.description": "Полное решение для электронной торговли: каталог товаров, корзина, оформление заказа и интеграция оплаты. Идеально для растущего бизнеса.",
-                        "examples.premium.f1": "Каталог товаров & фильтры",
-                        "examples.premium.f2": "Корзина & оформление заказа",
-                        "examples.premium.f3": "Интеграция оплаты",
-                        "examples.premium.f4": "Продвинутые анимации",
-                        "examples.premium.f5": "Приоритетная поддержка",
                         "faq.title": "Часто Задаваемые Вопросы",
                         "faq.q1": "Сколько времени занимает создание сайта?",
                         "faq.a1": "Базовые сайты: 1-2 рабочих дня<br>Стандартные сайты: 3-4 рабочих дня<br>Премиум сайты: 5-7 рабочих дней",
                         "faq.q2": "Нужно ли покупать хостинг отдельно?",
-                        "faq.a2": "Хостинг включён бесплатно в пакеты Basic и Standard. Для Premium хостинг доступен как дополнение за €4/месяц с неограниченной пропускной способностью и бесплатным SSL-сертификатом.",
+                        "faq.a2": "Да, хостинг - это отдельная услуга. Мы предлагаем надежный хостинг от €4/месяц с 2ГБ памяти, неограниченной пропускной способностью и бесплатным SSL-сертификатом.",
                         "faq.q3": "Могу ли я обновлять контент сайта самостоятельно?",
                         "faq.a3": "Нет, контент сайта может обновляться только нашей командой. Однако мы предлагаем планы обслуживания, где мы обрабатываем все обновления контента для вас. Это гарантирует, что ваш сайт остается безопасным и профессиональным.",
+                        "faq.q4": "Что происходит после запуска сайта?",
+                        "faq.a4": "Мы предоставляем 30 дней бесплатной поддержки по любым техническим вопросам. После этого мы рекомендуем выбрать план обслуживания, чтобы ваш сайт оставался безопасным и обновленным.",
                         "faq.q5": "Предоставляете ли вы SEO-услуги?",
                         "faq.a5": "Да, все наши пакеты включают базовую SEO-оптимизацию.",
                         "faq.q6": "Какие методы оплаты вы принимаете?",
-                        "faq.a6": "Мы принимаем оплату картой, банковскими переводами и криптовалютой. Требуется предоплата 20% для начала проекта, остаток оплачивается по завершении.",
+                        "faq.a6": "Мы принимаем банковские переводы и PayPal. Требуется предоплата 20% для начала проекта, остаток оплачивается по завершении.",
                         "faq.q7": "Могу ли я увидеть примеры ваших работ?",
                         "faq.a7": "Да! У нас есть примеры сайтов для каждого типа пакета. Посмотрите раздел примеров над каждым пакетом, чтобы увидеть, какой сайт вы получите.",
                         "process.title": "Как Это Работает",
@@ -4882,22 +5060,7 @@ this.packageTabs.forEach(tab => {
                         "order.summary": "Сводка Заказа",
                         "order.total": "Всего:",
                         "order.submit": "Отправить Заказ",
-                        "order.note": "Вы будете перенаправлены на безопасную оплату после отправки",
-                        "chat.hello": "Привет 👋",
-                        "chat.signin_sub": "Войдите, чтобы начать чат",
-                        "chat.signup_title": "Создать аккаунт",
-                        "chat.signup_sub": "Создайте бесплатный аккаунт для чата",
-                        "chat.signin_btn": "Войти",
-                        "chat.signup_btn": "Создать аккаунт",
-                        "chat.forgot": "Забыли пароль?",
-                        "chat.reset_ok": "✅ Письмо для сброса отправлено!",
-                        "chat.no_account": "Нет аккаунта?",
-                        "chat.create_one": "Создать",
-                        "chat.has_account": "Уже есть аккаунт?",
-                        "chat.online": "Обычно отвечает в течение нескольких часов",
-                        "chat.no_messages": "Нет сообщений",
-                        "chat.no_messages_sub": "Отправьте сообщение — ответим в ближайшее время!",
-                        "chat.placeholder": "Введите сообщение..."
+                        "order.note": "Вы будете перенаправлены на безопасную оплату после отправки"
                     }
                 };
                 
@@ -4986,14 +5149,7 @@ this.packageTabs.forEach(tab => {
 
                 localStorage.setItem('preferred-language', lang);
                 document.documentElement.lang = lang;
-                window._langSys = this;
-                // Update chat panel language
-                if(typeof wbpMsgUpdateLangUI === 'function') wbpMsgUpdateLangUI();
-                // Handle placeholder i18n
-                document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
-                    const k=el.getAttribute('data-i18n-placeholder');
-                    if(this.translations[lang]&&this.translations[lang][k])el.placeholder=this.translations[lang][k];
-                });
+                
                 // Update mobile example buttons text
                 this.updateMobileExampleButtons(lang);
             }
@@ -5044,7 +5200,6 @@ this.packageTabs.forEach(tab => {
                     setTimeout(() => {
                         document.body.classList.remove('preload');
                         document.body.style.opacity = '1';
-                        document.body.style.overflow = '';
                     }, 100);
                     
                     this.createParticles();
@@ -5188,15 +5343,6 @@ this.packageTabs.forEach(tab => {
             }
 
             openOrderForm(serviceType, price) {
-                // Hide the contact FAB so it doesn't overlap the order overlay
-                const fab = document.getElementById('contactFabWrap');
-                if (fab) {
-                    fab.style.transition = 'opacity 0.2s, transform 0.2s';
-                    fab.style.opacity = '0';
-                    fab.style.transform = 'scale(0.7)';
-                    fab.style.pointerEvents = 'none';
-                    setTimeout(() => { fab.style.display = 'none'; }, 220);
-                }
                 const serviceSelect = this.serviceSelect;
                 const packagePriceField = document.getElementById('package-price');
                 const addOnsField = document.getElementById('add-ons');
@@ -5263,16 +5409,6 @@ this.packageTabs.forEach(tab => {
             closeOrderForm() {
                 this.orderForm.classList.remove('active');
                 document.body.style.overflow = '';
-                // Restore the contact FAB
-                const fab = document.getElementById('contactFabWrap');
-                if (fab) {
-                    fab.style.display = '';
-                    setTimeout(() => {
-                        fab.style.opacity = '1';
-                        fab.style.transform = '';
-                        fab.style.pointerEvents = '';
-                    }, 10);
-                }
             }
 
             getPackageName(type) {
@@ -5328,19 +5464,12 @@ this.packageTabs.forEach(tab => {
                 const changesCount = parseInt(document.getElementById('changes-count')?.value || 0);
                 const isBasic = this.selectedPackage?.type === 'basic';
                 const isPremium = this.selectedPackage?.type === 'premium';
-                const changesRate = isPremium ? 7 : (isBasic ? 2 : 3);
+                const changesRate = isBasic ? 0 : (isPremium ? 7 : 3);
                 if (changesCount > 0) {
+                    const changesCost = changesCount * changesRate;
                     if (isBasic) {
-                        const paidChanges = Math.max(0, changesCount - 10);
-                        const changesCost = paidChanges * 2;
-                        total += changesCost;
-                        if (paidChanges > 0) {
-                            this.addSummaryItem(`${changesCount} website changes (10 free + ${paidChanges} extra)`, changesCost, '€2 each extra');
-                        } else {
-                            this.addSummaryItem(`${changesCount} website change${changesCount > 1 ? 's' : ''}`, 0, 'included free (10 max)');
-                        }
+                        this.addSummaryItem(`${changesCount} website change${changesCount > 1 ? 's' : ''}`, 0, 'included free');
                     } else {
-                        const changesCost = changesCount * changesRate;
                         total += changesCost;
                         this.addSummaryItem(`${changesCount} website change${changesCount > 1 ? 's' : ''}`, changesCost, `€${changesRate} each`);
                     }
@@ -5534,7 +5663,7 @@ this.packageTabs.forEach(tab => {
                 }
                 
                 orderData.timestamp = new Date().toISOString();
-                orderData.order_id = getNextWBId();
+                orderData.order_id = 'WB-' + Date.now();
                 
                 let totalPrice = parseInt(orderData.package_price || 0);
                 
@@ -5556,9 +5685,8 @@ this.packageTabs.forEach(tab => {
 const changesCount = parseInt(document.getElementById('changes-count')?.value || 0);
 const isBasicPlan = orderData.service_type === 'basic';
 const isPremiumPlan = orderData.service_type === 'premium';
-const changesRate = isPremiumPlan ? 7 : (isBasicPlan ? 2 : 3);
-const paidBasicChanges = isBasicPlan ? Math.max(0, changesCount - 10) : changesCount;
-const changesCost = isBasicPlan ? paidBasicChanges * 2 : changesCount * changesRate;
+const changesRate = isBasicPlan ? 0 : (isPremiumPlan ? 7 : 3);
+const changesCost = changesCount * changesRate;
 orderData.changes_count = changesCount;
 orderData.changes_cost = changesCost;
 orderData.changes_price_per_unit = changesRate;
@@ -5631,42 +5759,6 @@ return false;
             }
         }
 
-        // ═══════════════════════════════════════
-        // ORDER ID GENERATOR — WB-0001a format
-        // Synced with Firestore _counters/orders for cross-device uniqueness
-        // ═══════════════════════════════════════
-        function getNextWBId() {
-            const COUNTER_KEY = 'wb_global_order_counter';
-            let counter = parseInt(localStorage.getItem(COUNTER_KEY) || '0') + 1;
-            localStorage.setItem(COUNTER_KEY, String(counter));
-
-            // Async-sync with Firestore so other devices use the right number
-            try {
-                if (typeof firebase !== 'undefined' && firebase.apps?.length) {
-                    const _db2 = firebase.firestore();
-                    const ref = _db2.collection('_counters').doc('orders');
-                    ref.get().then(snap => {
-                        const serverCount = snap.exists ? (snap.data().count || 0) : 0;
-                        const newCount = Math.max(counter, serverCount + 1);
-                        if (newCount > counter) {
-                            localStorage.setItem(COUNTER_KEY, String(newCount));
-                        }
-                        ref.set({ count: Math.max(newCount, serverCount + 1) }, { merge: true });
-                    }).catch(() => {});
-                }
-            } catch(e) {}
-
-            // Convert counter → WB-NNNNx
-            // Blocks of 9999: 1-9999=a, 10000-19998=b, …
-            // LCG scramble (×6271 mod 9999) makes sequential numbers look random
-            const BLOCK = 9999;
-            const blockIndex = Math.floor((counter - 1) / BLOCK);
-            const posInBlock = ((counter - 1) % BLOCK) + 1;
-            const suffix = String.fromCharCode(97 + (blockIndex % 26));
-            const scrambled = (posInBlock * 6271) % 9999 || 9999;
-            return 'WB-' + String(scrambled).padStart(4, '0') + suffix;
-        }
-
         // Initialize everything when DOM is loaded
         // ── Website Changes Helper Functions ──
         function updateChangesUI(packageType) {
@@ -5681,10 +5773,8 @@ return false;
             if (notice) notice.style.display = isBasic ? 'block' : 'none';
 
             if (isBasic) {
-                const paidCount = Math.max(0, count - 10);
-                const basicCost = paidCount * 2;
-                if (costValue) costValue.textContent = count <= 10 ? 'Free' : `€${basicCost}`;
-                if (unitPrice) unitPrice.textContent = count <= 10 ? 'First 10 free, then €2/change' : '€2 per change';
+                if (costValue) costValue.textContent = 'Free';
+                if (unitPrice) unitPrice.textContent = '€0 per change';
             } else {
                 const cost = count * rate;
                 if (costValue) costValue.textContent = count > 0 ? `€${cost}` : '€0';
@@ -5713,7 +5803,6 @@ return false;
             
             const loadingScreen = new LoadingScreen();
             const mobileMenu = new EnhancedMobileMenu();
-            window._mobileMenu = mobileMenu;
             const animations = new AnimationSystem();
             const languageSystem = new LanguageSystem();
             window.languageSystem = languageSystem;
@@ -5823,440 +5912,40 @@ return false;
         .contact-option-label{position:absolute;right:60px;background:rgba(15,23,42,.82);color:white;font-size:0.75rem;font-weight:700;padding:5px 10px;border-radius:8px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s;backdrop-filter:blur(4px);}
         .contact-option:hover .contact-option-label{opacity:1;}
         @media(max-width:576px){
-            .contact-fab-wrap{bottom:30px;right:16px;}
-            .contact-fab{width:72px;height:72px;font-size:2rem;}
-            .contact-option{width:54px;height:54px;font-size:1.2rem;}
-        }
-        @media(max-width:768px){
-            .mobile-menu-cta { display: none !important; }
-            .header-buttons { display: none !important; }
-            .header-get-started { display: flex !important; }
-        }
-        .header-get-started {
-            display: none;
-            margin-top: 24px;
-            justify-content: center;
-        }
-        .header-get-started .btn-getstarted {
-            padding: 14px 36px;
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
-            font-size: 1rem;
-            font-weight: 700;
-            border: none;
-            border-radius: 14px;
-            cursor: pointer;
-            font-family: inherit;
-            box-shadow: 0 6px 20px rgba(59,130,246,0.4);
-            display: inline-flex;
-            align-items: center;
-            gap: 9px;
-            transition: all .2s;
-        }
-        .header-get-started .btn-getstarted:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 28px rgba(59,130,246,0.5);
+            .contact-fab-wrap{bottom:20px;right:16px;}
+            .contact-fab{width:60px;height:60px;font-size:1.6rem;}
+            .contact-option{width:46px;height:46px;font-size:1.1rem;}
         }
     </style>
-    <!-- ═══ CONTACT FAB + LIVE CHAT PANEL ═══ -->
-    <style>
-        /* Message chat panel */
-        #wbp-msg-panel {
-            position: fixed; bottom: 110px; right: 28px; z-index: 9988;
-            width: 340px; max-height: 480px;
-            background: white; border-radius: 20px;
-            box-shadow: 0 24px 80px rgba(0,0,0,0.22);
-            display: flex; flex-direction: column; overflow: hidden;
-            transform: scale(0.85) translateY(20px); opacity: 0;
-            pointer-events: none; transform-origin: bottom right;
-            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-        }
-        #wbp-msg-panel.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
-        .wbp-msg-head {
-            background: linear-gradient(135deg,#3b82f6,#8b5cf6);
-            padding: 16px 18px; color: white; flex-shrink: 0;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .wbp-msg-head-left h4 { font-family:'Inter',sans-serif; font-size:0.95rem; font-weight:800; margin:0; }
-        .wbp-msg-head-left p { font-family:'Inter',sans-serif; font-size:0.75rem; opacity:0.85; margin:3px 0 0; display:flex; align-items:center; gap:5px; }
-        .wbp-msg-head-dot { width:6px; height:6px; background:#4ade80; border-radius:50%; }
-        .wbp-msg-close { background:rgba(255,255,255,0.2); border:none; color:white; width:26px; height:26px; border-radius:50%; cursor:pointer; font-size:0.8rem; display:flex; align-items:center; justify-content:center; transition:background 0.2s; }
-        .wbp-msg-close:hover { background:rgba(255,255,255,0.35); }
-        .wbp-msg-body { flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px; background:#fafbfc; scrollbar-width:thin; }
-        .wbp-msg-body::-webkit-scrollbar { width:3px; }
-        .wbp-msg-body::-webkit-scrollbar-thumb { background:#e2e8f0; border-radius:3px; }
-        .wbp-direct-msg { display:flex; gap:7px; align-items:flex-end; width:100%; }
-        .wbp-direct-msg.mine { flex-direction:row-reverse; justify-content:flex-start; }
-        .wbp-direct-msg.theirs { justify-content:flex-start; }
-        .wbp-direct-msg > div { max-width:calc(100% - 34px); min-width:0; }
-        .wbp-direct-av { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.65rem; font-weight:700; color:white; flex-shrink:0; }
-        .wbp-direct-msg.theirs .wbp-direct-av { background:linear-gradient(135deg,#3b82f6,#8b5cf6); }
-        .wbp-direct-msg.mine .wbp-direct-av { background:linear-gradient(135deg,#10b981,#059669); }
-        .wbp-direct-bub { max-width:80%; padding:8px 12px 6px; border-radius:12px; font-family:'Inter',sans-serif; font-size:0.82rem; line-height:1.5; display:inline-block; }
-        .wbp-direct-msg.theirs .wbp-direct-bub { background:white; color:#1e293b; border:1px solid #e2e8f0; border-bottom-left-radius:3px; }
-        .wbp-direct-msg.mine .wbp-direct-bub { background:linear-gradient(135deg,#3b82f6,#8b5cf6); color:white; border-bottom-right-radius:3px; }
-        .wbp-direct-bub-inner { display:block; }
-        .wbp-direct-text { display:inline; word-break:break-word; white-space:normal; }
-        .wbp-direct-time { font-size:0.62rem; opacity:0.55; white-space:nowrap; line-height:1; float:right; margin-left:6px; margin-top:4px; position:relative; bottom:-1px; }
-        .wbp-msg-auth { padding:16px; background:white; }
-        .wbp-msg-auth h5 { font-family:'Inter',sans-serif; font-size:0.88rem; font-weight:700; margin:0 0 4px; color:#1e293b; }
-        .wbp-msg-auth p { font-family:'Inter',sans-serif; font-size:0.75rem; color:#64748b; margin:0 0 12px; }
-        .wbp-msg-auth input { width:100%; padding:9px 12px; border:2px solid #e2e8f0; border-radius:8px; font-family:'Inter',sans-serif; font-size:0.82rem; color:#1e293b; outline:none; transition:border-color 0.2s; margin-bottom:8px; }
-        .wbp-msg-auth input:focus { border-color:#3b82f6; }
-        .wbp-msg-auth-btn { width:100%; padding:10px; background:linear-gradient(135deg,#3b82f6,#8b5cf6); color:white; border:none; border-radius:8px; font-family:'Inter',sans-serif; font-size:0.85rem; font-weight:700; cursor:pointer; transition:all 0.2s; }
-        .wbp-msg-auth-btn:hover { opacity:0.9; }
-        .wbp-msg-auth-err { color:#7f1d1d; font-size:0.75rem; margin-top:4px; font-family:'Inter',sans-serif; display:none; }
-        .wbp-msg-auth-switch { text-align:center; margin-top:10px; font-size:0.75rem; color:#64748b; font-family:'Inter',sans-serif; }
-        .wbp-msg-auth-switch a { color:#3b82f6; font-weight:600; cursor:pointer; text-decoration:none; }
-        .wbp-msg-reset-link { text-align:center; margin-top:6px; font-size:0.72rem; color:#64748b; font-family:'Inter',sans-serif; }
-        .wbp-msg-reset-link a { color:#3b82f6; cursor:pointer; text-decoration:underline; }
-        .wbp-msg-reset-ok { color:#065f46; background:#ecfdf5; padding:8px 10px; border-radius:7px; font-size:0.75rem; font-family:'Inter',sans-serif; margin-top:6px; display:none; text-align:center; }
-        .wbp-msg-input-row { display:flex; gap:8px; padding:10px 12px; border-top:1px solid #f1f5f9; background:white; flex-shrink:0; }
-        .wbp-msg-input { flex:1; padding:9px 12px; border:2px solid #e2e8f0; border-radius:9px; font-family:'Inter',sans-serif; font-size:0.82rem; color:#1e293b; outline:none; transition:border-color 0.2s; }
-        .wbp-msg-input:focus { border-color:#3b82f6; }
-        .wbp-msg-send { width:36px; height:36px; background:linear-gradient(135deg,#3b82f6,#8b5cf6); border:none; border-radius:9px; color:white; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.85rem; flex-shrink:0; transition:all 0.2s; }
-        .wbp-msg-send:hover { opacity:0.9; transform:scale(1.05); }
-        .wbp-msg-send:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
-        .wbp-msg-no { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px; color:#94a3b8; padding:20px; text-align:center; }
-        .wbp-msg-no i { font-size:1.8rem; opacity:0.35; }
-        .wbp-msg-no p { font-family:'Inter',sans-serif; font-size:0.78rem; margin:0; }
-        /* Message Us FAB option button */
-        button.contact-option.msg-opt {
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            color: white;
-            font-family: inherit;
-            font-size: inherit;
-        }
-        button.contact-option.msg-opt:hover {
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
-            transform: translateX(-4px);
-        }
-        @media(max-width:576px) {
-            #wbp-msg-panel { width:calc(100vw - 20px); right:10px; bottom:95px; max-height:70vh; }
-        }
-        @media(max-width:420px) {
-            #wbp-msg-panel { width:calc(100vw - 16px); right:8px; bottom:90px; max-height:65vh; }
-        }
-    </style>
-
     <div class="contact-fab-wrap" id="contactFabWrap">
-        <!-- Direct Message panel -->
-        <div id="wbp-msg-panel">
-            <div class="wbp-msg-head">
-                <div class="wbp-msg-head-left">
-                    <h4>WebBuilder</h4>
-                    <p><span class="wbp-msg-head-dot"></span> <span data-i18n="chat.online">Usually replies in a few hours</span></p>
-                </div>
-                <button class="wbp-msg-close" onclick="wbpMsgClose()"><i class="fas fa-times"></i></button>
-            </div>
-            <div id="wbp-msg-screen-auth">
-                <div class="wbp-msg-auth">
-                    <h5 id="wbp-msg-auth-title" data-i18n="chat.hello">Say hello 👋</h5>
-                    <p id="wbp-msg-auth-sub" data-i18n="chat.signin_sub">Sign in to chat with us</p>
-                    <input type="email" id="wbp-msg-email" placeholder="Email" />
-                    <input type="password" id="wbp-msg-pass" placeholder="Password" />
-                    <button class="wbp-msg-auth-btn" id="wbp-msg-auth-btn" onclick="wbpMsgAuth()" data-i18n="chat.signin_btn">Sign In</button>
-                    <div class="wbp-msg-auth-err" id="wbp-msg-auth-err"></div>
-                    <div class="wbp-msg-reset-link"><a onclick="wbpMsgResetPwd()" data-i18n="chat.forgot">Forgot password?</a></div>
-                    <div class="wbp-msg-reset-ok" id="wbp-msg-reset-ok" data-i18n="chat.reset_ok">✅ Reset email sent! Check your inbox.</div>
-                    <div class="wbp-msg-auth-switch">
-                        <span id="wbp-msg-switch-txt" data-i18n="chat.no_account">Don't have an account?</span>
-                        <a onclick="wbpMsgToggleReg()" id="wbp-msg-switch-link" data-i18n="chat.create_one">Create one</a>
-                    </div>
-                </div>
-            </div>
-            <div id="wbp-msg-screen-chat" style="display:none;flex-direction:column;flex:1;overflow:hidden;">
-                <div class="wbp-msg-body" id="wbp-msg-messages">
-                    <div class="wbp-msg-no" id="wbp-msg-no">
-                        <i class="fas fa-comments"></i>
-                        <p data-i18n="chat.no_messages">No messages yet</p>
-                        <p style="font-size:0.7rem;opacity:0.7" data-i18n="chat.no_messages_sub">Send us a message and we'll reply soon!</p>
-                    </div>
-                </div>
-                <div class="wbp-msg-input-row">
-                    <input type="text" class="wbp-msg-input" id="wbp-msg-txt" placeholder="Type a message..." data-i18n-placeholder="chat.placeholder" />
-                    <button class="wbp-msg-send" id="wbp-msg-send-btn" onclick="wbpMsgSend()"><i class="fas fa-paper-plane"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <button class="contact-fab" id="contactFab" onclick="wbpMsgDirectOpen()" title="Chat with us">
+        <a class="contact-option tg" href="https://t.me/LoveBomoclaut" target="_blank" rel="noopener" title="Telegram" style="transition-delay:.08s">
+            <i class="fab fa-telegram-plane"></i>
+            <span class="contact-option-label">Telegram</span>
+        </a>
+        <a class="contact-option wa" href="https://wa.me/40729552767" target="_blank" rel="noopener" title="WhatsApp" style="transition-delay:.04s">
+            <i class="fab fa-whatsapp"></i>
+            <span class="contact-option-label">WhatsApp</span>
+        </a>
+        <button class="contact-fab" id="contactFab" onclick="toggleContactFab()" title="Contact Us">
             <span class="contact-fab-icon"><i class="fas fa-comment-dots"></i></span>
-            <span id="dm-notif-badge" style="position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:#ef4444;border-radius:50%;font-size:0.62rem;font-weight:800;color:white;display:none;align-items:center;justify-content:center;border:2px solid white;font-family:Inter,sans-serif;"></span>
         </button>
     </div>
     <script>
-        function mobileAdditionalClick(e) {
-            e.preventDefault();
-            // Close mobile menu first
-            if (window._mobileMenu) window._mobileMenu.close();
-            else {
-                document.getElementById('mobileMenuContent')?.classList.remove('active');
-                document.getElementById('navOverlay')?.classList.remove('active');
-                document.getElementById('mobileMenuBtn')?.classList.remove('active');
-                document.body.style.overflow = '';
-                const fab = document.getElementById('contactFabWrap');
-                if (fab) fab.style.display = '';
-            }
-            // Scroll to additional section
-            setTimeout(function() {
-                const target = document.getElementById('order-form-section') || document.querySelector('.add-ons-section') || document.getElementById('packages');
-                // Scroll to packages section and open order form
-                const packagesSection = document.getElementById('packages');
-                if (packagesSection) {
-                    window.scrollTo({ top: packagesSection.offsetTop - 80, behavior: 'smooth' });
-                }
-                // Open order form showing add-ons
-                setTimeout(function() {
-                    if (window._orderFormSystem) window._orderFormSystem.openOrderForm('basic', '40');
-                    // Scroll to add-ons section inside form
-                    setTimeout(function() {
-                        const addOns = document.querySelector('.add-ons-section');
-                        if (addOns) addOns.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 300);
-                }, 400);
-            }, 300);
+        function toggleContactFab(){
+            const wrap=document.getElementById('contactFabWrap');
+            const btn=document.getElementById('contactFab');
+            wrap.classList.toggle('open');
+            btn.classList.toggle('open');
         }
-
-        function wbpMsgDirectOpen(){
-            // Open chat panel directly
-            const panel=document.getElementById('wbp-msg-panel');
-            if(!panel)return;
-            if(panel.classList.contains('open')){
-                wbpMsgClose();
-            } else {
-                window._panelOpen=true; panel.classList.add('open');
-                if(window._dmUser){
-                    if(window._dmOnLogin)window._dmOnLogin(window._dmUser);
-                    setTimeout(()=>document.getElementById('wbp-msg-txt')?.focus(),300);
-                } else {
-                    setTimeout(()=>document.getElementById('wbp-msg-email')?.focus(),300);
-                }
-            }
+        function closeContactFab(){
+            document.getElementById('contactFabWrap').classList.remove('open');
+            document.getElementById('contactFab').classList.remove('open');
         }
-        function toggleContactFab(){ wbpMsgDirectOpen(); }
-        function closeContactFab(){ wbpMsgClose(); }
-        document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ wbpMsgClose(); } });
-
-        function heroGetStarted() {
-            const packagesSection = document.getElementById('packages');
-            if (packagesSection) {
-                window.scrollTo({ top: packagesSection.offsetTop - 80, behavior: 'smooth' });
-            }
-        }
-    </script>
-
-    <!-- ═══ DIRECT MESSAGE CHAT LOGIC ═══ -->
-    <script>
-    (function(){
-    'use strict';
-    let _db=null,_auth=null,_dmUser=null,_dmChatId=null,_dmUnsub=null,_dmReg=false;
-    // FIXED: use 'chats' collection (same as payment.html) so chat is unified and rules allow regular users
-
-    function dmFirebase(){
-        try{
-            if(typeof FIREBASE_CONFIG==='undefined'||FIREBASE_CONFIG.apiKey==='YOUR_API_KEY')return;
-            const app=firebase.apps.length?firebase.app():firebase.initializeApp(FIREBASE_CONFIG);
-            _db=firebase.firestore();
-            _auth=firebase.auth();
-            _auth.onAuthStateChanged(u=>{
-                _dmUser=u;
-                if(u){dmOnLogin(u);}else{dmOnLogout();}
-            });
-        }catch(e){console.warn('DM firebase:',e);}
-    }
-
-    function dmOnLogin(u){
-        _dmChatId=u.email.replace(/[^a-zA-Z0-9]/g,'_'); // FIXED: email-based chatId, same as chat.js
-        // Show chat screen
-        document.getElementById('wbp-msg-screen-auth').style.display='none';
-        const cs=document.getElementById('wbp-msg-screen-chat');
-        cs.style.display='flex';
-        // Listen for messages
-        if(_dmUnsub)_dmUnsub();
-        if(_db){
-            _dmUnsub=_db.collection('chats').doc(_dmChatId) // FIXED: use 'chats' collection
-                .onSnapshot(snap=>{
-                    const data=snap.exists?snap.data():{};
-                    dmRenderMessages(data.messages||[]);
-                    // Update unread badge
-                    const msgs=data.messages||[];
-                    const unread=msgs.filter(m=>m.from==='admin'&&!m.readByUser).length;
-                    if(unread>0&&!_panelOpen)dmSetBadge(unread);
-                    // Mark as read when open
-                    if(_panelOpen&&unread>0){
-                        const updated=msgs.map(m=>m.from==='admin'?{...m,readByUser:true}:m);
-                        _db.collection('chats').doc(_dmChatId).set({messages:updated,email:u.email,lastUpdated:new Date().toISOString()},{merge:true}); // FIXED: chats collection
-                    }
-                });
-        }
-        setTimeout(()=>document.getElementById('wbp-msg-txt')?.focus(),200);
-    }
-
-    function dmOnLogout(){
-        if(_dmUnsub){_dmUnsub();_dmUnsub=null;}
-        _dmChatId=null;
-        document.getElementById('wbp-msg-screen-auth').style.display='';
-        document.getElementById('wbp-msg-screen-chat').style.display='none';
-    }
-
-    function dmRenderMessages(msgs){
-        const container=document.getElementById('wbp-msg-messages');
-        const noMsg=document.getElementById('wbp-msg-no');
-        Array.from(container.querySelectorAll('.wbp-direct-msg')).forEach(el=>el.remove());
-        if(!msgs||msgs.length===0){noMsg.style.display='flex';return;}
-        noMsg.style.display='none';
-        msgs.forEach(m=>{
-            const mine=m.from==='user';
-            const time=m.timestamp?new Date(m.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
-            const initial=mine?(_dmUser?.email?.charAt(0)||'U').toUpperCase():'W';
-            const div=document.createElement('div');
-            div.className='wbp-direct-msg '+(mine?'mine':'theirs');
-            div.innerHTML=`<div class="wbp-direct-av">${dmEsc(initial)}</div><div><div class="wbp-direct-bub"><div class="wbp-direct-bub-inner"><span class="wbp-direct-text">${dmEsc(m.text)}</span><span class="wbp-direct-time">${time}</span></div></div></div>`;
-            container.appendChild(div);
+        document.addEventListener('click',e=>{
+            const wrap=document.getElementById('contactFabWrap');
+            if(wrap&&!wrap.contains(e.target))closeContactFab();
         });
-        container.scrollTop=container.scrollHeight;
-    }
-
-    async function wbpMsgSend(){
-        if(!_dmUser||!_dmChatId||!_db)return;
-        const input=document.getElementById('wbp-msg-txt');
-        const text=input.value.trim();
-        if(!text)return;
-        const btn=document.getElementById('wbp-msg-send-btn');
-        btn.disabled=true; input.value='';
-        const msg={from:'user',text,timestamp:new Date().toISOString(),author:_dmUser.email.split('@')[0]};
-        try{
-            const ref=_db.collection('chats').doc(_dmChatId); // FIXED: use 'chats' collection
-            const snap=await ref.get();
-            const existing=snap.exists?(snap.data().messages||[]):[];
-            await ref.set({
-                messages:[...existing,msg],
-                email:_dmUser.email,
-                lastMessage:text,
-                lastUpdated:new Date().toISOString(),
-                hasUnreadAdmin:true
-            },{merge:true});
-        }catch(e){console.error('Send DM:',e);}
-        finally{btn.disabled=false;input.focus();}
-    }
-
-    async function wbpMsgAuth(){
-        const email=document.getElementById('wbp-msg-email').value.trim();
-        const pass=document.getElementById('wbp-msg-pass').value;
-        const btn=document.getElementById('wbp-msg-auth-btn');
-        const err=document.getElementById('wbp-msg-auth-err');
-        if(!email||!pass){dmShowErr('Please fill in all fields.');return;}
-        if(!_auth){dmShowErr('Service not available.');return;}
-        btn.disabled=true;
-        btn.textContent=_dmReg?'Creating...':'Signing in...';
-        err.style.display='none';
-        document.getElementById('wbp-msg-reset-ok').style.display='none';
-        try{
-            if(_dmReg){
-                await _auth.createUserWithEmailAndPassword(email,pass);
-            }else{
-                await _auth.signInWithEmailAndPassword(email,pass);
-            }
-        }catch(e){
-            const msgs={'auth/user-not-found':'No account with this email.','auth/wrong-password':'Incorrect password.','auth/email-already-in-use':'Email already registered.','auth/weak-password':'Password must be 6+ characters.','auth/invalid-email':'Invalid email.','auth/invalid-credential':'Wrong email or password.'};
-            dmShowErr(msgs[e.code]||'Error. Please try again.');
-            btn.disabled=false;
-            btn.textContent=_dmReg?'Create Account':'Sign In';
-        }
-    }
-
-    async function wbpMsgResetPwd(){
-        const email=document.getElementById('wbp-msg-email').value.trim();
-        const err=document.getElementById('wbp-msg-auth-err');
-        const ok=document.getElementById('wbp-msg-reset-ok');
-        if(!email){dmShowErr('Enter your email first.');return;}
-        if(!_auth){dmShowErr('Service not available.');return;}
-        err.style.display='none';
-        try{
-            await _auth.sendPasswordResetEmail(email);
-            ok.style.display='block';
-        }catch(e){
-            dmShowErr('Could not send reset email. Check the address.');
-        }
-    }
-
-    function dmGetTrans(key){
-        try{ const lang=localStorage.getItem('preferred-language')||'en'; const ls=window._langSys; if(ls&&ls.translations&&ls.translations[lang]&&ls.translations[lang][key])return ls.translations[lang][key]; }catch(e){}
-        const fallback={en:{'chat.hello':'Say hello 👋','chat.signin_sub':'Sign in to chat with us','chat.signup_title':'Create account','chat.signup_sub':'Create a free account to chat with us','chat.signin_btn':'Sign In','chat.signup_btn':'Create Account','chat.no_account':"Don't have an account?",'chat.create_one':'Create one','chat.has_account':'Already have an account?','chat.forgot':'Forgot password?','chat.reset_ok':'✅ Reset email sent! Check your inbox.'}};
-        return (fallback.en||{})[key]||key;
-    }
-    function wbpMsgUpdateLangUI(){
-        const t=dmGetTrans;
-        document.getElementById('wbp-msg-auth-title').textContent=_dmReg?t('chat.signup_title'):t('chat.hello');
-        document.getElementById('wbp-msg-auth-sub').textContent=_dmReg?t('chat.signup_sub'):t('chat.signin_sub');
-        document.getElementById('wbp-msg-auth-btn').textContent=_dmReg?t('chat.signup_btn'):t('chat.signin_btn');
-        document.getElementById('wbp-msg-switch-txt').textContent=_dmReg?t('chat.has_account'):t('chat.no_account');
-        document.getElementById('wbp-msg-switch-link').textContent=_dmReg?t('chat.signin_btn'):t('chat.create_one');
-        const inp=document.getElementById('wbp-msg-txt'); if(inp)inp.placeholder=t('chat.placeholder');
-        const onl=document.querySelector('.wbp-msg-head-left p span:last-child'); if(onl)onl.textContent=t('chat.online');
-    }
-    function wbpMsgToggleReg(){
-        _dmReg=!_dmReg;
-        wbpMsgUpdateLangUI();
-        document.getElementById('wbp-msg-auth-err').style.display='none';
-        document.getElementById('wbp-msg-reset-ok').style.display='none';
-    }
-
-    function dmShowErr(msg){
-        const el=document.getElementById('wbp-msg-auth-err');
-        el.textContent=msg; el.style.display='block';
-    }
-    function dmEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
-    let _panelOpen=false;
-    let _dmNotifCount=0;
-    function dmSetBadge(n){
-        _dmNotifCount=n;
-        const badge=document.getElementById('dm-notif-badge');
-        if(badge){
-            badge.textContent=n>0?String(n):'';
-            badge.style.display=n>0?'flex':'none';
-        }
-    }
-
-    window.wbpMsgTogglePanel=function(e){
-        if(e)e.stopPropagation();
-        const panel=document.getElementById('wbp-msg-panel');
-        _panelOpen=!panel.classList.contains('open');
-        panel.classList.toggle('open',_panelOpen);
-        window._panelOpen=_panelOpen;
-        if(_panelOpen){
-            dmSetBadge(0);
-            if(_dmUser){
-                dmOnLogin(_dmUser);
-                setTimeout(()=>document.getElementById('wbp-msg-txt')?.focus(),300);
-            } else {
-                setTimeout(()=>document.getElementById('wbp-msg-email')?.focus(),300);
-            }
-        }
-    };
-    window.wbpMsgClose=function(){
-        _panelOpen=false;
-        document.getElementById('wbp-msg-panel')?.classList.remove('open');
-    };
-    window.wbpMsgAuth=wbpMsgAuth;
-    window.wbpMsgResetPwd=wbpMsgResetPwd;
-    window.wbpMsgToggleReg=wbpMsgToggleReg;
-    window.wbpMsgSend=wbpMsgSend;
-    window._dmOnLogin=dmOnLogin;
-    Object.defineProperty(window,'_dmUser',{get:()=>_dmUser});
-
-    // Enter key support
-    document.addEventListener('DOMContentLoaded',()=>{
-        document.getElementById('wbp-msg-txt')?.addEventListener('keydown',e=>{ if(e.key==='Enter')wbpMsgSend(); });
-        document.getElementById('wbp-msg-email')?.addEventListener('keydown',e=>{ if(e.key==='Enter')document.getElementById('wbp-msg-pass')?.focus(); });
-        document.getElementById('wbp-msg-pass')?.addEventListener('keydown',e=>{ if(e.key==='Enter')wbpMsgSend(); });
-    });
-
-    dmFirebase();
-    }());
+        document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeContactFab(); });
     </script>
-
 </body>
 </html>
