@@ -289,7 +289,9 @@ function listenForChat() {
     const chatId = currentUser.uid;
     chatUnsubscribe = _db.collection('chats').doc(chatId)
         .onSnapshot(doc => {
-            chatMessages = doc.exists ? (doc.data().messages || []) : [];
+            const allMessages = doc.exists ? (doc.data().messages || []) : [];
+            // Only show messages from the index.html chat, not from payment.html
+            chatMessages = allMessages.filter(m => m.source !== 'payment');
             renderMessages();
             if (isOpen && activeTab === 'chat') scrollMessages();
         }, err => console.warn('Chat listen error:', err));
@@ -308,7 +310,7 @@ function buildUI() {
             background: linear-gradient(135deg, #3b82f6, #8b5cf6);
             border: none; cursor: pointer; box-shadow: 0 8px 32px rgba(59,130,246,0.45);
             display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.4rem; transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            color: white; font-size: 1.4rem; transition: transform 0.3s ease, box-shadow 0.3s ease;
             animation: wbp-float 3s ease-in-out infinite;
         }
         #wbp-bubble:hover { transform: scale(1.1); box-shadow: 0 12px 40px rgba(59,130,246,0.55); }
@@ -329,7 +331,7 @@ function buildUI() {
             display: flex; flex-direction: column; overflow: hidden;
             transform: scale(0.85) translateY(20px); opacity: 0;
             pointer-events: none; transform-origin: bottom right;
-            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            transition: transform 0.3s ease, opacity 0.3s ease;
         }
         #wbp-panel.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
         .wbp-head {
@@ -348,7 +350,7 @@ function buildUI() {
         .wbp-logout-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.72rem; cursor: pointer; font-family: inherit; transition: background 0.2s; }
         .wbp-logout-btn:hover { background: rgba(255,255,255,0.35); }
         .wbp-tabs { display: flex; background: white; border-bottom: 2px solid #f1f5f9; flex-shrink: 0; }
-        .wbp-tab { flex: 1; padding: 12px; text-align: center; font-size: 0.82rem; font-weight: 600; color: #64748b; cursor: pointer; border: none; background: none; transition: all 0.2s; font-family: inherit; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+        .wbp-tab { flex: 1; padding: 12px; text-align: center; font-size: 0.82rem; font-weight: 600; color: #64748b; cursor: pointer; border: none; background: none; transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease; font-family: inherit; border-bottom: 2px solid transparent; margin-bottom: -2px; }
         .wbp-tab.active { color: #3b82f6; border-bottom-color: #3b82f6; }
         .wbp-tab:hover { color: #1e293b; background: #f8fafc; }
         .wbp-body { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
@@ -362,7 +364,7 @@ function buildUI() {
         .wbp-field { margin-bottom: 12px; }
         .wbp-field input { width: 100%; padding: 11px 14px; border: 2px solid #e2e8f0; border-radius: 10px; font-family: inherit; font-size: 0.875rem; color: #1e293b; outline: none; transition: border-color 0.2s; }
         .wbp-field input:focus { border-color: #3b82f6; }
-        .wbp-auth-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; border: none; border-radius: 10px; font-family: inherit; font-size: 0.9rem; font-weight: 700; cursor: pointer; margin-top: 4px; transition: all 0.2s; }
+        .wbp-auth-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; border: none; border-radius: 10px; font-family: inherit; font-size: 0.9rem; font-weight: 700; cursor: pointer; margin-top: 4px; transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease; }
         .wbp-auth-btn:hover { opacity: 0.9; transform: translateY(-1px); }
         .wbp-auth-btn:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
         .wbp-auth-err { background: #fee2e2; color: #7f1d1d; padding: 9px 12px; border-radius: 8px; font-size: 0.8rem; margin-top: 10px; display: none; }
@@ -393,7 +395,7 @@ function buildUI() {
         .wbp-input-row { display: flex; gap: 9px; padding: 12px 14px; border-top: 2px solid #f1f5f9; flex-shrink: 0; }
         .wbp-input { flex: 1; min-width: 0; box-sizing: border-box; padding: 10px 14px; border: 2px solid #e2e8f0; border-radius: 10px; font-family: inherit; font-size: 0.875rem; color: #1e293b; outline: none; transition: border-color 0.2s; }
         .wbp-input:focus { border-color: #3b82f6; }
-        .wbp-send { width: 40px; height: 40px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border: none; border-radius: 10px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; transition: all 0.2s; }
+        .wbp-send { width: 40px; height: 40px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border: none; border-radius: 10px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease; }
         .wbp-send:hover { opacity: 0.9; transform: scale(1.05); }
         .wbp-send:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
@@ -419,7 +421,7 @@ function buildUI() {
         .wbp-step { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; }
         .wbp-step:not(:last-child)::after { content: ''; position: absolute; top: 13px; left: 50%; width: 100%; height: 2px; background: #e2e8f0; z-index: 0; }
         .wbp-step.done:not(:last-child)::after { background: #10b981; }
-        .wbp-step-dot { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; z-index: 1; flex-shrink: 0; transition: all 0.3s; }
+        .wbp-step-dot { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; z-index: 1; flex-shrink: 0; transition: transform 0.2s ease, box-shadow 0.2s ease; }
         .wbp-step.done .wbp-step-dot { background: #10b981; color: white; }
         .wbp-step.active .wbp-step-dot { background: linear-gradient(135deg,#3b82f6,#8b5cf6); color: white; box-shadow: 0 0 0 4px rgba(59,130,246,0.2); animation: wbp-pulse 2s infinite; }
         .wbp-step.waiting .wbp-step-dot { background: #f1f5f9; color: #cbd5e1; border: 2px solid #e2e8f0; }
@@ -431,14 +433,19 @@ function buildUI() {
         .wbp-done-banner p { font-size: 0.78rem; opacity: 0.9; margin: 0; }
 
         @media (max-width: 768px) {
-            #wbp-bubble { width: 72px; height: 72px; font-size: 1.65rem; }
+            #wbp-bubble { width: 72px; height: 72px; font-size: 1.65rem; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
             #wbp-panel { width: calc(100vw - 24px); right: 12px; left: 12px; bottom: 90px; height: calc(100vh - 110px); max-height: calc(100vh - 110px); }
             .wbp-screen { flex: 1; min-height: 0; }
-            .wbp-messages { flex: 1; min-height: 0; }
+            .wbp-messages { flex: 1; min-height: 0; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
             .wbp-input-row { flex-shrink: 0; }
+            .wbp-input { font-size: 16px !important; } /* Prevents Android zoom on focus */
+            .wbp-send { min-width: 44px; min-height: 44px; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+            .wbp-close { min-width: 44px; min-height: 44px; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+            .wbp-auth-btn { min-height: 48px; }
         }
         @media (max-width: 420px) {
-            #wbp-bubble { right: 16px; bottom: 20px; width: 72px; height: 72px; font-size: 1.65rem; }
+            #wbp-bubble { right: 16px; bottom: calc(20px + env(safe-area-inset-bottom)); width: 72px; height: 72px; font-size: 1.65rem; }
+            #wbp-panel { bottom: calc(90px + env(safe-area-inset-bottom)); height: calc(100vh - 110px - env(safe-area-inset-bottom)); max-height: calc(100vh - 110px - env(safe-area-inset-bottom)); }
         }
     `;
     document.head.appendChild(style);
@@ -565,9 +572,9 @@ function wbpToggle() {
     if (isOpen) {
         clearNotif();
         if (currentUser) {
-            setTimeout(() => document.getElementById('wbp-msg-input')?.focus(), 300);
+            setTimeout(() => document.getElementById('wbp-msg-input')?.focus(), 150);
         } else {
-            setTimeout(() => document.getElementById('wbp-email')?.focus(), 300);
+            setTimeout(() => document.getElementById('wbp-email')?.focus(), 150);
         }
     }
 }
@@ -695,7 +702,7 @@ function renderMessages() {
 
 function scrollMessages() {
     const c = document.getElementById('wbp-messages');
-    if (c) setTimeout(() => { c.scrollTop = c.scrollHeight; }, 50);
+    if (c) requestAnimationFrame(() => { c.scrollTop = c.scrollHeight; });
 }
 
 async function wbpSendMessage() {
@@ -711,6 +718,7 @@ async function wbpSendMessage() {
     const authorName = currentUser.displayName || currentUser.email.split('@')[0];
     const message = {
         from: 'user',
+        source: 'index',
         text,
         timestamp: new Date().toISOString(),
         author: authorName
@@ -838,6 +846,29 @@ window.wbpAuthAction = wbpAuthAction;
 window.wbpLogout = wbpLogout;
 window.wbpSendMessage = wbpSendMessage;
 window.wbpResetPassword = doResetPassword;
+
+// ═══════════════════════════════════════════
+// ANDROID KEYBOARD FIX
+// ═══════════════════════════════════════════
+// Resize the chat panel when Android virtual keyboard opens/closes
+if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => {
+        const panel = document.getElementById('wbp-panel');
+        if (!panel || !isOpen) return;
+        const vh = window.visualViewport.height;
+        const offset = window.innerHeight - vh;
+        if (offset > 100) {
+            // Keyboard is open — shrink panel to fit visible area
+            panel.style.height = Math.min(vh - 110, window.innerHeight - 110) + 'px';
+            panel.style.maxHeight = panel.style.height;
+            requestAnimationFrame(scrollMessages);
+        } else {
+            // Keyboard closed — restore
+            panel.style.height = '';
+            panel.style.maxHeight = '';
+        }
+    });
+}
 
 // ═══════════════════════════════════════════
 // BOOT

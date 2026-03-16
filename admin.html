@@ -582,11 +582,10 @@
                         <div class="msg-detail-head">
                             <button class="msg-back-btn" onclick="dmDeselectThread()" title="Back"><i class="fas fa-arrow-left"></i></button>
                             <div class="msg-thread-av" id="dm-detail-av">U</div>
-                            <div style="flex:1">
+                            <div>
                                 <div class="msg-detail-name" id="dm-detail-name">User</div>
                                 <div class="msg-detail-email" id="dm-detail-email"></div>
                             </div>
-                            <button onclick="dmDeleteChat()" title="Delete this conversation" style="background:#fef2f2;color:#b91c1c;border:none;width:32px;height:32px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;transition:background 0.2s;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fef2f2'"><i class="fas fa-trash"></i></button>
                         </div>
                         <div class="msg-detail-body" id="dm-detail-msgs"></div>
                         <div class="dm-input-row">
@@ -1035,7 +1034,7 @@ function renderChatMessages(messages) {
     noChat.style.display = 'none';
 
     messages.forEach(m => {
-        const isClient = m.from === 'client' || m.from === 'user'; // 'user' from index.html chat, 'client' from payment.html
+        const isClient = m.from === 'client';
         const name = isClient ? (m.author || 'Customer') : 'You (Admin)';
         const initial = name.charAt(0).toUpperCase();
         const time = m.timestamp ? new Date(m.timestamp).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
@@ -1230,7 +1229,7 @@ function dmRenderThreadList(){
         const unread=t.hasUnreadAdmin;
         const lastMsg=t.lastMessage||'No messages';
         const email=t.email||'Unknown';
-        const name=t.displayName||email.split('@')[0];
+        const name=email.split('@')[0];
         const initial=name.charAt(0).toUpperCase();
         const time=t.lastUpdated?fmtDmTime(t.lastUpdated):'';
         const div=document.createElement('div');
@@ -1267,7 +1266,7 @@ function dmShowThread(t){
     document.getElementById('dm-select-prompt').style.display='none';
     const detail=document.getElementById('dm-detail');
     detail.classList.add('open');
-    const name=t.displayName||(t.email||'user').split('@')[0];
+    const name=(t.email||'user').split('@')[0];
     document.getElementById('dm-detail-av').textContent=name.charAt(0).toUpperCase();
     document.getElementById('dm-detail-name').textContent=name;
     document.getElementById('dm-detail-email').textContent=t.email||'';
@@ -1279,7 +1278,7 @@ function dmShowThread(t){
         body.innerHTML='<div class="dm-no-msg"><i class="fas fa-comment-dots"></i><p>No messages yet</p></div>';
     } else {
         msgs.forEach(m=>{
-            const isUser=m.from==='user'||m.from==='client'; // 'client' from payment.html, 'user' from index.html
+            const isUser=m.from==='client'||m.from==='user';
             const time=m.timestamp?new Date(m.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
             const initial=isUser?name.charAt(0).toUpperCase():'A';
             const div=document.createElement('div');
@@ -1299,18 +1298,6 @@ function dmDeselectThread(){
     dmRenderThreadList();
 }
 
-async function dmDeleteChat(){
-    if(!dmSelectedId||!db)return;
-    const t=dmThreads.find(x=>x._id===dmSelectedId);
-    const name=t?.displayName||(t?.email||'this user').split('@')[0];
-    if(!confirm('Delete the entire conversation with '+name+'?\n\nThis cannot be undone.'))return;
-    try{
-        await db.collection('chats').doc(dmSelectedId).delete();
-        toast('Conversation deleted.');
-        dmDeselectThread();
-    }catch(e){toast('Delete failed: '+e.message,true);}
-}
-
 async function dmSendReply(){
     if(!dmSelectedId||!db)return;
     const input=document.getElementById('dm-reply-input');
@@ -1322,12 +1309,12 @@ async function dmSendReply(){
     try{
         const t=dmThreads.find(x=>x._id===dmSelectedId);
         const existing=t?.messages||[];
-        await db.collection('chats').doc(dmSelectedId).set({
+        await db.collection('chats').doc(dmSelectedId).update({
             messages:[...existing,msg],
-            lastMessage:'Admin: '+text,
+            lastMessage:'You: '+text,
             lastUpdated:new Date().toISOString(),
             hasUnreadAdmin:false
-        },{merge:true});
+        });
     }catch(e){toast('Send error: '+e.message,true);}
     finally{btn.disabled=false;document.getElementById('dm-reply-input').focus();}
 }

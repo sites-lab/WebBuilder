@@ -1,19 +1,18 @@
-
-
-
 <!DOCTYPE html>
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
     <!-- Critical: block content flash before loading screen paints (fixes Telegram WebView) -->
-    <style>body{opacity:0;overflow:hidden;}</style>
+    <style>body{opacity:0;overflow:hidden;transition:opacity 0.2s ease;}</style>
     <title>WebBuilder - Payment</title>
     <link rel="icon" href="rocket.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
 
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -66,7 +65,7 @@
             background-color: #000005;
             background: radial-gradient(ellipse at 60% 40%, #0d1b4b 0%, #060c1f 60%, #000005 100%);
             display:flex; justify-content:center; align-items:center;
-            z-index:2147483647; transition: opacity 0.6s ease;
+            z-index:2147483647; transition: opacity 0.2s ease;
             overflow:hidden;
             transform: translateZ(0);
             -webkit-transform: translateZ(0);
@@ -205,7 +204,7 @@
         p{margin-bottom:1rem;font-size:1.05rem;}
 
         /* ── NAV ── */
-        nav{position:fixed;top:0;left:0;width:100%;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);box-shadow:var(--shadow);z-index:1000;transition:all 0.4s ease;}
+        nav{position:fixed;top:0;left:0;width:100%;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:var(--shadow);z-index:1000;transition:box-shadow 0.3s ease,background-color 0.3s ease;}
         nav.scrolled{background:rgba(255,255,255,0.98);box-shadow:var(--shadow-md);}
         .nav-container{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;flex-wrap:nowrap;min-height:0;}
         [lang="ru"] .logo,html[lang="ru"] .logo{font-size:1.5rem !important;}
@@ -214,12 +213,13 @@
         .logo{font-size:1.8rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:flex;align-items:center;gap:10px;}
         .logo i{font-size:1.5rem;animation:rocketFloat 3s ease-in-out infinite;}
         @keyframes rocketFloat{0%,100%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-3px) rotate(-5deg)}50%{transform:translateY(-5px) rotate(0deg)}75%{transform:translateY(-2px) rotate(5deg)}}
-        .back-home{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--blue);font-weight:600;padding:8px 16px;border-radius:8px;transition:all 0.3s ease;}
+        .back-home{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--blue);font-weight:600;padding:8px 16px;border-radius:8px;transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;}
         .back-home:hover{background:rgba(59,130,246,0.1);transform:translateX(-3px);}
 
         /* ── LANGUAGE ── */
         .language-selector-fixed{position:fixed;top:100px;right:20px;z-index:1000;display:flex;gap:8px;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border-radius:12px;padding:8px;box-shadow:var(--shadow-md);border:1px solid rgba(59,130,246,0.1);}
-        .language-option-fixed{padding:8px 16px;border-radius:8px;cursor:pointer;transition:all 0.3s ease;font-weight:600;font-size:14px;color:var(--text-light);}
+        .language-selector-fixed{position:fixed;top:100px;right:20px;z-index:1000;display:flex;gap:8px;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:12px;padding:8px;box-shadow:var(--shadow-md);border:1px solid rgba(59,130,246,0.1);}
+        .language-option-fixed{padding:8px 16px;border-radius:8px;cursor:pointer;transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;font-weight:600;font-size:14px;color:var(--text-light);}
         .language-option-fixed:hover{background:var(--bg-light);color:var(--text-dark);}
         .language-option-fixed.active{background:var(--grad);color:white;box-shadow:var(--shadow);}
 
@@ -263,12 +263,11 @@
         .step:not(:last-child)::after{content:'';position:absolute;left:17px;top:52px;width:2px;height:calc(100% - 20px);background:#e2e8f0;}
         .step.done:not(:last-child)::after{background:var(--green);}
         .step.active:not(:last-child)::after{background:linear-gradient(to bottom,var(--blue),#e2e8f0);}
-        .step-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;z-index:1;transition:all 0.4s ease;}
+        .step-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;z-index:1;transition:background 0.3s ease,box-shadow 0.3s ease;}
         .step.done .step-icon{background:var(--green);color:white;box-shadow:0 0 0 4px rgba(16,185,129,0.15);}
         .step.active .step-icon{background:var(--grad);color:white;box-shadow:0 0 0 4px rgba(59,130,246,0.2);animation:pulse 2s infinite;}
         .step.waiting .step-icon{background:#f1f5f9;color:#cbd5e1;border:2px solid #e2e8f0;}
         @keyframes pulse{0%,100%{box-shadow:0 0 0 4px rgba(59,130,246,0.2)}50%{box-shadow:0 0 0 8px rgba(59,130,246,0.1)}}
-        .step-content{}
         .step-title{font-weight:700;font-size:0.95rem;color:var(--text-dark);margin-bottom:2px;}
         .step.waiting .step-title{color:#94a3b8;}
         .step-sub{font-size:0.8rem;color:var(--text-light);margin:0;}
@@ -310,11 +309,11 @@
         .from-client .msg-bubble{background:var(--grad);color:white;border-bottom-right-radius:3px;}
         .msg-bubble-inner{display:block;}
         .msg-text{display:inline;word-break:break-word;white-space:normal;}
-        .msg-time{display:inline-block;font-size:0.62rem;opacity:0.55;white-space:nowrap;line-height:1;float:right;margin-left:6px;margin-top:4px;position:relative;bottom:-1px;}
+        .msg-time{font-size:0.62rem;opacity:0.55;white-space:nowrap;line-height:1;float:right;margin-left:6px;margin-top:4px;position:relative;bottom:-1px;}
         .msg-input-area{display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid #f1f5f9;}
         .msg-input{flex:1;padding:9px 12px;border:2px solid #e2e8f0;border-radius:9px;font-family:'Inter',sans-serif;font-size:0.82rem;color:var(--text-dark);resize:none;outline:none;transition:border-color 0.2s;height:38px;min-height:38px;}
         .msg-input:focus{border-color:var(--blue);}
-        .msg-send-btn{width:38px;height:38px;background:var(--grad);border:none;border-radius:9px;color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.2s;flex-shrink:0;}
+        .msg-send-btn{width:38px;height:38px;background:var(--grad);border:none;border-radius:9px;color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;flex-shrink:0;}
         .msg-send-btn:hover{opacity:0.9;transform:scale(1.05);}
         .msg-send-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
         .no-messages{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:7px;color:#94a3b8;padding:20px;}
@@ -323,17 +322,17 @@
 
         /* ── PAYMENT METHODS ── */
         .payment-methods-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
-        .payment-method-card{border:2px solid #e5e7eb;border-radius:16px;padding:0;cursor:pointer;transition:all 0.3s ease;overflow:hidden;margin-bottom:0;background:white;}
+        .payment-method-card{border:2px solid #e5e7eb;border-radius:16px;padding:0;cursor:pointer;transition:border-color 0.2s ease,box-shadow 0.2s ease;overflow:hidden;margin-bottom:0;background:white;}
         .payment-method-card:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:var(--shadow-lg);}
         .payment-method-card.selected{border-color:var(--blue);box-shadow:var(--shadow-md);}
         .payment-method-card.selected::before{content:'';display:block;height:4px;background:var(--grad);}
         .payment-method-card input[type="radio"]{position:absolute;opacity:0;width:0;height:0;}
         .method-inner{display:flex;align-items:center;gap:18px;padding:22px;}
-        .method-ico{width:60px;height:60px;background:var(--grad);border-radius:14px;display:flex;align-items:center;justify-content:center;color:white;font-size:1.8rem;flex-shrink:0;transition:all 0.3s ease;}
+        .method-ico{width:60px;height:60px;background:var(--grad);border-radius:14px;display:flex;align-items:center;justify-content:center;color:white;font-size:1.8rem;flex-shrink:0;transition:transform 0.2s ease;}
         .payment-method-card.selected .method-ico{transform:scale(1.05);}
         .method-text h4{font-size:1.1rem;font-weight:700;margin-bottom:4px;color:var(--text-dark);}
         .method-text p{font-size:0.875rem;color:var(--text-light);margin:0;}
-        .method-check{margin-left:auto;color:var(--blue);font-size:1.5rem;opacity:0;transition:all 0.3s;transform:scale(0);}
+        .method-check{margin-left:auto;color:var(--blue);font-size:1.5rem;opacity:0;transition:opacity 0.2s ease,transform 0.2s ease;transform:scale(0);}
         .payment-method-card.selected .method-check{opacity:1;transform:scale(1);}
         .bank-details-box{background:rgba(59,130,246,0.04);padding:22px;border-radius:14px;border:2px solid rgba(59,130,246,0.1);position:relative;overflow:hidden;}
         .bank-details-box::before{content:'';position:absolute;top:0;left:0;width:5px;height:100%;background:var(--grad);}
@@ -341,32 +340,33 @@
         .bank-field:last-of-type{border-bottom:none;}
         .field-lbl{font-weight:600;color:var(--text-light);font-size:0.9rem;}
         .field-val{font-weight:700;color:var(--text-dark);font-family:'Courier New',monospace;font-size:0.95rem;background:rgba(255,255,255,0.8);padding:4px 8px;border-radius:4px;border:1px solid rgba(59,130,246,0.15);}
-        .copy-btn{background:var(--grad);color:white;border:none;padding:11px 20px;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;margin-top:14px;display:inline-flex;align-items:center;gap:8px;font-size:0.9rem;transition:all 0.3s;box-shadow:var(--shadow);}
+        .copy-btn{background:var(--grad);color:white;border:none;padding:11px 20px;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;margin-top:14px;display:inline-flex;align-items:center;gap:8px;font-size:0.9rem;transition:opacity 0.2s ease,transform 0.2s ease;box-shadow:var(--shadow);}
         .copy-btn:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);}
         .copy-btn.copied{background:var(--grad-success);}
-        .paypal-btn{background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:white;border:none;padding:16px 28px;border-radius:16px;font-family:'Inter',sans-serif;font-size:1.1rem;font-weight:700;cursor:pointer;transition:all 0.3s ease;display:flex;align-items:center;justify-content:center;gap:12px;width:100%;box-shadow:0 8px 24px rgba(59,130,246,0.4);position:relative;overflow:hidden;letter-spacing:0.3px;text-decoration:none;}
+        .paypal-btn{background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:white;border:none;padding:16px 28px;border-radius:16px;font-family:'Inter',sans-serif;font-size:1.1rem;font-weight:700;cursor:pointer;transition:opacity 0.2s ease,transform 0.2s ease;display:flex;align-items:center;justify-content:center;gap:12px;width:100%;box-shadow:0 8px 24px rgba(59,130,246,0.4);position:relative;overflow:hidden;letter-spacing:0.3px;text-decoration:none;}
         .paypal-btn::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent 30%,rgba(255,255,255,0.15) 50%,transparent 70%);animation:shimmer 2.5s infinite linear;}
         .paypal-btn:hover{background:linear-gradient(135deg,#1d4ed8,#1e3a8a);transform:translateY(-2px);box-shadow:var(--shadow-xl);}
         .paypal-btn:disabled{opacity:0.7;cursor:not-allowed;transform:none;}
         .paypal-btn i,.paypal-btn span{position:relative;z-index:1;}
 
         /* ── FLOATING CHAT (mobile only) ── */
-        .chat-fab{position:fixed;bottom:28px;right:28px;width:58px;height:58px;background:var(--grad);border:none;border-radius:50%;color:white;font-size:1.4rem;cursor:pointer;box-shadow:0 6px 20px rgba(59,130,246,0.45);z-index:2000;display:none;align-items:center;justify-content:center;transition:all .25s;}
+        .chat-fab{position:fixed;bottom:28px;right:28px;bottom:calc(28px + env(safe-area-inset-bottom));right:calc(28px + env(safe-area-inset-right));width:58px;height:58px;background:var(--grad);border:none;border-radius:50%;color:white;font-size:1.4rem;cursor:pointer;box-shadow:0 6px 20px rgba(59,130,246,0.45);z-index:2000;display:none;align-items:center;justify-content:center;transition: transform .25s ease, opacity .25s ease, box-shadow .25s ease;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
         .chat-fab:hover{transform:scale(1.1);box-shadow:0 10px 28px rgba(59,130,246,0.5);}
+        .chat-fab:active{transform:scale(0.95);}
         .chat-fab .chat-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:white;width:20px;height:20px;border-radius:50%;font-size:.65rem;font-weight:800;display:none;align-items:center;justify-content:center;border:2px solid white;}
         .chat-fab .chat-badge.show{display:flex;}
 
-        .chat-modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.4);backdrop-filter:blur(4px);z-index:2001;opacity:0;pointer-events:none;transition:opacity .22s;display:flex;align-items:flex-end;justify-content:center;padding:0 0 0;}
+        .chat-modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.4);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:2001;opacity:0;pointer-events:none;transition:opacity .22s;display:flex;align-items:flex-end;justify-content:center;padding:0;}
         .chat-modal-bg.open{opacity:1;pointer-events:all;}
         /* Full-width bottom-sheet on mobile */
-        .chat-modal{background:white;border-radius:20px 20px 0 0;width:100%;max-width:100%;box-shadow:0 -10px 60px rgba(0,0,0,.18);overflow:hidden;transform:translateY(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);}
+        .chat-modal{background:white;border-radius:20px 20px 0 0;width:100%;max-width:100%;box-shadow:0 -10px 60px rgba(0,0,0,.18);overflow:hidden;transform:translateY(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);padding-bottom:env(safe-area-inset-bottom);}
         .chat-modal-bg.open .chat-modal{transform:translateY(0);}
         .chat-modal-head{background:var(--grad);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;}
         .chat-modal-head h4{color:white;font-size:1rem;font-weight:700;display:flex;align-items:center;gap:8px;}
         /* Online dot in modal header */
         .chat-modal-head-dot{width:7px;height:7px;background:#4ade80;border-radius:50%;display:inline-block;}
         .chat-modal-head-sub{font-size:0.72rem;opacity:0.85;margin-top:2px;display:flex;align-items:center;gap:5px;}
-        .chat-modal-close{background:rgba(255,255,255,.2);border:none;color:white;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.8rem;display:flex;align-items:center;justify-content:center;}
+        .chat-modal-close{background:rgba(255,255,255,.2);border:none;color:white;width:44px;height:44px;border-radius:50%;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
         .chat-modal-close:hover{background:rgba(255,255,255,.35);}
         .chat-modal-body{display:flex;flex-direction:column;height:65vh;max-height:520px;}
         /* On mobile: show FAB, hide desktop chat card */
@@ -379,10 +379,25 @@
             .chat-fab{display:none !important;}
             .chat-modal-bg{display:none !important;}
         }
+        /* Mobile touch + performance optimizations */
+        @media(hover:none) and (pointer:coarse){
+            button, a, [onclick] { -webkit-tap-highlight-color: transparent !important; }
+            .total-box::before, .paypal-btn::before { animation: none !important; }
+            .payment-method-card, .copy-btn, .paypal-btn, .msg-send-btn { touch-action: manipulation; }
+        }
         @media(max-width:576px){
-            .chat-fab{bottom:20px;right:16px;width:52px;height:52px;font-size:1.2rem;}
+            .chat-fab{bottom:calc(20px + env(safe-area-inset-bottom));right:16px;width:56px;height:56px;font-size:1.25rem;}
             .chat-modal-body{height:70vh;max-height:none;}
         }
+        /* Android keyboard fix: when soft keyboard opens, shrink chat modal */
+        @supports (height: 100dvh) {
+            .chat-modal-body{height:calc(70dvh - env(keyboard-inset-height, 0px));max-height:none;}
+        }
+        /* Fix messages list scroll on Android */
+        .messages-list{-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
+        /* Bigger tap targets for all chat buttons */
+        .msg-send-btn{min-width:44px;min-height:44px;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+        .msg-input{font-size:16px !important;} /* Prevents iOS/Android zoom on focus */
         .info-note{background:rgba(16,185,129,0.08);padding:18px;border-radius:12px;border-left:4px solid var(--green);margin-top:16px;}
         .info-note h4{color:var(--green);font-size:1rem;margin-bottom:6px;}
         .info-note p{font-size:0.875rem;margin:0;line-height:1.6;color:var(--text-light);}
@@ -529,7 +544,7 @@
                 <div class="lp lp3"></div><div class="lp lp4"></div>
                 <div class="lp lp5"></div>
             </div>
-            <img class="loading-rocket" src="rocket_nobg.png" alt="rocket">
+            <img class="loading-rocket" src="rocket_nobg.png" alt="rocket" fetchpriority="high">
             <span class="loading-flame"></span>
         </div>
         <div class="loading-brand">WebBuilder</div>
@@ -563,10 +578,10 @@
         <!-- Tabs (shown when logged in) -->
         <div id="orders-tabs" style="display:none;margin-bottom:24px">
             <div style="display:flex;gap:8px;background:#f1f5f9;border-radius:14px;padding:5px;max-width:400px;">
-                <button id="tab-btn-current" onclick="switchTab('current')" style="flex:1;padding:9px;border-radius:10px;border:none;font-family:inherit;font-size:0.84rem;font-weight:700;cursor:pointer;transition:all .2s;background:white;color:#1e293b;box-shadow:0 1px 4px rgba(0,0,0,.1)">
+                <button id="tab-btn-current" onclick="switchTab('current')" style="flex:1;padding:9px;border-radius:10px;border:none;font-family:inherit;font-size:0.84rem;font-weight:700;cursor:pointer;transition: transform .2s ease, opacity .2s ease, box-shadow .2s ease;background:white;color:#1e293b;box-shadow:0 1px 4px rgba(0,0,0,.1)">
                     <i class="fas fa-file-invoice"></i> <span id="tab-label-current">Current Order</span>
                 </button>
-                <button id="tab-btn-all" onclick="switchTab('all')" style="flex:1;padding:9px;border-radius:10px;border:none;font-family:inherit;font-size:0.84rem;font-weight:700;cursor:pointer;transition:all .2s;background:transparent;color:#64748b">
+                <button id="tab-btn-all" onclick="switchTab('all')" style="flex:1;padding:9px;border-radius:10px;border:none;font-family:inherit;font-size:0.84rem;font-weight:700;cursor:pointer;transition: transform .2s ease, opacity .2s ease, box-shadow .2s ease;background:transparent;color:#64748b">
                     <i class="fas fa-boxes"></i> <span id="tab-label-all">All My Orders</span>
                     <span id="orders-count-badge" style="background:#3b82f6;color:white;padding:1px 7px;border-radius:20px;font-size:0.72rem;margin-left:3px;display:none">0</span>
                 </button>
@@ -779,17 +794,17 @@
 
                         <!-- Coin tabs -->
                         <div id="coinTabGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:18px">
-                            <button class="coin-tab active" data-coin="BTC" onclick="selectCoin('BTC')" style="display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 6px;border-radius:12px;border:2px solid #f59e0b;background:linear-gradient(135deg,#fffbeb,#fef3c7);cursor:pointer;transition:all .25s;font-family:inherit">
+                            <button class="coin-tab active" data-coin="BTC" onclick="selectCoin('BTC')" style="display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 6px;border-radius:12px;border:2px solid #f59e0b;background:linear-gradient(135deg,#fffbeb,#fef3c7);cursor:pointer;transition: transform .25s ease, opacity .25s ease, box-shadow .25s ease;font-family:inherit">
                                 <span style="font-size:1.5rem;line-height:1">₿</span>
                                 <span style="font-weight:800;font-size:0.72rem;color:#92400e">Bitcoin</span>
                                 <span style="font-size:0.62rem;color:#b45309;font-weight:600">BTC</span>
                             </button>
-                            <button class="coin-tab" data-coin="TON" onclick="selectCoin('TON')" style="display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 6px;border-radius:12px;border:2px solid #e2e8f0;background:white;cursor:pointer;transition:all .25s;font-family:inherit">
+                            <button class="coin-tab" data-coin="TON" onclick="selectCoin('TON')" style="display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 6px;border-radius:12px;border:2px solid #e2e8f0;background:white;cursor:pointer;transition: transform .25s ease, opacity .25s ease, box-shadow .25s ease;font-family:inherit">
                                 <span style="font-size:1.5rem;line-height:1">💎</span>
                                 <span style="font-weight:800;font-size:0.72rem;color:#64748b">Toncoin</span>
                                 <span style="font-size:0.62rem;color:#94a3b8;font-weight:600">TON</span>
                             </button>
-                            <button class="coin-tab" data-coin="XMR" onclick="selectCoin('XMR')" style="display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 6px;border-radius:12px;border:2px solid #e2e8f0;background:white;cursor:pointer;transition:all .25s;font-family:inherit">
+                            <button class="coin-tab" data-coin="XMR" onclick="selectCoin('XMR')" style="display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 6px;border-radius:12px;border:2px solid #e2e8f0;background:white;cursor:pointer;transition: transform .25s ease, opacity .25s ease, box-shadow .25s ease;font-family:inherit">
                                 <!-- Monero SVG logo -->
                                 <svg width="26" height="26" viewBox="0 0 100 100" style="flex-shrink:0">
                                   <circle cx="50" cy="50" r="50" fill="#F26822"/>
@@ -798,7 +813,7 @@
                                 <span style="font-weight:800;font-size:0.72rem;color:#64748b">Monero</span>
                                 <span style="font-size:0.62rem;color:#94a3b8;font-weight:600">XMR</span>
                             </button>
-                            <button class="coin-tab" data-coin="BNB" onclick="selectCoin('BNB')" style="display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 6px;border-radius:12px;border:2px solid #e2e8f0;background:white;cursor:pointer;transition:all .25s;font-family:inherit">
+                            <button class="coin-tab" data-coin="BNB" onclick="selectCoin('BNB')" style="display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 6px;border-radius:12px;border:2px solid #e2e8f0;background:white;cursor:pointer;transition: transform .25s ease, opacity .25s ease, box-shadow .25s ease;font-family:inherit">
                                 <!-- BNB SVG logo -->
                                 <svg width="26" height="26" viewBox="0 0 100 100" style="flex-shrink:0">
                                   <circle cx="50" cy="50" r="50" fill="#F0B90B"/>
@@ -955,7 +970,7 @@
     </div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ═══════════════════════════════════════
 // TRANSLATIONS
 // ═══════════════════════════════════════
@@ -1445,6 +1460,7 @@ async function sendMessage() {
 
     const message = {
         from: 'client',
+        source: 'payment',
         text,
         timestamp: new Date().toISOString(),
         author: authorName
@@ -1495,7 +1511,7 @@ async function sendMessageDesktop() {
         if (wbpUser.displayName) authorName = wbpUser.displayName;
         else if (wbpUser.email) authorName = wbpUser.email.split('@')[0];
     } catch(e) {}
-    const message = { from: 'client', text, timestamp: new Date().toISOString(), author: authorName };
+    const message = { from: 'client', source: 'payment', text, timestamp: new Date().toISOString(), author: authorName };
     if (_db && currentOrderId) {
         await addMessageToFirestore(currentOrderId, message);
         await _mirrorToChats(message);
@@ -1630,7 +1646,7 @@ function setupPaymentMethods() {
     paypalM.click();
     // Also wire up scroll/resize to restore the selection (prevents iOS scroll reset)
     window.addEventListener('scroll', restorePaymentMethod, {passive:true});
-    window.addEventListener('touchend', () => setTimeout(restorePaymentMethod, 50), {passive:true});
+    window.addEventListener('touchend', () => requestAnimationFrame(restorePaymentMethod), {passive:true});
 }
 
 // ═══════════════════════════════════════
@@ -1766,7 +1782,7 @@ function hideLoading() {
     ls.style.opacity = '0';
     document.body.style.opacity = '1';
     document.body.style.overflow = '';
-    setTimeout(() => { ls.style.display = 'none'; }, 600);
+    setTimeout(() => { ls.style.display = 'none'; }, 250);
 }
 
 // ═══════════════════════════════════════
@@ -1791,15 +1807,26 @@ function openChat() {
     badge.textContent = '0';
     badge.classList.remove('show');
     // Scroll to bottom
+    // Wait for CSS open transition (0.22s), then focus + scroll
     setTimeout(() => {
         const list = document.getElementById('messagesList');
-        list.scrollTop = list.scrollHeight;
-    }, 100);
+        if (list) list.scrollTop = list.scrollHeight;
+        const input = document.getElementById('msgInput');
+        if (input) {
+            input.focus();
+            requestAnimationFrame(() => {
+                input.scrollIntoView({ block: 'nearest' });
+                if (list) list.scrollTop = list.scrollHeight;
+            });
+        }
+    }, 220);
 }
 
 function closeChat() {
     document.getElementById('chatModalBg').classList.remove('open');
     _chatOpen = false;
+    // Blur any focused input so Android keyboard dismisses
+    if (document.activeElement) document.activeElement.blur();
 }
 
 function closeChatOnBg(e) {
@@ -1821,6 +1848,31 @@ document.addEventListener('keydown', e => {
 });
 
 // ═══════════════════════════════════════
+// ANDROID KEYBOARD FIX
+// ═══════════════════════════════════════
+// When the virtual keyboard opens on Android, the visual viewport shrinks.
+// We resize the chat modal body to fit the remaining space.
+if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => {
+        const modal = document.querySelector('.chat-modal');
+        if (!modal || !_chatOpen) return;
+        const vh = window.visualViewport.height;
+        const offset = window.innerHeight - vh;
+        // If keyboard is open (offset > 100px), shrink modal
+        if (offset > 100) {
+            modal.style.maxHeight = (vh * 0.85) + 'px';
+            // Scroll messages to bottom after resize
+            requestAnimationFrame(() => {
+                const list = document.getElementById('messagesList');
+                if (list) list.scrollTop = list.scrollHeight;
+            });
+        } else {
+            modal.style.maxHeight = '';
+        }
+    });
+}
+
+// ═══════════════════════════════════════
 // BOOT
 // ═══════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
@@ -1838,7 +1890,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ═══════════════════════════════════════
 window.addEventListener('scroll', () => {
     document.querySelector('nav').classList.toggle('scrolled', window.scrollY > 50);
-});
+}, { passive: true });
 
 // ═══════════════════════════════════════
 // ALL ORDERS / TABS (shown when logged in)

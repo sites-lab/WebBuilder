@@ -4,15 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <!-- Critical: block content flash before loading screen paints (fixes Telegram WebView) -->
-    <style>body{opacity:0;overflow:hidden;}</style>
+    <style>body{opacity:0;overflow:hidden;transition:opacity 0.2s ease;}</style>
     <title>WebBuilder - Professional Web Services</title>
  <!-- FAVICON CODE - ADD HERE -->
     <link rel="icon" type="image/png" href="rocket.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <!-- font-display=swap: render with system font immediately, swap when Inter loads -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome loaded non-blocking so it never delays first paint -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
     <style>
         /* ── Loading Screen ── */
         #loading-screen {
@@ -282,6 +286,7 @@
             scroll-behavior: smooth;
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
+            overscroll-behavior-x: none;
         }
 
         body {
@@ -294,7 +299,7 @@
             overflow-x: hidden;
             position: relative;
             /* opacity is controlled by inline style + JS — do not set here */
-            transition: opacity 0.5s ease;
+            transition: opacity 0.2s ease;
             -webkit-overflow-scrolling: touch;
             overscroll-behavior-y: none;
         }
@@ -309,6 +314,9 @@
         section {
             padding: 80px 0;
             position: relative;
+        }
+        @media (min-width: 769px) {
+            section { contain: layout style; }
         }
 
         h1, h2, h3, h4 {
@@ -362,6 +370,7 @@
             height: 100%;
             z-index: -1;
             pointer-events: none;
+            contain: strict;
         }
 
         .particle {
@@ -370,6 +379,7 @@
             background: radial-gradient(circle, var(--albastru) 0%, transparent 70%);
             opacity: 0.1;
             animation: floatParticle 20s infinite linear;
+            will-change: transform;
         }
 
         @keyframes floatParticle {
@@ -396,13 +406,13 @@
         /* Enhanced fade-in animations */
         .fade-in {
             opacity: 0;
-            transform: translateY(30px) scale(0.95);
-            transition: all 0.8s var(--transition-smooth);
+            transform: translateY(16px);
+            transition: opacity 0.35s ease, transform 0.35s ease;
         }
 
         .fade-in.visible {
             opacity: 1;
-            transform: translateY(0) scale(1);
+            transform: translateY(0);
         }
 
         /* Enhanced button animations */
@@ -412,7 +422,7 @@
             border-radius: 12px;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.2s ease;
             cursor: pointer;
             border: none;
             font-size: 1.05rem;
@@ -420,7 +430,6 @@
             overflow: hidden;
             letter-spacing: -0.2px;
             box-shadow: var(--shadow-md);
-            transform-style: preserve-3d;
         }
 
         .btn::before {
@@ -577,6 +586,8 @@
             transform: rotate(45deg);
             transform-origin: 50% 50%;
             animation: ghostFly linear infinite;
+            will-change: transform, opacity;
+            backface-visibility: hidden;
         }
 
         /* Glow pulse on the SVG */
@@ -609,7 +620,7 @@
         .bg-rocket-6 { bottom: 70%; right: 30%; width:40px; --op:.35; --tx:220px; --ty:-470px; animation-duration:12s;  animation-delay:2.2s; }
         .bg-rocket-7 { top:  10%;   left: 45%;  width:44px; --op:.42; --tx:245px; --ty:-520px; animation-duration:14s;  animation-delay:8.5s; }
 
-        @media (max-width:768px) { .bg-rocket-4, .bg-rocket-6, .bg-rocket-7 { display:none; } }
+        @media (max-width:768px) { .bg-rocket-1, .bg-rocket-2, .bg-rocket-3, .bg-rocket-4, .bg-rocket-5, .bg-rocket-6, .bg-rocket-7 { display:none !important; } }
 
         .header-content {
             position: relative;
@@ -708,9 +719,10 @@
             width: 100%;
             background-color: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             box-shadow: var(--shadow);
             z-index: 1000;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
         }
 
         nav.scrolled {
@@ -851,7 +863,7 @@
             opacity: 0;
             visibility: hidden;
             transform: translateY(10px);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.4s ease, opacity 0.4s ease, box-shadow 0.4s ease;
             pointer-events: none;
             border: 1px solid rgba(59, 130, 246, 0.1);
             overflow: hidden;
@@ -880,7 +892,7 @@
             padding: 14px 24px;
             color: var(--text-dark);
             text-decoration: none;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
             font-size: 14px;
             font-weight: 500;
             gap: 12px;
@@ -924,7 +936,7 @@
             cursor: pointer;
             padding: 12px;
             border-radius: 12px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
             width: 50px;
             height: 50px;
             align-items: center;
@@ -951,7 +963,7 @@
             height: 3px;
             background-color: white;
             border-radius: 2px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
             transform-origin: center;
         }
 
@@ -1020,9 +1032,11 @@
             height: 100%;
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
             z-index: 1000;
-            transform: translateX(100%);
-            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform: translateX(100%) translateZ(0);
+            transition: transform 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             will-change: transform;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
             padding: 80px 20px 30px;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
@@ -1044,8 +1058,8 @@
         .mobile-nav-links li {
             margin-bottom: 8px;
             opacity: 0;
-            transform: translateX(20px);
-            animation: slideInRight 0.5s ease forwards;
+            transform: translateX(12px);
+            animation: slideInRight 0.18s ease forwards;
         }
 
         @keyframes slideInRight {
@@ -1055,13 +1069,13 @@
             }
         }
 
-        .mobile-nav-links li:nth-child(1) { animation-delay: 0.1s; }
-        .mobile-nav-links li:nth-child(2) { animation-delay: 0.2s; }
-        .mobile-nav-links li:nth-child(3) { animation-delay: 0.3s; }
-        .mobile-nav-links li:nth-child(4) { animation-delay: 0.4s; }
-        .mobile-nav-links li:nth-child(5) { animation-delay: 0.5s; }
-        .mobile-nav-links li:nth-child(6) { animation-delay: 0.6s; }
-        .mobile-nav-links li:nth-child(7) { animation-delay: 0.7s; }
+        .mobile-nav-links li:nth-child(1) { animation-delay: 0.03s; }
+        .mobile-nav-links li:nth-child(2) { animation-delay: 0.06s; }
+        .mobile-nav-links li:nth-child(3) { animation-delay: 0.09s; }
+        .mobile-nav-links li:nth-child(4) { animation-delay: 0.12s; }
+        .mobile-nav-links li:nth-child(5) { animation-delay: 0.15s; }
+        .mobile-nav-links li:nth-child(6) { animation-delay: 0.18s; }
+        .mobile-nav-links li:nth-child(7) { animation-delay: 0.21s; }
 
         .mobile-nav-links a {
             display: flex;
@@ -1072,7 +1086,7 @@
             font-weight: 600;
             font-size: 16px;
             border-radius: 12px;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
             background: transparent;
             border-left: 4px solid transparent;
             margin-bottom: 5px;
@@ -1145,7 +1159,7 @@
             color: white;
             border-radius: 12px;
             text-decoration: none;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
             font-size: 18px;
         }
 
@@ -1183,14 +1197,12 @@
             border-radius: 20px;
             padding: 40px 30px;
             box-shadow: var(--shadow-lg);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.5s ease, opacity 0.5s ease, box-shadow 0.5s ease;
             text-align: center;
             border: 1px solid transparent;
             position: relative;
             overflow: hidden;
             z-index: 1;
-            transform-style: preserve-3d;
-            perspective: 1000px;
         }
 
         .service-card::before {
@@ -1441,7 +1453,9 @@
 
         /* CTA Button per tier */
         .package-btn {
-            display: block;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
             width: 100%;
             text-align: center;
             margin-top: auto;
@@ -1451,7 +1465,7 @@
             font-size: 0.95rem;
             border: none;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: transform 0.25s ease, opacity 0.25s ease, box-shadow 0.25s ease;
             letter-spacing: 0.2px;
         }
         .basic .package-btn {
@@ -1480,18 +1494,27 @@
             display: none;
             justify-content: center;
             margin-bottom: 25px;
-            gap: 10px;
-            flex-wrap: wrap;
+            gap: 8px;
+            flex-wrap: nowrap;
+            width: 100%;
         }
 
+
         .package-tab {
-            padding: 12px 24px;
+            padding: 14px 0;
+            flex: 1 1 0;
+            min-width: 0;
             background-color: var(--white);
             border: 2px solid var(--albastru);
-            border-radius: 10px;
-            font-weight: 600;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .package-tab:hover {
@@ -1504,6 +1527,21 @@
             color: white;
             border-color: transparent;
             box-shadow: var(--shadow-md);
+        }
+        
+        /* ── GLOBAL: always center text in tabs and example buttons ── */
+        .package-tab,
+        .package-tab span,
+        .example-mobile-btn,
+        .example-mobile-btn span {
+            text-align: center !important;
+            justify-content: center !important;
+        }
+        .package-tab,
+        .example-mobile-btn {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
         }
 
         /* Pachete pentru mobile - SIMPLIFIED */
@@ -1548,7 +1586,7 @@
             border-radius: 20px;
             overflow: hidden;
             box-shadow: var(--shadow-xl);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.4s ease, opacity 0.4s ease, box-shadow 0.4s ease;
             border: 2px solid transparent;
             height: 100%;
             position: relative;
@@ -1698,19 +1736,26 @@
             display: none;
             justify-content: center;
             margin: 30px 0 40px 0;
-            gap: 10px;
-            flex-wrap: wrap;
+            gap: 8px;
+            flex-wrap: nowrap;
+            width: 100%;
         }
 
         .example-mobile-btn {
-            padding: 12px 24px;
+            padding: 14px 0;
+            flex: 1 1 0;
+            min-width: 0;
             background-color: var(--white);
             border: 2px solid var(--albastru);
-            border-radius: 10px;
-            font-weight: 600;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
+            transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .example-mobile-btn:hover {
@@ -1790,7 +1835,7 @@
             margin: 0 auto 20px;
             box-shadow: var(--shadow-lg);
             position: relative;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.5s ease, opacity 0.5s ease, box-shadow 0.5s ease;
             overflow: hidden;
         }
 
@@ -1840,7 +1885,7 @@
             margin-bottom: 15px;
             overflow: hidden;
             box-shadow: var(--shadow);
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
         }
 
         .faq-item:hover {
@@ -1855,7 +1900,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
         }
 
         .faq-question:hover {
@@ -1874,7 +1919,7 @@
             padding: 0 25px;
             max-height: 0;
             overflow: hidden;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
         }
 
         .faq-item.active .faq-answer {
@@ -1907,14 +1952,14 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(5px);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 2000;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+            overscroll-behavior: contain;
         }
         
         .order-form-overlay.active {
@@ -1930,6 +1975,8 @@
             max-width: 700px;
             max-height: 90vh;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
             box-shadow: var(--shadow-xl);
             position: relative;
             border: 2px solid rgba(59, 130, 246, 0.1);
@@ -1956,8 +2003,10 @@
             font-size: 1.2rem;
             color: white;
             cursor: pointer;
-            transition: all 0.3s ease;
-            width: 40px;
+            transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            width: 44px;
             height: 40px;
             border-radius: 50%;
             display: flex;
@@ -2001,7 +2050,7 @@
             border: 2px solid #e5e7eb;
             border-radius: 10px;
             font-size: 1rem;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
             background: white;
             font-family: 'Inter', sans-serif;
         }
@@ -2141,7 +2190,7 @@
             font-size: 1.2rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
             margin-top: 10px;
             letter-spacing: -0.2px;
             position: relative;
@@ -2195,7 +2244,7 @@
         .footer-column a {
             color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
             display: inline-block;
         }
 
@@ -2218,8 +2267,9 @@
             height: 44px;
             background-color: rgba(255, 255, 255, 0.1);
             border-radius: 12px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.4s ease, opacity 0.4s ease, box-shadow 0.4s ease;
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
         .social-links a:hover {
@@ -2248,6 +2298,7 @@
             gap: 8px;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border-radius: 12px;
             padding: 8px;
             box-shadow: var(--shadow-md);
@@ -2258,7 +2309,7 @@
             padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
             font-weight: 600;
             font-size: 14px;
             color: var(--text-light);
@@ -2314,22 +2365,44 @@
 
         /* ── MOBILE PERFORMANCE: disable heavy animations & GPU layers on phones ── */
         @media (max-width: 768px) {
-            /* Kill particle / floating / pulsing animations that cause jank */
+            /* Kill ALL background animations that cause GPU jank */
             .particle, .star, .shooting-star,
             .hero-blob, .hero-glow, .orbit, .orbit-item,
-            .scroll-progress {
+            .scroll-progress,
+            .example-preview.basic,
+            .example-preview.standard,
+            .example-preview.premium,
+            .bg-rocket, .bg-rocket svg, .bg-rocket .r-flame {
                 animation: none !important;
                 transition: none !important;
                 will-change: auto !important;
             }
 
-            /* Simplify card hover effects */
+            /* Simplify card hover effects on mobile — no transforms */
             .service-card, .package-card, .example-card,
             .process-step, .faq-item, .stat-item {
-                transition: none !important;
+                transition: box-shadow 0.2s ease !important;
                 transform: none !important;
                 will-change: auto !important;
                 animation: none !important;
+            }
+            
+            /* Disable expensive hover animations on touch */
+            .btn:hover, .btn:focus {
+                transform: none !important;
+                box-shadow: var(--shadow-md) !important;
+            }
+            .package-btn:hover {
+                transform: none !important;
+                filter: none !important;
+            }
+            /* Remove heavy box-shadow transitions on mobile */
+            .service-card, .package-card, .faq-item {
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+            }
+            /* Disable the ::before ripple on mobile buttons */
+            .btn::before {
+                display: none !important;
             }
 
             /* Kill scroll-linked parallax / sticky transforms */
@@ -2338,11 +2411,12 @@
                 will-change: auto !important;
             }
 
-            /* Smooth native scrolling – let the browser do it */
+            /* Android: let browser handle all scrolling natively */
             html, body {
                 -webkit-overflow-scrolling: touch;
                 overscroll-behavior-y: contain;
                 scroll-behavior: auto !important;
+                touch-action: pan-y;
             }
 
             /* Remove backdrop-filter (expensive on mobile) */
@@ -2384,6 +2458,46 @@
             .desktop-dropdown:hover .desktop-dropdown-content {
                 opacity: 0;
                 visibility: hidden;
+            }
+        }
+
+        /* ── MOBILE / iOS / ANDROID FIXES ── */
+        @media (hover: none) and (pointer: coarse) {
+            /* All interactive elements: remove tap flash, fix tap delay */
+            button, a, [onclick], input, select, textarea, label {
+                -webkit-tap-highlight-color: transparent !important;
+            }
+            /* Buttons need at least 44px touch target */
+            .btn, .package-tab, .example-mobile-btn, .faq-question,
+            .mobile-dropdown-toggle {
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            /* Nav links: left-aligned with icon, NOT centered */
+            .mobile-nav-links a {
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+            }
+            /* All inputs: 16px to prevent zoom */
+            input, textarea, select {
+                font-size: 16px !important;
+            }
+            /* Remove animation on tap for performance */
+            .btn:active {
+                transform: scale(0.97) !important;
+                transition: transform 0.1s !important;
+            }
+            /* iOS Safari: prevent callout on long press */
+            button, a, .package-tab, .example-mobile-btn {
+                -webkit-touch-callout: none;
+            }
+            /* iOS: smooth momentum scrolling on scroll containers */
+            .order-form, .wbp-msg-body, .wbp-messages, .mobile-menu-content {
+                -webkit-overflow-scrolling: touch;
             }
         }
 
@@ -2564,6 +2678,10 @@
             .mobile-menu-btn {
                 display: flex !important;
                 background: var(--gradient-primary);
+                -webkit-tap-highlight-color: transparent;
+                touch-action: manipulation;
+                min-width: 44px;
+                min-height: 44px;
             }
             
             .nav-links {
@@ -2626,16 +2744,25 @@
             
             .package-tabs-mobile {
                 display: flex;
-                flex-wrap: wrap;
+                flex-direction: row;
+                flex-wrap: nowrap;
                 gap: 8px;
                 justify-content: center;
                 margin-bottom: 20px;
+                margin-left: -20px;
+                margin-right: -20px;
+                padding-left: 12px;
+                padding-right: 12px;
+                width: calc(100% + 40px);
+                box-sizing: border-box;
             }
 
             .package-tab {
-                padding: 10px 22px;
-                border-radius: 10px;
-                font-size: 0.88rem;
+                padding: 13px 0;
+                font-size: 0.95rem;
+                font-weight: 700;
+                text-align: center;
+                justify-content: center;
             }
             
             .packages-mobile {
@@ -2712,10 +2839,17 @@
             
             .example-mobile-buttons {
                 display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                gap: 8px;
                 justify-content: center;
-                flex-wrap: wrap;
-                gap: 10px;
                 margin-bottom: 30px;
+                margin-left: -20px;
+                margin-right: -20px;
+                padding-left: 12px;
+                padding-right: 12px;
+                width: calc(100% + 40px);
+                box-sizing: border-box;
             }
             
             .example-mobile-container {
@@ -2779,6 +2913,12 @@
             .faq-question {
                 padding: 15px 20px;
                 font-size: 1rem;
+                -webkit-tap-highlight-color: transparent;
+                touch-action: manipulation;
+                min-height: 48px;
+                display: flex;
+                align-items: center;
+                cursor: pointer;
             }
             
             /* Footer compact */
@@ -2871,13 +3011,23 @@
             }
             
             .package-tabs-mobile {
-                flex-direction: column;
+                flex-direction: row;
                 align-items: stretch;
+                flex-wrap: nowrap;
+                margin-left: -20px;
+                margin-right: -20px;
+                padding-left: 12px;
+                padding-right: 12px;
+                width: calc(100% + 40px);
+                box-sizing: border-box;
             }
             
             .package-tab {
-                padding: 10px 20px;
+                padding: 12px 0;
+                flex: 1 1 0;
+                min-width: 0;
                 text-align: center;
+                justify-content: center;
             }
             
             .btn-large {
@@ -2909,14 +3059,23 @@
             }
             
             .example-mobile-buttons {
-                flex-direction: column;
-                align-items: center;
+                flex-direction: row;
+                align-items: stretch;
+                flex-wrap: nowrap;
+                margin-left: -20px;
+                margin-right: -20px;
+                padding-left: 12px;
+                padding-right: 12px;
+                width: calc(100% + 40px);
+                box-sizing: border-box;
             }
             
             .example-mobile-btn {
-                width: 100%;
-                max-width: 250px;
+                flex: 1 1 0;
+                min-width: 0;
+                padding: 12px 0;
                 text-align: center;
+                justify-content: center;
             }
             
             .example-mobile-card {
@@ -3073,6 +3232,8 @@
             .example-mobile-btn {
                 padding: 10px 20px;
                 font-size: 0.9rem;
+                text-align: center;
+                justify-content: center;
             }
             
             .example-preview {
@@ -3139,7 +3300,6 @@
                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                     status: 'pending'
                 });
-                console.log('Order saved to Firestore');
             } catch(e) {
                 console.error('Firestore save error:', e);
             }
@@ -3166,7 +3326,7 @@
                 <div class="lp lp3"></div><div class="lp lp4"></div>
                 <div class="lp lp5"></div>
             </div>
-            <img class="loading-rocket" src="rocket_nobg.png" alt="rocket">
+            <img decoding="async" loading="lazy" class="loading-rocket" src="rocket_nobg.png" alt="rocket">
             <span class="loading-flame"></span>
         </div>
             <div class="loading-brand">WebBuilder</div>
@@ -3227,7 +3387,7 @@
             
             <div class="mobile-contact-info">
                 <p><i class="fas fa-phone"></i> +40 729 552 767</p>
-                <p><i class="fas fa-envelope"></i> <a href="/cdn-cgi/l/email-protection#b5c2d0d79bd7c0dcd9d1d0c78584f5d2d8d4dcd99bd6dad8" style="color:inherit;"><span class="__cf_email__" data-cfemail="334456511d51465a5f575641030273545e525a5f1d505c5e">[email&#160;protected]</span></a></p>
+                <p><i class="fas fa-envelope"></i> <a href="mailto:web.builder01@gmail.com" style="color:inherit;">web.builder01@gmail.com</a></p>
             </div>
         </div>
     </div>
@@ -3242,7 +3402,7 @@
                 <li><a href="#services" data-i18n="nav.services">Services</a></li>
                 <li><a href="#examples" data-i18n="nav.examples">Examples</a></li>
                 <li class="desktop-dropdown">
-                    <a href="#additional" data-i18n="nav.additional">
+                    <a href="#packages" data-i18n="nav.additional" onclick="event.preventDefault();">
                         <span>Additional</span>
                         <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
                         <span class="additional-badge">NEW</span>
@@ -3416,7 +3576,7 @@
         <div class="bg-rocket bg-rocket-6"></div>
         <div class="bg-rocket bg-rocket-7"></div>
 
-        <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        <script>
         (function(){
           var tpl = document.getElementById('tpl-rocket');
           if (!tpl) return;
@@ -3455,7 +3615,7 @@
     </header>
 
     <!-- Secțiune Pachete -->
-    <section id="packages" class="packages">
+    <section id="packages" class="packages"><span id="additional" style="position:absolute;top:-80px;visibility:hidden;"></span>
         <div class="container">
             <h2 data-i18n="packages.title">Packages and Prices</h2>
             
@@ -3492,9 +3652,7 @@
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.free_hosting">Free hosting included</span></li>
                             <li><i class="fas fa-check"></i> <span><i class="fab fa-cloudflare" style="color:#f38020"></i> <span data-i18n="packages.cloudflare">Cloudflare security &amp; DDoS protection</span></span></li>
                         </ul>
-                        <button class="btn btn-primary package-btn order-btn" data-package="basic" data-price="40" data-i18n="packages.order">
-                            Order
-                        </button>
+                        <button class="btn btn-primary package-btn order-btn" data-package="basic" data-price="40" data-i18n="packages.order">Order</button>
                     </div>
                 </div>
 
@@ -3523,9 +3681,7 @@
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.free_hosting">Free hosting included</span></li>
                             <li><i class="fas fa-check"></i> <span><i class="fab fa-cloudflare" style="color:#f38020"></i> <span data-i18n="packages.cloudflare">Cloudflare security &amp; DDoS protection</span></span></li>
                         </ul>
-                        <button class="btn btn-primary package-btn order-btn" data-package="standard" data-price="250" data-i18n="packages.order">
-                            Order
-                        </button>
+                        <button class="btn btn-primary package-btn order-btn" data-package="standard" data-price="250" data-i18n="packages.order">Order</button>
                     </div>
                 </div>
 
@@ -3554,9 +3710,7 @@
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature8">Post-launch optimization</span></li>
                             <li><i class="fas fa-check"></i> <span><i class="fab fa-cloudflare" style="color:#f38020"></i> <span data-i18n="packages.cloudflare">Cloudflare security &amp; DDoS protection</span></span></li>
                         </ul>
-                        <button class="btn btn-primary package-btn order-btn" data-package="premium" data-price="550" data-i18n="packages.order">
-                            Order
-                        </button>
+                        <button class="btn btn-primary package-btn order-btn" data-package="premium" data-price="550" data-i18n="packages.order">Order</button>
                     </div>
                 </div>
             </div>
@@ -3587,9 +3741,7 @@
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.free_hosting">Free hosting included</span></li>
                             <li><i class="fas fa-check"></i> <span><i class="fab fa-cloudflare" style="color:#f38020"></i> <span data-i18n="packages.cloudflare">Cloudflare security &amp; DDoS protection</span></span></li>
                         </ul>
-                        <button class="btn btn-primary package-btn order-btn" data-package="basic" data-price="40" data-i18n="packages.order">
-                            Order
-                        </button>
+                        <button class="btn btn-primary package-btn order-btn" data-package="basic" data-price="40" data-i18n="packages.order">Order</button>
                     </div>
                 </div>
 
@@ -3618,9 +3770,7 @@
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.free_hosting">Free hosting included</span></li>
                             <li><i class="fas fa-check"></i> <span><i class="fab fa-cloudflare" style="color:#f38020"></i> <span data-i18n="packages.cloudflare">Cloudflare security &amp; DDoS protection</span></span></li>
                         </ul>
-                        <button class="btn btn-primary package-btn order-btn" data-package="standard" data-price="250" data-i18n="packages.order">
-                            Order
-                        </button>
+                        <button class="btn btn-primary package-btn order-btn" data-package="standard" data-price="250" data-i18n="packages.order">Order</button>
                     </div>
                 </div>
 
@@ -3649,9 +3799,7 @@
                             <li><i class="fas fa-check"></i> <span data-i18n="packages.premium.feature8">Post-launch optimization</span></li>
                             <li><i class="fas fa-check"></i> <span><i class="fab fa-cloudflare" style="color:#f38020"></i> <span data-i18n="packages.cloudflare">Cloudflare security &amp; DDoS protection</span></span></li>
                         </ul>
-                        <button class="btn btn-primary package-btn order-btn" data-package="premium" data-price="550" data-i18n="packages.order">
-                            Order
-                        </button>
+                        <button class="btn btn-primary package-btn order-btn" data-package="premium" data-price="550" data-i18n="packages.order">Order</button>
                     </div>
                 </div>
             </div>
@@ -3966,7 +4114,7 @@
                     <h3 data-i18n="footer.contact">Contact</h3>
                     <ul>
                         <li><i class="fas fa-phone"></i> +40 729 552 767</li>
-                        <li><i class="fas fa-envelope"></i> <a href="/cdn-cgi/l/email-protection#077062652965726e6b636275373647606a666e6b2964686a" style="color:inherit;"><span class="__cf_email__" data-cfemail="d9aebcbbf7bbacb0b5bdbcabe9e899beb4b8b0b5f7bab6b4">[email&#160;protected]</span></a></li>
+                        <li><i class="fas fa-envelope"></i> <a href="mailto:web.builder01@gmail.com" style="color:inherit;">web.builder01@gmail.com</a></li>
                         <li><i class="fas fa-map-marker-alt"></i> <span data-i18n="footer.location">Bucharest, Romania</span></li>
                     </ul>
                 </div>
@@ -4115,7 +4263,7 @@
 
 
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script>
         // Enhanced Mobile Menu System
         class EnhancedMobileMenu {
             constructor() {
@@ -4192,12 +4340,19 @@
             }
 
             open() {
+                // Save scroll position BEFORE fixing body (iOS Safari scroll-jump fix)
+                this._scrollY = window.pageYOffset || document.documentElement.scrollTop;
                 this.mobileMenu.classList.add('active');
                 this.overlay.classList.add('active');
                 this.menuBtn.classList.add('active');
                 document.querySelector('nav')?.classList.add('mobile-open');
                 this.isOpen = true;
+                // iOS Safari: must set top BEFORE position:fixed, then overflow
+                document.body.style.top = '-' + this._scrollY + 'px';
+                document.body.style.position = 'fixed';
+                document.body.style.width = '100%';
                 document.body.style.overflow = 'hidden';
+                document.documentElement.style.overflow = 'hidden';
                 const fab = document.getElementById('contactFabWrap');
                 if (fab) fab.style.display = 'none';
             }
@@ -4208,7 +4363,20 @@
                 this.menuBtn.classList.remove('active');
                 document.querySelector('nav')?.classList.remove('mobile-open');
                 this.isOpen = false;
+                // iOS Safari fix: MUST restore scroll position in the right order
+                // 1. Set top back to 0 first
+                // 2. Remove position:fixed (this triggers reflow)
+                // 3. Immediately scroll to saved position
+                const scrollY = this._scrollY || 0;
+                document.body.style.top = '';
+                document.body.style.position = '';
                 document.body.style.overflow = '';
+                document.body.style.width = '';
+                document.documentElement.style.overflow = '';
+                // Use requestAnimationFrame to ensure the reflow completes before scrolling
+                requestAnimationFrame(() => {
+                    window.scrollTo(0, scrollY);
+                });
                 const fab = document.getElementById('contactFabWrap');
                 if (fab) fab.style.display = '';
                 document.querySelectorAll('.mobile-dropdown-content.active').forEach(content => {
@@ -4311,12 +4479,12 @@ this.packageTabs.forEach(tab => {
             targetPackage.classList.add('active');
             
             // Scroll so the card is visible — offset below the nav bar
-            setTimeout(() => {
+            requestAnimationFrame(() => {
                 const rect = targetPackage.getBoundingClientRect();
                 const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                const targetY = scrollTop + rect.top - 80; // 80px = nav height
+                const targetY = scrollTop + rect.top - 80;
                 window.scrollTo({ top: targetY, behavior: 'smooth' });
-            }, 50);
+            });
         }
     });
 });
@@ -4376,9 +4544,14 @@ this.packageTabs.forEach(tab => {
                 this.detectLanguage();
                 this.rotateMessages();
                 
-                setTimeout(() => {
-                    this.hide();
-                }, 2500);
+                // Hide as soon as page is ready — don't artificially delay
+                if (document.readyState === 'complete') {
+                    requestAnimationFrame(() => this.hide());
+                } else {
+                    window.addEventListener('load', () => requestAnimationFrame(() => this.hide()), { once: true });
+                    // Fallback: never show more than 1.2s
+                    setTimeout(() => this.hide(), 1200);
+                }
             }
 
             detectLanguage() {
@@ -4401,19 +4574,7 @@ this.packageTabs.forEach(tab => {
             }
 
             rotateMessages() {
-                const messages = this.loadingMessages[this.currentLang] || this.loadingMessages['en'];
-                let currentIndex = 0;
-                
-                const interval = setInterval(() => {
-                    currentIndex = (currentIndex + 1) % messages.length;
-                    this.loadingText.innerHTML = messages[currentIndex] + '<span class="loading-dots"></span>';
-                    
-                    if (currentIndex === messages.length - 1) {
-                        setTimeout(() => {
-                            clearInterval(interval);
-                        }, 500);
-                    }
-                }, 800);
+                // Loading screen is hidden fast — no need to rotate messages
             }
 
             hide() {
@@ -4424,7 +4585,7 @@ this.packageTabs.forEach(tab => {
                 setTimeout(() => {
                     this.loadingScreen.style.display = 'none';
                     document.body.classList.remove('preload');
-                }, 1200);
+                }, 220);
             }
         }
 
@@ -5041,11 +5202,11 @@ this.packageTabs.forEach(tab => {
 
             init() {
                 window.addEventListener('load', () => {
-                    setTimeout(() => {
+                    requestAnimationFrame(() => {
                         document.body.classList.remove('preload');
                         document.body.style.opacity = '1';
                         document.body.style.overflow = '';
-                    }, 100);
+                    });
                     
                     this.createParticles();
                     
@@ -5056,66 +5217,66 @@ this.packageTabs.forEach(tab => {
             }
 
             createParticles() {
+                // Skip particles on mobile/touch devices — they cause GPU jank
+                if (window.innerWidth <= 768 || ('ontouchstart' in window)) return;
                 const particlesContainer = document.getElementById('particles');
                 if (!particlesContainer) return;
-                
-                const particleCount = window.innerWidth <= 768 ? 20 : 40;
-                
+                // Reduced from 40 to 12 on desktop — still looks nice, much lighter
+                const particleCount = 12;
+                const frag = document.createDocumentFragment();
                 for (let i = 0; i < particleCount; i++) {
                     const particle = document.createElement('div');
                     particle.className = 'particle';
-                    
-                    const size = Math.random() * 100 + 50;
-                    const x = Math.random() * 100;
-                    const y = Math.random() * 100;
-                    const delay = Math.random() * 20;
-                    
-                    particle.style.width = `${size}px`;
-                    particle.style.height = `${size}px`;
-                    particle.style.left = `${x}%`;
-                    particle.style.top = `${y}%`;
-                    particle.style.animationDelay = `${delay}s`;
-                    particle.style.animationDuration = `${Math.random() * 30 + 20}s`;
-                    
-                    particlesContainer.appendChild(particle);
+                    particle.style.cssText = `width:${Math.random()*80+40}px;height:${Math.random()*80+40}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${Math.random()*20}s;animation-duration:${Math.random()*30+20}s`;
+                    frag.appendChild(particle);
                 }
+                particlesContainer.appendChild(frag);
             }
 
             initScrollAnimations() {
                 window.addEventListener('scroll', () => {
-                    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-                    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                    const scrolled = (winScroll / height) * 100;
-                    
-                    const progressBar = document.getElementById('scrollProgress');
-                    if (progressBar) {
-                        progressBar.style.width = scrolled + "%";
-                    }
-
-                    const sections = document.querySelectorAll('section');
-                    sections.forEach(section => {
-                        const sectionTop = section.offsetTop;
-                        
-                        if (window.scrollY > sectionTop - window.innerHeight + 100) {
-                            section.classList.add('revealed');
-                        }
-                    });
-
                     const nav = document.querySelector('nav');
                     if (window.scrollY > 50) {
                         nav.classList.add('scrolled');
                     } else {
                         nav.classList.remove('scrolled');
                     }
-                });
-                
+                }, { passive: true });
+
+                // Scroll progress bar — separate throttled listener so nav highlight stays fast
+                const progressBar = document.getElementById('scrollProgress');
+                if (progressBar) {
+                    let ticking = false;
+                    window.addEventListener('scroll', () => {
+                        if (!ticking) {
+                            requestAnimationFrame(() => {
+                                const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                                progressBar.style.width = (window.scrollY / h * 100) + '%';
+                                ticking = false;
+                            });
+                            ticking = true;
+                        }
+                    }, { passive: true });
+                }
+
+                // Use IntersectionObserver for section reveal — much cheaper than scroll handler
+                const sectionObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('revealed');
+                        }
+                    });
+                }, { rootMargin: '0px 0px -60px 0px', threshold: 0 });
+                document.querySelectorAll('section').forEach(s => sectionObserver.observe(s));
+
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach((entry) => {
                         if (entry.isIntersecting) {
                             entry.target.classList.add('visible');
+                            observer.unobserve(entry.target); // stop watching once visible
                         }
                     });
-                }, { threshold: 0.1 });
+                }, { rootMargin: '0px 0px -40px 0px', threshold: 0 });
 
                 document.querySelectorAll('.fade-in').forEach(el => {
                     observer.observe(el);
@@ -5209,7 +5370,7 @@ this.packageTabs.forEach(tab => {
                 // Reset changes counter and update UI for selected package
                 const changesInput = document.getElementById('changes-count');
                 if (changesInput) changesInput.value = 0;
-                setTimeout(() => updateChangesUI(serviceType), 50);
+                requestAnimationFrame(() => updateChangesUI(serviceType));
                 
                 serviceSelect.value = serviceType;
                 packagePriceField.value = price;
@@ -5267,11 +5428,11 @@ this.packageTabs.forEach(tab => {
                 const fab = document.getElementById('contactFabWrap');
                 if (fab) {
                     fab.style.display = '';
-                    setTimeout(() => {
+                    requestAnimationFrame(() => {
                         fab.style.opacity = '1';
                         fab.style.transform = '';
                         fab.style.pointerEvents = '';
-                    }, 10);
+                    });
                 }
             }
 
@@ -5504,7 +5665,7 @@ this.packageTabs.forEach(tab => {
                         field.style.borderColor = '#ef4444';
                         setTimeout(() => {
                             field.style.borderColor = '';
-                        }, 3000);
+                        }, 1500);
                     }
                 });
                 
@@ -5588,44 +5749,35 @@ const originalText = submitBtn.innerHTML;
 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 submitBtn.disabled = true;
 
+// Close form immediately, show success, redirect fast
+this.closeOrderForm();
+
+const successMessage = document.createElement('div');
+successMessage.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: var(--shadow-xl);
+    text-align: center;
+    z-index: 9999;
+    border: 2px solid var(--albastru);
+    max-width: 300px;
+`;
+successMessage.innerHTML = `
+    <i class="fas fa-check-circle" style="color: #10b981; font-size: 3rem; margin-bottom: 15px;"></i>
+    <h3 style="margin-bottom: 10px; color: var(--text-dark);">Order Submitted!</h3>
+    <p style="color: var(--text-light); margin-bottom: 20px;">Redirecting to payment...</p>
+`;
+document.body.appendChild(successMessage);
+
+// Redirect after 400ms — just enough to read the message
 setTimeout(() => {
-    submitBtn.innerHTML = originalText;
-    submitBtn.disabled = false;
-    
-    this.closeOrderForm();
-    
-    // Show success message briefly
-    const successMessage = document.createElement('div');
-    successMessage.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: white;
-        padding: 30px;
-        border-radius: 15px;
-        box-shadow: var(--shadow-xl);
-        text-align: center;
-        z-index: 9999;
-        border: 2px solid var(--albastru);
-        max-width: 300px;
-    `;
-    successMessage.innerHTML = `
-        <i class="fas fa-check-circle" style="color: #10b981; font-size: 3rem; margin-bottom: 15px;"></i>
-        <h3 style="margin-bottom: 10px; color: var(--text-dark);">Order Submitted!</h3>
-        <p style="color: var(--text-light); margin-bottom: 20px;">Redirecting to payment...</p>
-        <div class="spinner-border text-primary" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    `;
-    document.body.appendChild(successMessage);
-    
-    // Redirect to payment page after 1.5 seconds
-    setTimeout(() => {
-        window.location.href = 'payment.html';
-    }, 1500);
-    
-}, 1500);
+    window.location.href = 'payment.html';
+}, 400);
 
 return false;
             }
@@ -5709,7 +5861,6 @@ return false;
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Initializing WebBuilder...');
             
             const loadingScreen = new LoadingScreen();
             const mobileMenu = new EnhancedMobileMenu();
@@ -5733,13 +5884,22 @@ return false;
                     const targetElement = document.querySelector(targetId);
                     if (targetElement) {
                         e.preventDefault();
-                        window.scrollTo({
-                            top: targetElement.offsetTop - 80,
-                            behavior: 'smooth'
-                        });
-                        
+                        const doScroll = () => {
+                            const yOffset = -80;
+                            const y = targetElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                            if (window.innerWidth <= 768) {
+                                window.scrollTo({ top: y, behavior: 'auto' });
+                            } else {
+                                window.scrollTo({ top: y, behavior: 'smooth' });
+                            }
+                        };
+                        // On iOS: close menu first (restores scroll pos), then scroll to target
                         if (mobileMenu.isOpen) {
                             mobileMenu.close();
+                            // Wait for rAF in close() to finish, then scroll to target
+                            requestAnimationFrame(() => requestAnimationFrame(doScroll));
+                        } else {
+                            doScroll();
                         }
                     }
                 });
@@ -5787,7 +5947,6 @@ return false;
             `;
             document.head.appendChild(rippleStyle);
             
-            console.log('WebBuilder initialized successfully');
         });
 
         // Handle window resize for responsive behavior
@@ -5810,17 +5969,18 @@ return false;
         /* Reposition panel to open from bottom-right without the bubble */
         #wbp-panel { bottom: 28px !important; }
 
-        .contact-fab-wrap{position:fixed;bottom:28px;right:28px;z-index:2000;display:flex;flex-direction:column;align-items:center;gap:12px;}
-        .contact-fab{width:68px;height:68px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border:none;border-radius:50%;color:white;font-size:1.8rem;cursor:pointer;box-shadow:0 6px 20px rgba(59,130,246,0.5);display:flex;align-items:center;justify-content:center;transition:all .25s;position:relative;}
+        .contact-fab-wrap{position:fixed;bottom:28px;right:28px;bottom:calc(28px + env(safe-area-inset-bottom));right:calc(28px + env(safe-area-inset-right));z-index:2000;display:flex;flex-direction:column;align-items:center;gap:12px;}
+        .contact-fab{width:68px;height:68px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border:none;border-radius:50%;color:white;font-size:1.8rem;cursor:pointer;box-shadow:0 6px 20px rgba(59,130,246,0.5);display:flex;align-items:center;justify-content:center;transition:transform 0.2s ease,box-shadow 0.2s ease;position:relative;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
         .contact-fab:hover{transform:scale(1.1);box-shadow:0 10px 28px rgba(59,130,246,0.65);}
         .contact-fab-icon{transition:transform .3s ease;}
         .contact-fab.open .contact-fab-icon{transform:rotate(45deg);}
-        .contact-option{width:50px;height:50px;border-radius:50%;border:none;color:white;font-size:1.25rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,0.2);transition:all .3s cubic-bezier(.34,1.56,.64,1);transform:scale(0) translateY(10px);opacity:0;pointer-events:none;text-decoration:none;}
+        .contact-option{width:50px;height:50px;border-radius:50%;border:none;color:white;font-size:1.25rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,0.2);transition: transform .3s ease, opacity .3s ease, box-shadow .3s ease;transform:scale(0) translateY(10px);opacity:0;pointer-events:none;text-decoration:none;}
         .contact-option.wa{background:linear-gradient(135deg,#25d366,#128c7e);}
         .contact-option.tg{background:linear-gradient(135deg,#2aabee,#1a8ccc);}
         .contact-option:hover{transform:scale(1.12) translateY(0) !important;box-shadow:0 8px 22px rgba(0,0,0,0.25);}
         .contact-fab-wrap.open .contact-option{transform:scale(1) translateY(0);opacity:1;pointer-events:all;}
         .contact-option-label{position:absolute;right:60px;background:rgba(15,23,42,.82);color:white;font-size:0.75rem;font-weight:700;padding:5px 10px;border-radius:8px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s;backdrop-filter:blur(4px);}
+        .contact-option-label{position:absolute;right:60px;background:rgba(15,23,42,.82);color:white;font-size:0.75rem;font-weight:700;padding:5px 10px;border-radius:8px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);}
         .contact-option:hover .contact-option-label{opacity:1;}
         @media(max-width:576px){
             .contact-fab-wrap{bottom:30px;right:16px;}
@@ -5851,7 +6011,7 @@ return false;
             display: inline-flex;
             align-items: center;
             gap: 9px;
-            transition: all .2s;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         .header-get-started .btn-getstarted:hover {
             transform: translateY(-2px);
@@ -5869,7 +6029,7 @@ return false;
             display: flex; flex-direction: column; overflow: hidden;
             transform: scale(0.85) translateY(20px); opacity: 0;
             pointer-events: none; transform-origin: bottom right;
-            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
         }
         #wbp-msg-panel.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
         .wbp-msg-head {
@@ -5880,7 +6040,7 @@ return false;
         .wbp-msg-head-left h4 { font-family:'Inter',sans-serif; font-size:0.95rem; font-weight:800; margin:0; }
         .wbp-msg-head-left p { font-family:'Inter',sans-serif; font-size:0.75rem; opacity:0.85; margin:3px 0 0; display:flex; align-items:center; gap:5px; }
         .wbp-msg-head-dot { width:6px; height:6px; background:#4ade80; border-radius:50%; }
-        .wbp-msg-close { background:rgba(255,255,255,0.2); border:none; color:white; width:26px; height:26px; border-radius:50%; cursor:pointer; font-size:0.8rem; display:flex; align-items:center; justify-content:center; transition:background 0.2s; }
+        .wbp-msg-close { background:rgba(255,255,255,0.2); border:none; color:white; width:44px; height:44px; border-radius:50%; cursor:pointer; font-size:0.9rem; display:flex; align-items:center; justify-content:center; transition:background 0.2s; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
         .wbp-msg-close:hover { background:rgba(255,255,255,0.35); }
         .wbp-msg-body { flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px; background:#fafbfc; scrollbar-width:thin; }
         .wbp-msg-body::-webkit-scrollbar { width:3px; }
@@ -5901,9 +6061,9 @@ return false;
         .wbp-msg-auth { padding:16px; background:white; }
         .wbp-msg-auth h5 { font-family:'Inter',sans-serif; font-size:0.88rem; font-weight:700; margin:0 0 4px; color:#1e293b; }
         .wbp-msg-auth p { font-family:'Inter',sans-serif; font-size:0.75rem; color:#64748b; margin:0 0 12px; }
-        .wbp-msg-auth input { width:100%; padding:9px 12px; border:2px solid #e2e8f0; border-radius:8px; font-family:'Inter',sans-serif; font-size:0.82rem; color:#1e293b; outline:none; transition:border-color 0.2s; margin-bottom:8px; }
+        .wbp-msg-auth input { width:100%; padding:9px 12px; border:2px solid #e2e8f0; border-radius:8px; font-family:'Inter',sans-serif; font-size:16px; color:#1e293b; outline:none; transition:border-color 0.2s; margin-bottom:8px; }
         .wbp-msg-auth input:focus { border-color:#3b82f6; }
-        .wbp-msg-auth-btn { width:100%; padding:10px; background:linear-gradient(135deg,#3b82f6,#8b5cf6); color:white; border:none; border-radius:8px; font-family:'Inter',sans-serif; font-size:0.85rem; font-weight:700; cursor:pointer; transition:all 0.2s; }
+        .wbp-msg-auth-btn { width:100%; padding:10px; background:linear-gradient(135deg,#3b82f6,#8b5cf6); color:white; border:none; border-radius:8px; font-family:'Inter',sans-serif; font-size:0.85rem; font-weight:700; cursor:pointer; transition:opacity 0.2s ease; }
         .wbp-msg-auth-btn:hover { opacity:0.9; }
         .wbp-msg-auth-err { color:#7f1d1d; font-size:0.75rem; margin-top:4px; font-family:'Inter',sans-serif; display:none; }
         .wbp-msg-auth-switch { text-align:center; margin-top:10px; font-size:0.75rem; color:#64748b; font-family:'Inter',sans-serif; }
@@ -5912,9 +6072,9 @@ return false;
         .wbp-msg-reset-link a { color:#3b82f6; cursor:pointer; text-decoration:underline; }
         .wbp-msg-reset-ok { color:#065f46; background:#ecfdf5; padding:8px 10px; border-radius:7px; font-size:0.75rem; font-family:'Inter',sans-serif; margin-top:6px; display:none; text-align:center; }
         .wbp-msg-input-row { display:flex; gap:8px; padding:10px 12px; border-top:1px solid #f1f5f9; background:white; flex-shrink:0; }
-        .wbp-msg-input { flex:1; padding:9px 12px; border:2px solid #e2e8f0; border-radius:9px; font-family:'Inter',sans-serif; font-size:0.82rem; color:#1e293b; outline:none; transition:border-color 0.2s; }
+        .wbp-msg-input { flex:1; padding:9px 12px; border:2px solid #e2e8f0; border-radius:9px; font-family:'Inter',sans-serif; font-size:16px; color:#1e293b; outline:none; transition:border-color 0.2s; }
         .wbp-msg-input:focus { border-color:#3b82f6; }
-        .wbp-msg-send { width:36px; height:36px; background:linear-gradient(135deg,#3b82f6,#8b5cf6); border:none; border-radius:9px; color:white; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.85rem; flex-shrink:0; transition:all 0.2s; }
+        .wbp-msg-send { width:44px; height:44px; background:linear-gradient(135deg,#3b82f6,#8b5cf6); border:none; border-radius:9px; color:white; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.9rem; flex-shrink:0; transition:transform 0.15s ease,opacity 0.15s ease; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
         .wbp-msg-send:hover { opacity:0.9; transform:scale(1.05); }
         .wbp-msg-send:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
         .wbp-msg-no { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px; color:#94a3b8; padding:20px; text-align:center; }
@@ -5932,11 +6092,16 @@ return false;
             transform: translateX(-4px);
         }
         @media(max-width:576px) {
-            #wbp-msg-panel { width:calc(100vw - 20px); right:10px; bottom:95px; max-height:70vh; }
+            #wbp-msg-panel { width:calc(100vw - 20px); right:10px; bottom:calc(95px + env(safe-area-inset-bottom)); max-height:70vh; }
+            .contact-fab-wrap{bottom:calc(20px + env(safe-area-inset-bottom));right:16px;}
         }
         @media(max-width:420px) {
-            #wbp-msg-panel { width:calc(100vw - 16px); right:8px; bottom:90px; max-height:65vh; }
+            #wbp-msg-panel { width:calc(100vw - 16px); right:8px; bottom:calc(90px + env(safe-area-inset-bottom)); max-height:65vh; }
         }
+        /* Improve scroll on Android */
+        .wbp-msg-body { -webkit-overflow-scrolling:touch; overscroll-behavior:contain; }
+        /* Auth button tap target */
+        .wbp-msg-auth-btn { min-height:48px; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
     </style>
 
     <div class="contact-fab-wrap" id="contactFabWrap">
@@ -5998,24 +6163,10 @@ return false;
                 const fab = document.getElementById('contactFabWrap');
                 if (fab) fab.style.display = '';
             }
-            // Scroll to additional section
-            setTimeout(function() {
-                const target = document.getElementById('order-form-section') || document.querySelector('.add-ons-section') || document.getElementById('packages');
-                // Scroll to packages section and open order form
-                const packagesSection = document.getElementById('packages');
-                if (packagesSection) {
-                    window.scrollTo({ top: packagesSection.offsetTop - 80, behavior: 'smooth' });
-                }
-                // Open order form showing add-ons
-                setTimeout(function() {
-                    if (window._orderFormSystem) window._orderFormSystem.openOrderForm('basic', '40');
-                    // Scroll to add-ons section inside form
-                    setTimeout(function() {
-                        const addOns = document.querySelector('.add-ons-section');
-                        if (addOns) addOns.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 300);
-                }, 400);
-            }, 300);
+            // Open order form immediately, no artificial delays
+            if (window._orderFormSystem) {
+                window._orderFormSystem.openOrderForm('basic', '40');
+            }
         }
 
         function wbpMsgDirectOpen(){
@@ -6028,9 +6179,9 @@ return false;
                 window._panelOpen=true; panel.classList.add('open');
                 if(window._dmUser){
                     if(window._dmOnLogin)window._dmOnLogin(window._dmUser);
-                    setTimeout(()=>document.getElementById('wbp-msg-txt')?.focus(),300);
+                    setTimeout(()=>document.getElementById('wbp-msg-txt')?.focus(),150);
                 } else {
-                    setTimeout(()=>document.getElementById('wbp-msg-email')?.focus(),300);
+                    setTimeout(()=>document.getElementById('wbp-msg-email')?.focus(),150);
                 }
             }
         }
@@ -6097,7 +6248,9 @@ return false;
             _dmUnsub=_db.collection('chats').doc(_dmChatId)
                 .onSnapshot(snap=>{
                     const data=snap.exists?snap.data():{};
-                    dmRenderMessages(data.messages||[]);
+                    // Filter out messages from payment.html chat so they don't cross-contaminate
+                    const allMsgs=data.messages||[];
+                    dmRenderMessages(allMsgs.filter(m=>m.source!=='payment'));
                     // Update unread badge
                     const msgs=data.messages||[];
                     const unread=msgs.filter(m=>m.from==='admin'&&!m.readByUser).length;
@@ -6109,7 +6262,7 @@ return false;
                     }
                 });
         }
-        setTimeout(()=>document.getElementById('wbp-msg-txt')?.focus(),200);
+        setTimeout(()=>document.getElementById('wbp-msg-txt')?.focus(),150);
     }
 
     function dmOnLogout(){
@@ -6145,7 +6298,7 @@ return false;
         const btn=document.getElementById('wbp-msg-send-btn');
         btn.disabled=true; input.value='';
         const authorName=_dmUser.displayName||_dmUser.email.split('@')[0];
-        const msg={from:'user',text,timestamp:new Date().toISOString(),author:authorName};
+        const msg={from:'user',source:'index',text,timestamp:new Date().toISOString(),author:authorName};
         try{
             const ref=_db.collection('chats').doc(_dmChatId);
             await ref.set({
@@ -6250,16 +6403,35 @@ return false;
             dmSetBadge(0);
             if(_dmUser){
                 dmOnLogin(_dmUser);
-                setTimeout(()=>document.getElementById('wbp-msg-txt')?.focus(),300);
+                setTimeout(()=>document.getElementById('wbp-msg-txt')?.focus(),150);
             } else {
-                setTimeout(()=>document.getElementById('wbp-msg-email')?.focus(),300);
+                setTimeout(()=>document.getElementById('wbp-msg-email')?.focus(),150);
             }
         }
     };
     window.wbpMsgClose=function(){
         _panelOpen=false;
         document.getElementById('wbp-msg-panel')?.classList.remove('open');
+        // Dismiss Android keyboard
+        if(document.activeElement)document.activeElement.blur();
     };
+
+    // Android keyboard fix: shrink panel when soft keyboard opens
+    if(window.visualViewport){
+        window.visualViewport.addEventListener('resize',()=>{
+            const panel=document.getElementById('wbp-msg-panel');
+            if(!panel||!_panelOpen)return;
+            const vh=window.visualViewport.height;
+            const offset=window.innerHeight-vh;
+            if(offset>100){
+                panel.style.maxHeight=Math.min(vh-110,window.innerHeight-110)+'px';
+                const body=document.getElementById('wbp-msg-messages');
+                if(body)requestAnimationFrame(()=>{body.scrollTop=body.scrollHeight;});
+            } else {
+                panel.style.maxHeight='';
+            }
+        });
+    }
     window.wbpMsgAuth=wbpMsgAuth;
     window.wbpMsgResetPwd=wbpMsgResetPwd;
     window.wbpMsgToggleReg=wbpMsgToggleReg;
